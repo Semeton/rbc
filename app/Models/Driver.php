@@ -44,6 +44,14 @@ class Driver extends Model
     }
 
     /**
+     * Scope to get only inactive drivers
+     */
+    public function scopeInactive(Builder $query): void
+    {
+        $query->where('status', false);
+    }
+
+    /**
      * Scope to search drivers by name or phone
      */
     public function scopeSearch(Builder $query, string $search): void
@@ -76,6 +84,22 @@ class Driver extends Model
         }
 
         return asset('storage/'.$this->photo);
+    }
+
+    /**
+     * Get the status as a string for display purposes
+     */
+    public function getStatusStringAttribute(): string
+    {
+        return $this->status ? 'active' : 'inactive';
+    }
+
+    /**
+     * Set the status from a string value
+     */
+    public function setStatusStringAttribute(string $value): void
+    {
+        $this->attributes['status'] = $value === 'active';
     }
 
     /**

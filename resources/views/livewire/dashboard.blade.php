@@ -1,6 +1,6 @@
 <div>
     <x-breadcrumb :items="[
-        ['label' => 'Dashboard', 'href' => route('dashboard')]
+        ['name' => 'Dashboard', 'href' => route('dashboard')]
     ]" />
 
     <!-- Dashboard Stats -->

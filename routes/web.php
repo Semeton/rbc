@@ -35,6 +35,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/customers/{customer}/edit', function (\App\Models\Customer $customer) {
             return view('customers.edit', compact('customer'));
         })->name('customers.edit');
+
+        // Driver Management Routes
+        Route::get('/drivers', function () {
+            return view('drivers.index');
+        })->name('drivers.index');
+
+        Route::get('/drivers/create', function () {
+            return view('drivers.create');
+        })->name('drivers.create');
+
+        Route::get('/drivers/{driver}', function (\App\Models\Driver $driver) {
+            return view('drivers.show', compact('driver'));
+        })->name('drivers.show');
+
+        Route::get('/drivers/{driver}/edit', function (\App\Models\Driver $driver) {
+            return view('drivers.edit', compact('driver'));
+        })->name('drivers.edit');
     });
 });
 
