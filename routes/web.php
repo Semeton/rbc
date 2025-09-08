@@ -52,6 +52,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/drivers/{driver}/edit', function (\App\Models\Driver $driver) {
             return view('drivers.edit', compact('driver'));
         })->name('drivers.edit');
+
+        // Truck Management Routes
+        Route::get('/trucks', function () {
+            return view('trucks.index');
+        })->name('trucks.index');
+
+        Route::get('/trucks/create', function () {
+            return view('trucks.create');
+        })->name('trucks.create');
+
+        Route::get('/trucks/{truck}', function (\App\Models\Truck $truck) {
+            return view('trucks.show', compact('truck'));
+        })->name('trucks.show');
+
+        Route::get('/trucks/{truck}/edit', function (\App\Models\Truck $truck) {
+            return view('trucks.edit', compact('truck'));
+        })->name('trucks.edit');
     });
 });
 

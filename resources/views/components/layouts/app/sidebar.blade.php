@@ -20,8 +20,8 @@
                 <flux:navlist.group :heading="__('Data Management')" class="grid">
                     <flux:navlist.item icon="users" :href="route('customers.index')" :current="request()->routeIs('customers.*')" wire:navigate>{{ __('Customers') }}</flux:navlist.item>
                     <flux:navlist.item icon="user-group" :href="route('drivers.index')" :current="request()->routeIs('drivers.*')" wire:navigate>{{ __('Drivers') }}</flux:navlist.item>
-                    {{-- <flux:navlist.item icon="truck" :href="route('trucks.index')" :current="request()->routeIs('trucks.*')" wire:navigate>{{ __('Trucks') }}</flux:navlist.item>
-                    <flux:navlist.item icon="document-text" :href="route('atcs.index')" :current="request()->routeIs('atcs.*')" wire:navigate>{{ __('ATCs') }}</flux:navlist.item> --}}
+                    <flux:navlist.item icon="truck" :href="route('trucks.index')" :current="request()->routeIs('trucks.*')" wire:navigate>{{ __('Trucks') }}</flux:navlist.item>
+                    {{-- <flux:navlist.item icon="document-text" :href="route('atcs.index')" :current="request()->routeIs('atcs.*')" wire:navigate>{{ __('ATCs') }}</flux:navlist.item> --}}
                 </flux:navlist.group>
 
                 {{-- <flux:navlist.group :heading="__('Transactions')" class="grid">
