@@ -16,10 +16,10 @@
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
                 {{-- TODO: Uncomment when routes are created in Phase 2 --}}
-                {{-- <flux:navbar.item icon="users" :href="route('customers.index')" :current="request()->routeIs('customers.*')" wire:navigate>
+                <flux:navbar.item icon="users" :href="route('customers.index')" :current="request()->routeIs('customers.*')" wire:navigate>
                     {{ __('Customers') }}
                 </flux:navbar.item>
-                <flux:navbar.item icon="user-group" :href="route('drivers.index')" :current="request()->routeIs('drivers.*')" wire:navigate>
+                {{-- <flux:navbar.item icon="user-group" :href="route('drivers.index')" :current="request()->routeIs('drivers.*')" wire:navigate>
                     {{ __('Drivers') }}
                 </flux:navbar.item>
                 <flux:navbar.item icon="truck" :href="route('trucks.index')" :current="request()->routeIs('trucks.*')" wire:navigate>
@@ -117,14 +117,14 @@
                 </flux:navlist.group>
 
                 {{-- TODO: Uncomment when routes are created in Phase 2 --}}
-                {{-- <flux:navlist.group :heading="__('Data Management')">
+                <flux:navlist.group :heading="__('Data Management')">
                     <flux:navlist.item icon="users" :href="route('customers.index')" :current="request()->routeIs('customers.*')" wire:navigate>{{ __('Customers') }}</flux:navlist.item>
-                    <flux:navlist.item icon="user-group" :href="route('drivers.index')" :current="request()->routeIs('drivers.*')" wire:navigate>{{ __('Drivers') }}</flux:navlist.item>
+                    {{-- <flux:navlist.item icon="user-group" :href="route('drivers.index')" :current="request()->routeIs('drivers.*')" wire:navigate>{{ __('Drivers') }}</flux:navlist.item>
                     <flux:navlist.item icon="truck" :href="route('trucks.index')" :current="request()->routeIs('trucks.*')" wire:navigate>{{ __('Trucks') }}</flux:navlist.item>
-                    <flux:navlist.item icon="document-text" :href="route('atcs.index')" :current="request()->routeIs('atcs.*')" wire:navigate>{{ __('ATCs') }}</flux:navlist.item>
+                    <flux:navlist.item icon="document-text" :href="route('atcs.index')" :current="request()->routeIs('atcs.*')" wire:navigate>{{ __('ATCs') }}</flux:navlist.item> --}}
                 </flux:navlist.group>
 
-                <flux:navlist.group :heading="__('Transactions')">
+                {{-- <flux:navlist.group :heading="__('Transactions')">
                     <flux:navlist.item icon="currency-dollar" :href="route('payments.index')" :current="request()->routeIs('payments.*')" wire:navigate>{{ __('Payments') }}</flux:navlist.item>
                     <flux:navlist.item icon="clipboard-document-list" :href="route('transactions.index')" :current="request()->routeIs('transactions.*')" wire:navigate>{{ __('Daily Transactions') }}</flux:navlist.item>
                     <flux:navlist.item icon="truck" :href="route('truck-records.index')" :current="request()->routeIs('truck-records.*')" wire:navigate>{{ __('Truck Records') }}</flux:navlist.item>

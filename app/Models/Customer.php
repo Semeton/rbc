@@ -53,6 +53,14 @@ class Customer extends Model
     }
 
     /**
+     * Scope to get only inactive customers
+     */
+    public function scopeInactive(Builder $query): void
+    {
+        $query->where('status', false);
+    }
+
+    /**
      * Scope to search customers by name or email
      */
     public function scopeSearch(Builder $query, string $search): void
@@ -84,6 +92,22 @@ class Customer extends Model
             ->take(2)
             ->map(fn ($word) => strtoupper(substr($word, 0, 1)))
             ->implode('');
+    }
+
+    /**
+     * Get the status as a string for display purposes
+     */
+    public function getStatusStringAttribute(): string
+    {
+        return $this->status ? 'active' : 'inactive';
+    }
+
+    /**
+     * Set the status from a string value
+     */
+    public function setStatusStringAttribute(string $value): void
+    {
+        $this->attributes['status'] = $value === 'active';
     }
 
     /**
