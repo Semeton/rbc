@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('audit_trails', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'));
+            $table->uuid()->unique()->default(DB::raw('(UUID())'));
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->string('action');
             $table->string('module');

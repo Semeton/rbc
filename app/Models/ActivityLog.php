@@ -5,23 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ActtivityLog extends Model
+class ActivityLog extends Model
 {
     use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'user_id',
-        'loggable_type',
-        'loggable_id',
-        'event',
-        'properties',
-        'ip_address',
-        'user_agent',
-    ];
+    protected $guarded = ['id'];
 
     /**
      * The attributes that should be cast.

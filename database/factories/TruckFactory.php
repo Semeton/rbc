@@ -17,7 +17,6 @@ class TruckFactory extends Factory
     public function definition(): array
     {
         return [
-            'uuid' => fake()->uuid(),
             'cab_number' => 'CAB-' . fake()->unique()->numberBetween(1000, 9999),
             'registration_number' => fake()->unique()->regexify('[A-Z]{3}-[0-9]{3}-[A-Z]{2}'),
             'truck_model' => fake()->randomElement(['Volvo FH16', 'Mercedes-Benz Actros', 'Scania R Series', 'MAN TGX', 'DAF XF']),

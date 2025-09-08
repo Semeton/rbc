@@ -17,7 +17,6 @@ class DriverFactory extends Factory
     public function definition(): array
     {
         return [
-            'uuid' => fake()->uuid(),
             'name' => fake()->name(),
             'phone' => fake()->phoneNumber(),
             'company' => fake()->company(),

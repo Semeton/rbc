@@ -7,9 +7,9 @@ use App\Models\Truck;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ActtivityLog>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ActivityLog>
  */
-class ActtivityLogFactory extends Factory
+class ActivityLogFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -21,9 +21,8 @@ class ActtivityLogFactory extends Factory
         $loggableTypes = [Customer::class, Truck::class];
         $events = ['created', 'updated', 'deleted'];
         $selectedType = fake()->randomElement($loggableTypes);
-        
+
         return [
-            'uuid' => fake()->uuid(),
             'loggable_type' => $selectedType,
             'loggable_id' => function () use ($selectedType) {
                 if ($selectedType === Customer::class) {

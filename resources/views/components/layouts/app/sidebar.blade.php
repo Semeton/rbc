@@ -15,6 +15,28 @@
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                 </flux:navlist.group>
+
+                {{-- TODO: Uncomment when routes are created in Phase 2 --}}
+                {{-- <flux:navlist.group :heading="__('Data Management')" class="grid">
+                    <flux:navlist.item icon="users" :href="route('customers.index')" :current="request()->routeIs('customers.*')" wire:navigate>{{ __('Customers') }}</flux:navlist.item>
+                    <flux:navlist.item icon="user-group" :href="route('drivers.index')" :current="request()->routeIs('drivers.*')" wire:navigate>{{ __('Drivers') }}</flux:navlist.item>
+                    <flux:navlist.item icon="truck" :href="route('trucks.index')" :current="request()->routeIs('trucks.*')" wire:navigate>{{ __('Trucks') }}</flux:navlist.item>
+                    <flux:navlist.item icon="document-text" :href="route('atcs.index')" :current="request()->routeIs('atcs.*')" wire:navigate>{{ __('ATCs') }}</flux:navlist.item>
+                </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('Transactions')" class="grid">
+                    <flux:navlist.item icon="currency-dollar" :href="route('payments.index')" :current="request()->routeIs('payments.*')" wire:navigate>{{ __('Payments') }}</flux:navlist.item>
+                    <flux:navlist.item icon="clipboard-document-list" :href="route('transactions.index')" :current="request()->routeIs('transactions.*')" wire:navigate>{{ __('Daily Transactions') }}</flux:navlist.item>
+                    <flux:navlist.item icon="truck" :href="route('truck-records.index')" :current="request()->routeIs('truck-records.*')" wire:navigate>{{ __('Truck Records') }}</flux:navlist.item>
+                </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('Maintenance')" class="grid">
+                    <flux:navlist.item icon="wrench-screwdriver" :href="route('maintenance.index')" :current="request()->routeIs('maintenance.*')" wire:navigate>{{ __('Truck Maintenance') }}</flux:navlist.item>
+                </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('Reports')" class="grid">
+                    <flux:navlist.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>{{ __('Reports') }}</flux:navlist.item>
+                </flux:navlist.group> --}}
             </flux:navlist>
 
             <flux:spacer />
@@ -32,8 +54,8 @@
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">
                 <flux:profile
-                    :name="auth()->user()->name"
-                    :initials="auth()->user()->initials()"
+                    :name="Auth::user()->name"
+                    :initials="Auth::user()->initials()"
                     icon:trailing="chevrons-up-down"
                 />
 
@@ -45,13 +67,13 @@
                                     <span
                                         class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white"
                                     >
-                                        {{ auth()->user()->initials() }}
+                                        {{ Auth::user()->initials() }}
                                     </span>
                                 </span>
 
                                 <div class="grid flex-1 text-start text-sm leading-tight">
-                                    <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
-                                    <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                                    <span class="truncate font-semibold">{{ Auth::user()->name }}</span>
+                                    <span class="truncate text-xs">{{ Auth::user()->email }}</span>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +105,7 @@
 
             <flux:dropdown position="top" align="end">
                 <flux:profile
-                    :initials="auth()->user()->initials()"
+                    :initials="Auth::user()->initials()"
                     icon-trailing="chevron-down"
                 />
 
@@ -95,13 +117,13 @@
                                     <span
                                         class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white"
                                     >
-                                        {{ auth()->user()->initials() }}
+                                        {{ Auth::user()->initials() }}
                                     </span>
                                 </span>
 
                                 <div class="grid flex-1 text-start text-sm leading-tight">
-                                    <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
-                                    <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                                    <span class="truncate font-semibold">{{ Auth::user()->name }}</span>
+                                    <span class="truncate text-xs">{{ Auth::user()->email }}</span>
                                 </div>
                             </div>
                         </div>

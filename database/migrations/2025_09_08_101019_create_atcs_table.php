@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('atcs', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'));
+            $table->uuid()->unique()->default(DB::raw('(UUID())'));
             $table->string('company');
             $table->bigInteger('atc_number')->index()->unique();
             $table->enum('atc_type', ['bg', 'cash_payment']);

@@ -17,7 +17,6 @@ class AtcFactory extends Factory
     public function definition(): array
     {
         return [
-            'uuid' => fake()->uuid(),
             'company' => fake()->company(),
             'atc_number' => fake()->unique()->numberBetween(10000, 99999),
             'atc_type' => fake()->randomElement(['bg', 'cash_payment']),

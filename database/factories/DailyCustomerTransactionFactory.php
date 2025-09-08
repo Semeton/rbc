@@ -17,7 +17,6 @@ class DailyCustomerTransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'uuid' => fake()->uuid(),
             'date' => fake()->dateTimeBetween('-2 months', 'now'),
             'origin' => fake()->city(),
             'deport_details' => fake()->sentence(),

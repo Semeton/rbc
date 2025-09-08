@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('daily_truck_records', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'));
+            $table->uuid()->unique()->default(DB::raw('(UUID())'));
             $table->foreignId('driver_id')->constrained();
             $table->foreignId('truck_id')->constrained();
             $table->foreignId('customer_id')->constrained();

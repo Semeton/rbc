@@ -26,9 +26,8 @@ class TruckMaintenanceRecordFactory extends Factory
             'Suspension Repair',
             'Exhaust System Repair'
         ];
-        
+
         return [
-            'uuid' => fake()->uuid(),
             'description' => fake()->randomElement($maintenanceTypes) . ' - ' . fake()->sentence(),
             'cost_of_maintenance' => fake()->randomFloat(2, 500, 5000),
             'status' => true,

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('customer_payments', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'));
+            $table->uuid()->unique()->default(DB::raw('(UUID())'));
             $table->foreignId('customer_id')->constrained();
             $table->timestamp('payment_date');
             $table->float('amount');

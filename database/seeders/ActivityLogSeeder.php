@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\ActtivityLog;
+use App\Models\ActivityLog;
 use App\Models\Customer;
 use App\Models\Truck;
 use App\Models\User;
@@ -22,7 +22,7 @@ class ActivityLogSeeder extends Seeder
         
         // Create 10 activity logs for customers
         foreach ($customers->random(min(10, $customers->count())) as $customer) {
-            ActtivityLog::factory()->create([
+            ActivityLog::factory()->create([
                 'user_id' => $users->random()->id,
                 'loggable_type' => Customer::class,
                 'loggable_id' => $customer->id,
@@ -31,7 +31,7 @@ class ActivityLogSeeder extends Seeder
         
         // Create 10 activity logs for trucks
         foreach ($trucks->random(min(10, $trucks->count())) as $truck) {
-            ActtivityLog::factory()->create([
+            ActivityLog::factory()->create([
                 'user_id' => $users->random()->id,
                 'loggable_type' => Truck::class,
                 'loggable_id' => $truck->id,

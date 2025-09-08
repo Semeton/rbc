@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'));
+            $table->uuid()->unique()->default(DB::raw('(UUID())'));
             $table->string('name');
             $table->string('phone');
             $table->string('photo')->nullable();

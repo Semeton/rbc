@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('trucks', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'));
+            $table->uuid()->unique()->default(DB::raw('(UUID())'));
             $table->string("cab_number");
             $table->string("registration_number")->unique()->index();
             $table->string("truck_model");

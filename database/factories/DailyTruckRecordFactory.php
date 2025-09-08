@@ -17,7 +17,6 @@ class DailyTruckRecordFactory extends Factory
     public function definition(): array
     {
         return [
-            'uuid' => fake()->uuid(),
             'atc_collection_date' => fake()->dateTimeBetween('-2 months', '-1 week'),
             'load_dispatch_date' => fake()->dateTimeBetween('-1 week', 'now'),
             'fare' => fake()->randomFloat(2, 1000, 5000),

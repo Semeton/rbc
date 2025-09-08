@@ -26,9 +26,8 @@ class AuditTrailFactory extends Factory
     {
         $modules = ['Customer', 'Driver', 'Truck', 'ATC', 'Payment', 'Transaction', 'User'];
         $actions = ['create', 'update', 'delete', 'view', 'export', 'import'];
-        
+
         return [
-            'uuid' => fake()->uuid(),
             'action' => fake()->randomElement($actions),
             'module' => fake()->randomElement($modules),
             'description' => fake()->sentence(),
