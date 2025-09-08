@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
-            $table->uuid();
+            $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'));
             $table->string('name');
             $table->string('phone');
             $table->string('photo')->nullable();
             $table->string('company');
-            $table->boolean('active')->default(true);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

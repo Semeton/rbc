@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,11 +12,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Call seeders in the correct order based on dependencies
+        $this->call([
+            UserSeeder::class,           // Users first for foreign key relationships
+            CustomerSeeder::class,       // Customers before their related records
+            DriverSeeder::class,         // Drivers before daily records
+            TruckSeeder::class,          // Trucks before maintenance records
+            AtcSeeder::class,            // ATCs before daily transactions
+            CustomerPaymentSeeder::class,
+            DailyCustomerTransactionSeeder::class,
+            DailyTruckRecordSeeder::class,
+            TruckMaintenanceRecordSeeder::class,
+            AuditTrailSeeder::class,
+            ActivityLogSeeder::class,
         ]);
     }
 }

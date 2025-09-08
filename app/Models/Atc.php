@@ -11,9 +11,9 @@ class Atc extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
-    public function getActTypeAttribute(): string
+    public function getAtcTypeAttribute(): string
     {
-        return match ($this->attributes['act_type']) {
+        return match ($this->attributes['atc_type']) {
             'bg' => 'BG',
             'cash_payment' => 'Cash Payment',
         };
