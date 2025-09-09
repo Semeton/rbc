@@ -137,6 +137,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/truck-movements/{truckMovement}/edit', function (\App\Models\DailyTruckRecord $truckMovement) {
             return view('truck-movements.edit', compact('truckMovement'));
         })->name('truck-movements.edit');
+
+        // Maintenance Management Routes
+        Route::get('/maintenance', function () {
+            return view('maintenance.index');
+        })->name('maintenance.index');
+
+        Route::get('/maintenance/create', function () {
+            return view('maintenance.create');
+        })->name('maintenance.create');
+
+        Route::get('/maintenance/{maintenance}', function (\App\Models\TruckMaintenanceRecord $maintenance) {
+            return view('maintenance.show', compact('maintenance'));
+        })->name('maintenance.show');
+
+        Route::get('/maintenance/{maintenance}/edit', function (\App\Models\TruckMaintenanceRecord $maintenance) {
+            return view('maintenance.edit', compact('maintenance'));
+        })->name('maintenance.edit');
     });
 });
 

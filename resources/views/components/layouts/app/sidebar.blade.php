@@ -29,13 +29,9 @@
                     <flux:navlist.item icon="truck" :href="route('truck-movements.index')" :current="request()->routeIs('truck-movements.*')" wire:navigate>{{ __('Truck Movements') }}</flux:navlist.item>
                 </flux:navlist.group>
 
-                {{-- <flux:navlist.group :heading="__('Maintenance')" class="grid">
+                <flux:navlist.group :heading="__('Maintenance')" class="grid">
                     <flux:navlist.item icon="wrench-screwdriver" :href="route('maintenance.index')" :current="request()->routeIs('maintenance.*')" wire:navigate>{{ __('Truck Maintenance') }}</flux:navlist.item>
                 </flux:navlist.group>
-
-                <flux:navlist.group :heading="__('Reports')" class="grid">
-                    <flux:navlist.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>{{ __('Reports') }}</flux:navlist.item>
-                </flux:navlist.group> --}}
             </flux:navlist>
 
             <flux:spacer />

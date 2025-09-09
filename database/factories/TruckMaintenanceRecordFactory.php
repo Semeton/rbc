@@ -24,11 +24,12 @@ class TruckMaintenanceRecordFactory extends Factory
             'Electrical System Repair',
             'Cooling System Service',
             'Suspension Repair',
-            'Exhaust System Repair'
+            'Exhaust System Repair',
         ];
 
         return [
-            'description' => fake()->randomElement($maintenanceTypes) . ' - ' . fake()->sentence(),
+            'truck_id' => \App\Models\Truck::factory(),
+            'description' => fake()->randomElement($maintenanceTypes).' - '.fake()->sentence(),
             'cost_of_maintenance' => fake()->randomFloat(2, 500, 5000),
             'status' => true,
         ];

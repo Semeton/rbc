@@ -77,6 +77,52 @@ class TruckMaintenanceRecord extends Model
     }
 
     /**
+     * Get the status as a string for UI display
+     */
+    public function getStatusStringAttribute(): string
+    {
+        return $this->status ? 'active' : 'inactive';
+    }
+
+    /**
+     * Set the status from a string value
+     */
+    public function setStatusStringAttribute(string $value): void
+    {
+        $this->attributes['status'] = $value === 'active';
+    }
+
+    /**
+     * Scope to get only inactive maintenance records
+     */
+    public function scopeInactive(Builder $query): void
+    {
+        $query->where('status', false);
+    }
+
+    /**
+     * Scope to get recent maintenance records
+     */
+    public function scopeRecent(Builder $query, int $days = 30): void
+    {
+        $query->where('created_at', '>=', now()->subDays($days));
+    }
+
+    /**
+     * Scope to search maintenance records
+     */
+    public function scopeSearch(Builder $query, string $search): void
+    {
+        $query->where(function ($q) use ($search) {
+            $q->where('description', 'like', "%{$search}%")
+                ->orWhereHas('truck', function ($truckQuery) use ($search) {
+                    $truckQuery->where('registration_number', 'like', "%{$search}%")
+                        ->orWhere('cab_number', 'like', "%{$search}%");
+                });
+        });
+    }
+
+    /**
      * Boot method to add model events
      */
     protected static function boot(): void
