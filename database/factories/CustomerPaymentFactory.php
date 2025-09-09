@@ -17,6 +17,7 @@ class CustomerPaymentFactory extends Factory
     public function definition(): array
     {
         return [
+            'customer_id' => \App\Models\Customer::factory(),
             'payment_date' => fake()->dateTimeBetween('-3 months', 'now'),
             'amount' => fake()->randomFloat(2, 1000, 50000),
             'bank_name' => fake()->randomElement(['Bank of Ghana', 'Ecobank', 'Fidelity Bank', 'GCB Bank', null]),

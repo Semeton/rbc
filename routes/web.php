@@ -103,6 +103,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/transactions/{transaction}/edit', function (\App\Models\DailyCustomerTransaction $transaction) {
             return view('transactions.edit', compact('transaction'));
         })->name('transactions.edit');
+
+        // Payment Management Routes
+        Route::get('/payments', function () {
+            return view('payments.index');
+        })->name('payments.index');
+
+        Route::get('/payments/create', function () {
+            return view('payments.create');
+        })->name('payments.create');
+
+        Route::get('/payments/{payment}', function (\App\Models\CustomerPayment $payment) {
+            return view('payments.show', compact('payment'));
+        })->name('payments.show');
+
+        Route::get('/payments/{payment}/edit', function (\App\Models\CustomerPayment $payment) {
+            return view('payments.edit', compact('payment'));
+        })->name('payments.edit');
     });
 });
 

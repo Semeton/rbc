@@ -69,6 +69,28 @@ class CustomerPayment extends Model
     }
 
     /**
+     * Scope to get recent payments
+     */
+    public function scopeRecent(Builder $query, int $days = 30): void
+    {
+        $query->where('payment_date', '>=', now()->subDays($days));
+    }
+
+    /**
+     * Scope to search payments by notes
+     */
+    public function scopeSearch(Builder $query, string $search): void
+    {
+        $query->where(function ($q) use ($search) {
+            $q->where('notes', 'like', "%{$search}%")
+                ->orWhere('bank_name', 'like', "%{$search}%")
+                ->orWhereHas('customer', function ($customerQuery) use ($search) {
+                    $customerQuery->where('name', 'like', "%{$search}%");
+                });
+        });
+    }
+
+    /**
      * Boot method to add model events
      */
     protected static function boot(): void
