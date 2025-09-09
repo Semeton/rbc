@@ -1,7 +1,7 @@
 <div>
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex justify-between items-start mb-6">
                         <div>
@@ -25,7 +25,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Truck Information -->
                         <div class="lg:col-span-2">
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                            <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-6">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Truck Information</h3>
                                 
                                 <div class="space-y-4">
@@ -84,7 +84,7 @@
 
                         <!-- Quick Stats -->
                         <div class="space-y-6">
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                            <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-6">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Stats</h3>
                                 <div class="space-y-3">
                                     <div class="flex justify-between">
@@ -102,7 +102,7 @@
                                 </div>
                             </div>
 
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                            <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-6">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Actions</h3>
                                 <div class="space-y-3">
                                     <flux:button variant="primary" href="{{ route('trucks.edit', $truck) }}" class="w-full">

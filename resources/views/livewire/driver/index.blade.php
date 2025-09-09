@@ -1,7 +1,7 @@
 <div>
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex justify-between items-center mb-6">
                         <div>
@@ -16,26 +16,26 @@
 
                     <!-- Statistics Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg p-5">
+                        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg p-5">
                             <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Drivers</div>
                             <div class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ $this->statistics['total'] }}</div>
                         </div>
-                        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg p-5">
+                        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg p-5">
                             <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Drivers</div>
                             <div class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ $this->statistics['active'] }}</div>
                         </div>
-                        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg p-5">
+                        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg p-5">
                             <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Inactive Drivers</div>
                             <div class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ $this->statistics['inactive'] }}</div>
                         </div>
-                        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg p-5">
+                        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg p-5">
                             <div class="text-sm font-medium text-gray-500 dark:text-gray-400">New This Month</div>
                             <div class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ $this->statistics['recent'] }}</div>
                         </div>
                     </div>
 
                     <!-- Filters -->
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
+                    <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4 mb-6">
                         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div>
                                 <flux:field>
@@ -89,7 +89,7 @@
                     <div class="overflow-x-auto">
                         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
                             <table class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
-                                <thead class="bg-gray-50 dark:bg-gray-800">
+                                <thead class="bg-gray-50 dark:bg-zinc-900">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer" wire:click="sortBy('name')">
                                             Name
@@ -114,9 +114,9 @@
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 text-center uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                                <tbody class="bg-white dark:bg-zinc-900 divide-y divide-gray-200 dark:divide-gray-700">
                                     @forelse($this->drivers as $driver)
-                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-zinc-800">
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="flex items-center">
                                                     <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">

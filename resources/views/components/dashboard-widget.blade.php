@@ -11,7 +11,7 @@
     ];
 @endphp
 
-<div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+<div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg">
     <div class="p-5">
         <div class="flex items-center">
             <div class="flex-shrink-0">
@@ -41,7 +41,7 @@
         </div>
     </div>
     @if(isset($footer))
-        <div class="bg-gray-50 dark:bg-gray-700 px-5 py-3">
+        <div class="bg-gray-50 dark:bg-zinc-700 px-5 py-3">
             {{ $footer }}
         </div>
     @endif

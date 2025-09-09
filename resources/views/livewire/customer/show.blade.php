@@ -2,7 +2,7 @@
     <!-- Customer Show Content -->
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <!-- Header -->
                     <div class="flex justify-between items-start mb-6">
@@ -43,7 +43,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                         <!-- Contact Information -->
                         <div class="lg:col-span-2">
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                            <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-6">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Contact Information</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
@@ -60,7 +60,7 @@
 
                         <!-- Account Summary -->
                         <div>
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                            <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-6">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Account Summary</h3>
                                 <div class="space-y-4">
                                     <div>
@@ -85,7 +85,7 @@
                     <!-- Notes -->
                     @if($customer->notes)
                         <div class="mb-8">
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                            <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-6">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Notes</h3>
                                 <p class="text-gray-700 dark:text-gray-300">{{ $customer->notes }}</p>
                             </div>

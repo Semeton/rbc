@@ -29,49 +29,49 @@
                 </div>
 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Customer</dt>
                         <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $transaction->customer->name }}</dd>
                     </div>
 
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Driver</dt>
                         <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $transaction->driver->name }}</dd>
                     </div>
 
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">ATC</dt>
                         <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">ATC #{{ $transaction->atc->atc_number }} - {{ $transaction->atc->company }}</dd>
                     </div>
 
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Date</dt>
                         <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $transaction->date->format('M d, Y') }}</dd>
                     </div>
 
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Origin</dt>
                         <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $transaction->origin }}</dd>
                     </div>
 
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Destination</dt>
                         <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $transaction->destination }}</dd>
                     </div>
 
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Cement Type</dt>
                         <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $transaction->cement_type }}</dd>
                     </div>
 
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
                         <dd class="mt-1">
                             <x-status-badge :status="$transaction->status_string" />
                         </dd>
                     </div>
 
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Last Updated</dt>
                         <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $transaction->updated_at->format('M d, Y \a\t g:i A') }}</dd>
                     </div>
@@ -81,17 +81,17 @@
                 <div class="mt-8">
                     <h4 class="text-md font-medium text-gray-900 dark:text-gray-100 mb-4">Financial Information</h4>
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                        <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">ATC Cost</dt>
                             <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">₦{{ number_format($transaction->atc_cost, 2) }}</dd>
                         </div>
 
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                        <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Transport Cost</dt>
                             <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">₦{{ number_format($transaction->transport_cost, 2) }}</dd>
                         </div>
 
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                        <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Cost</dt>
                             <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">₦{{ number_format($transaction->total_cost, 2) }}</dd>
                         </div>
@@ -101,7 +101,7 @@
                 @if($transaction->deport_details)
                     <div class="mt-8">
                         <h4 class="text-md font-medium text-gray-900 dark:text-gray-100 mb-4">Deport Details</h4>
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                        <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                             <p class="text-sm text-gray-900 dark:text-gray-100">{{ $transaction->deport_details }}</p>
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 <x-layouts.app title="Edit Customer">
     <x-slot name="header">
         <x-breadcrumb :items="[
-            ['name' => 'Dashboard', 'url' => route('dashboard')],
+            ['name' => 'Dashboard', 'url' => route('dashboard.index')],
             ['name' => 'Customers', 'url' => route('customers.index')],
             ['name' => 'Edit Customer', 'url' => null]
         ]" />

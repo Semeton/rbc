@@ -1,6 +1,6 @@
 <div>
     <x-breadcrumb :items="[
-        ['name' => 'Dashboard', 'href' => route('dashboard')]
+        ['name' => 'Dashboard', 'href' => route('dashboard.index')]
     ]" />
 
     <!-- Dashboard Stats -->
@@ -56,7 +56,7 @@
     <!-- Recent Activity -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- Recent Transactions -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div class="bg-white dark:bg-zinc-900 shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
                 <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 mb-4">
                     Recent Transactions
@@ -99,7 +99,7 @@
         </div>
 
         <!-- Recent Payments -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div class="bg-white dark:bg-zinc-900 shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
                 <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 mb-4">
                     Recent Payments
@@ -143,7 +143,7 @@
     </div>
 
     <!-- Recent Activity Log -->
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+    <div class="bg-white dark:bg-zinc-900 shadow rounded-lg">
         <div class="px-4 py-5 sm:p-6">
             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 mb-4">
                 Recent Activity
@@ -155,7 +155,7 @@
                             <li class="py-4">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex-shrink-0">
-                                        <div class="h-8 w-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                        <div class="h-8 w-8 rounded-full bg-gray-100 dark:bg-zinc-700 flex items-center justify-center">
                                             <flux:icon name="user" class="h-4 w-4 text-gray-600 dark:text-gray-400" />
                                         </div>
                                     </div>

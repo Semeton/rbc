@@ -1,7 +1,7 @@
 <x-layouts.app title="Drivers">
     <x-slot name="header">
         <x-breadcrumb :items="[
-            ['name' => 'Dashboard', 'url' => route('dashboard')],
+            ['name' => 'Dashboard', 'url' => route('dashboard.index')],
             ['name' => 'Drivers', 'url' => null]
         ]" />
     </x-slot>
