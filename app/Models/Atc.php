@@ -72,6 +72,30 @@ class Atc extends Model
     }
 
     /**
+     * Get the status as a string for UI display
+     */
+    public function getStatusStringAttribute(): string
+    {
+        return $this->status ? 'active' : 'inactive';
+    }
+
+    /**
+     * Set the status from a string value
+     */
+    public function setStatusStringAttribute(string $value): void
+    {
+        $this->attributes['status'] = $value === 'active';
+    }
+
+    /**
+     * Scope to get only inactive ATCs
+     */
+    public function scopeInactive(Builder $query): void
+    {
+        $query->where('status', false);
+    }
+
+    /**
      * Check if ATC is available for use
      */
     public function isAvailable(): bool

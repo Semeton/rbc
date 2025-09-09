@@ -55,6 +55,30 @@ class DailyCustomerTransaction extends Model
     }
 
     /**
+     * Scope to get only inactive transactions
+     */
+    public function scopeInactive(Builder $query): void
+    {
+        $query->where('status', false);
+    }
+
+    /**
+     * Get the status as a string
+     */
+    public function getStatusStringAttribute(): string
+    {
+        return $this->status ? 'active' : 'inactive';
+    }
+
+    /**
+     * Set the status from a string
+     */
+    public function setStatusStringAttribute(string $value): void
+    {
+        $this->attributes['status'] = $value === 'active';
+    }
+
+    /**
      * Scope to filter by date range
      */
     public function scopeByDateRange(Builder $query, string $startDate, string $endDate): void

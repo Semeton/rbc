@@ -21,7 +21,7 @@ class AtcFactory extends Factory
             'atc_number' => fake()->unique()->numberBetween(10000, 99999),
             'atc_type' => fake()->randomElement(['bg', 'cash_payment']),
             'amount' => fake()->randomFloat(2, 1000, 50000),
-            'tons' => fake()->randomFloat(2, 10, 100),
+            'tons' => fake()->numberBetween(10, 100),
             'status' => true,
         ];
     }

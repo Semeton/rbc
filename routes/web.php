@@ -69,6 +69,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/trucks/{truck}/edit', function (\App\Models\Truck $truck) {
             return view('trucks.edit', compact('truck'));
         })->name('trucks.edit');
+
+        // ATC Management Routes
+        Route::get('/atcs', function () {
+            return view('atcs.index');
+        })->name('atcs.index');
+
+        Route::get('/atcs/create', function () {
+            return view('atcs.create');
+        })->name('atcs.create');
+
+        Route::get('/atcs/{atc}', function (\App\Models\Atc $atc) {
+            return view('atcs.show', compact('atc'));
+        })->name('atcs.show');
+
+        Route::get('/atcs/{atc}/edit', function (\App\Models\Atc $atc) {
+            return view('atcs.edit', compact('atc'));
+        })->name('atcs.edit');
     });
 });
 
