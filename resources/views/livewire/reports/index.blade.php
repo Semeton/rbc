@@ -166,8 +166,25 @@
                 </div>
             `;
             
-            fetch(`${url}?${params}`)
-                .then(response => response.json())
+            // Get CSRF token from meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            fetch(`${url}?${params}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     displayReportResults(data);
                 })
@@ -177,6 +194,7 @@
                         <div class="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
                             <h4 class="font-medium text-red-800 dark:text-red-200">Error Generating Report</h4>
                             <p class="text-sm text-red-600 dark:text-red-300">Please try again or contact support if the problem persists.</p>
+                            <p class="text-xs text-red-500 dark:text-red-400 mt-2">Error: ${error.message}</p>
                         </div>
                     `;
                 });
@@ -186,10 +204,19 @@
             const url = `/reports/export/${reportType}`;
             const params = new URLSearchParams({...filters, format});
             
+            // Get CSRF token from meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
             // Create a temporary link to download the file
             const link = document.createElement('a');
             link.href = `${url}?${params}`;
             link.download = `${reportType}-report.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+            
+            // Add CSRF token to the link if needed
+            if (csrfToken) {
+                link.href += `&_token=${csrfToken}`;
+            }
+            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

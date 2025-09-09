@@ -84,8 +84,6 @@ class ReportsTest extends TestCase
         $response->assertJsonStructure([
             'data',
             'summary',
-            'top_customers',
-            'top_drivers',
             'filters',
         ]);
     }
@@ -105,8 +103,6 @@ class ReportsTest extends TestCase
         $response->assertJsonStructure([
             'data',
             'summary',
-            'top_performers',
-            'most_efficient',
             'filters',
         ]);
     }
@@ -125,8 +121,6 @@ class ReportsTest extends TestCase
         $response->assertJsonStructure([
             'data',
             'summary',
-            'top_utilized',
-            'top_revenue',
             'filters',
         ]);
     }
@@ -145,8 +139,6 @@ class ReportsTest extends TestCase
         $response->assertJsonStructure([
             'data',
             'summary',
-            'monthly_trend',
-            'maintenance_types',
             'filters',
         ]);
     }

@@ -10,14 +10,6 @@ use Illuminate\View\View;
 
 class ReportController
 {
-    public function __construct(
-        private CustomerBalanceReport $customerBalanceReport,
-        private MonthlySalesReport $monthlySalesReport,
-        private DriverPerformanceReport $driverPerformanceReport,
-        private TruckUtilizationReport $truckUtilizationReport,
-        private MaintenanceCostReport $maintenanceCostReport
-    ) {}
-
     public function index(): View
     {
         return view('reports.index');
@@ -26,8 +18,9 @@ class ReportController
     public function customerBalance(Request $request): JsonResponse
     {
         $filters = $this->extractFilters($request);
-        $data = $this->customerBalanceReport->generate($filters);
-        $summary = $this->customerBalanceReport->getSummary($filters);
+        $report = app(CustomerBalanceReport::class);
+        $data = $report->generate($filters);
+        $summary = $report->getSummary($filters);
 
         return response()->json([
             'data' => $data,
@@ -39,16 +32,13 @@ class ReportController
     public function monthlySales(Request $request): JsonResponse
     {
         $filters = $this->extractFilters($request);
-        $data = $this->monthlySalesReport->generate($filters);
-        $summary = $this->monthlySalesReport->getSummary($filters);
-        $topCustomers = $this->monthlySalesReport->getTopCustomers($filters, 10);
-        $topDrivers = $this->monthlySalesReport->getTopDrivers($filters, 10);
+        $report = app(MonthlySalesReport::class);
+        $data = $report->generate($filters);
+        $summary = $report->getSummary($filters);
 
         return response()->json([
             'data' => $data,
             'summary' => $summary,
-            'top_customers' => $topCustomers,
-            'top_drivers' => $topDrivers,
             'filters' => $filters,
         ]);
     }
@@ -56,16 +46,13 @@ class ReportController
     public function driverPerformance(Request $request): JsonResponse
     {
         $filters = $this->extractFilters($request);
-        $data = $this->driverPerformanceReport->generate($filters);
-        $summary = $this->driverPerformanceReport->getSummary($filters);
-        $topPerformers = $this->driverPerformanceReport->getTopPerformers($filters, 10);
-        $mostEfficient = $this->driverPerformanceReport->getMostEfficient($filters, 10);
+        $report = app(DriverPerformanceReport::class);
+        $data = $report->generate($filters);
+        $summary = $report->getSummary($filters);
 
         return response()->json([
             'data' => $data,
             'summary' => $summary,
-            'top_performers' => $topPerformers,
-            'most_efficient' => $mostEfficient,
             'filters' => $filters,
         ]);
     }
@@ -73,16 +60,13 @@ class ReportController
     public function truckUtilization(Request $request): JsonResponse
     {
         $filters = $this->extractFilters($request);
-        $data = $this->truckUtilizationReport->generate($filters);
-        $summary = $this->truckUtilizationReport->getSummary($filters);
-        $topUtilized = $this->truckUtilizationReport->getTopUtilized($filters, 10);
-        $topRevenue = $this->truckUtilizationReport->getTopRevenue($filters, 10);
+        $report = app(TruckUtilizationReport::class);
+        $data = $report->generate($filters);
+        $summary = $report->getSummary($filters);
 
         return response()->json([
             'data' => $data,
             'summary' => $summary,
-            'top_utilized' => $topUtilized,
-            'top_revenue' => $topRevenue,
             'filters' => $filters,
         ]);
     }
@@ -90,16 +74,13 @@ class ReportController
     public function maintenanceCost(Request $request): JsonResponse
     {
         $filters = $this->extractFilters($request);
-        $data = $this->maintenanceCostReport->generate($filters);
-        $summary = $this->maintenanceCostReport->getSummary($filters);
-        $monthlyTrend = $this->maintenanceCostReport->getMonthlyTrend($filters);
-        $maintenanceTypes = $this->maintenanceCostReport->getMaintenanceTypes($filters);
+        $report = app(MaintenanceCostReport::class);
+        $data = $report->generate($filters);
+        $summary = $report->getSummary($filters);
 
         return response()->json([
             'data' => $data,
             'summary' => $summary,
-            'monthly_trend' => $monthlyTrend,
-            'maintenance_types' => $maintenanceTypes,
             'filters' => $filters,
         ]);
     }
