@@ -26,6 +26,7 @@
                 <flux:navlist.group :heading="__('Transactions')" class="grid">
                     <flux:navlist.item icon="clipboard-document-list" :href="route('transactions.index')" :current="request()->routeIs('transactions.*')" wire:navigate>{{ __('Daily Transactions') }}</flux:navlist.item>
                     <flux:navlist.item icon="banknotes" :href="route('payments.index')" :current="request()->routeIs('payments.*')" wire:navigate>{{ __('Payments') }}</flux:navlist.item>
+                    <flux:navlist.item icon="truck" :href="route('truck-movements.index')" :current="request()->routeIs('truck-movements.*')" wire:navigate>{{ __('Truck Movements') }}</flux:navlist.item>
                 </flux:navlist.group>
 
                 {{-- <flux:navlist.group :heading="__('Maintenance')" class="grid">

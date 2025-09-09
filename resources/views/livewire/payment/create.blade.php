@@ -19,7 +19,7 @@
                     <div>
                         <flux:field>
                             <flux:label>Customer</flux:label>
-                            <flux:select wire:model="customer_id">
+                            <flux:select wire:model="customer_id" searchable>
                                 <flux:select.option value="">Select a customer...</flux:select.option>
                                 @foreach($this->customers as $customer)
                                     <flux:select.option value="{{ $customer->id }}">{{ $customer->name }}</flux:select.option>

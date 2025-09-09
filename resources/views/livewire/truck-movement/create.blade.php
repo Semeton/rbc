@@ -1,0 +1,138 @@
+<div>
+    <div class="mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <flux:heading size="xl">Create Truck Movement</flux:heading>
+                <flux:subheading>Record a new daily truck movement</flux:subheading>
+            </div>
+            <flux:button variant="outline" :href="route('truck-movements.index')" wire:navigate>
+                <flux:icon name="arrow-left" />
+                Back to Movements
+            </flux:button>
+        </div>
+    </div>
+
+    <div class="max-w-3xl">
+        <form wire:submit="store" class="space-y-6">
+            <div class="rounded-lg bg-white p-6 shadow dark:bg-zinc-800">
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+                        <div>
+                            <flux:field>
+                                <flux:label>Driver</flux:label>
+                                <flux:select wire:model="driver_id" searchable>
+                                    <flux:select.option value="">Select a driver...</flux:select.option>
+                                    @foreach($this->drivers as $driver)
+                                        <flux:select.option value="{{ $driver->id }}">{{ $driver->name }}</flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                                <flux:error name="driver_id" />
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>Truck</flux:label>
+                                <flux:select wire:model="truck_id" searchable>
+                                    <flux:select.option value="">Select a truck...</flux:select.option>
+                                    @foreach($this->trucks as $truck)
+                                        <flux:select.option value="{{ $truck->id }}">{{ $truck->registration_number }} ({{ $truck->cab_number }})</flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                                <flux:error name="truck_id" />
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>Customer</flux:label>
+                                <flux:select wire:model="customer_id" searchable>
+                                    <flux:select.option value="">Select a customer...</flux:select.option>
+                                    @foreach($this->customers as $customer)
+                                        <flux:select.option value="{{ $customer->id }}">{{ $customer->name }}</flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                                <flux:error name="customer_id" />
+                            </flux:field>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div>
+                            <flux:field>
+                                <flux:label>ATC Collection Date</flux:label>
+                                <flux:input
+                                    type="date"
+                                    wire:model="atc_collection_date"
+                                />
+                                <flux:error name="atc_collection_date" />
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>Load Dispatch Date</flux:label>
+                                <flux:input
+                                    type="date"
+                                    wire:model="load_dispatch_date"
+                                />
+                                <flux:error name="load_dispatch_date" />
+                            </flux:field>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+                        <div>
+                            <flux:field>
+                                <flux:label>Fare Amount</flux:label>
+                                <flux:input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    wire:model="fare"
+                                    placeholder="Enter fare amount..."
+                                />
+                                <flux:error name="fare" />
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>Gas Chop Money</flux:label>
+                                <flux:input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    wire:model="gas_chop_money"
+                                    placeholder="Enter gas chop amount..."
+                                />
+                                <flux:error name="gas_chop_money" />
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>Status</flux:label>
+                                <flux:select wire:model="status">
+                                    <flux:select.option value="active">Active</flux:select.option>
+                                    <flux:select.option value="inactive">Inactive</flux:select.option>
+                                </flux:select>
+                                <flux:error name="status" />
+                            </flux:field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end space-x-3">
+                <flux:button variant="outline" :href="route('truck-movements.index')" wire:navigate>
+                    Cancel
+                </flux:button>
+                <flux:button variant="primary" type="submit" wire:loading.attr="disabled">
+                    <span wire:loading.remove>Create Movement</span>
+                    <span wire:loading>Creating...</span>
+                </flux:button>
+            </div>
+        </form>
+    </div>
+</div>

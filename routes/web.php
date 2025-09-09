@@ -120,6 +120,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/payments/{payment}/edit', function (\App\Models\CustomerPayment $payment) {
             return view('payments.edit', compact('payment'));
         })->name('payments.edit');
+
+        // Truck Movement Management Routes
+        Route::get('/truck-movements', function () {
+            return view('truck-movements.index');
+        })->name('truck-movements.index');
+
+        Route::get('/truck-movements/create', function () {
+            return view('truck-movements.create');
+        })->name('truck-movements.create');
+
+        Route::get('/truck-movements/{truckMovement}', function (\App\Models\DailyTruckRecord $truckMovement) {
+            return view('truck-movements.show', compact('truckMovement'));
+        })->name('truck-movements.show');
+
+        Route::get('/truck-movements/{truckMovement}/edit', function (\App\Models\DailyTruckRecord $truckMovement) {
+            return view('truck-movements.edit', compact('truckMovement'));
+        })->name('truck-movements.edit');
     });
 });
 

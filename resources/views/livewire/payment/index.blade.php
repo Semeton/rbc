@@ -95,7 +95,7 @@
             <div>
                 <flux:field>
                     <flux:label>Customer</flux:label>
-                    <flux:select wire:model.live="customer_id">
+                    <flux:select wire:model.live="customer_id" searchable>
                         <flux:select.option value="">All Customers</flux:select.option>
                         @foreach($this->customers as $customer)
                             <flux:select.option value="{{ $customer->id }}">{{ $customer->name }}</flux:select.option>
