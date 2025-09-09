@@ -83,17 +83,17 @@
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
                         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">ATC Cost</dt>
-                            <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">${{ number_format($transaction->atc_cost, 2) }}</dd>
+                            <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">₦{{ number_format($transaction->atc_cost, 2) }}</dd>
                         </div>
 
                         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Transport Cost</dt>
-                            <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">${{ number_format($transaction->transport_cost, 2) }}</dd>
+                            <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">₦{{ number_format($transaction->transport_cost, 2) }}</dd>
                         </div>
 
                         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Cost</dt>
-                            <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">${{ number_format($transaction->total_cost, 2) }}</dd>
+                            <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">₦{{ number_format($transaction->total_cost, 2) }}</dd>
                         </div>
                     </div>
                 </div>

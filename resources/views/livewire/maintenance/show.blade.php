@@ -29,7 +29,7 @@
                     <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Cost of Maintenance</dt>
-                            <dd class="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">₵{{ number_format($maintenance->cost_of_maintenance, 2) }}</dd>
+                            <dd class="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">₦{{ number_format($maintenance->cost_of_maintenance, 2) }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Status</dt>

@@ -39,7 +39,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-zinc-500 truncate dark:text-zinc-400">Total Amount</dt>
-                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₵{{ number_format($this->statistics['total_amount'], 2) }}</dd>
+                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₦{{ number_format($this->statistics['total_amount'], 2) }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-zinc-500 truncate dark:text-zinc-400">Average Amount</dt>
-                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₵{{ number_format($this->statistics['average_amount'], 2) }}</dd>
+                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₦{{ number_format($this->statistics['average_amount'], 2) }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -214,7 +214,7 @@
                                 {{ $payment->payment_date->format('M d, Y') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                ₵{{ $payment->formatted_amount }}
+                                ₦{{ $payment->formatted_amount }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100">
                                 {{ $payment->bank_name ?? 'N/A' }}

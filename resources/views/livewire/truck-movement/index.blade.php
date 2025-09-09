@@ -39,7 +39,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-zinc-500 truncate dark:text-zinc-400">Total Fare</dt>
-                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₵{{ number_format($this->statistics['total_fare'], 2) }}</dd>
+                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₦{{ number_format($this->statistics['total_fare'], 2) }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-zinc-500 truncate dark:text-zinc-400">Total Gas Chop</dt>
-                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₵{{ number_format($this->statistics['total_gas_chop'], 2) }}</dd>
+                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₦{{ number_format($this->statistics['total_gas_chop'], 2) }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-zinc-500 truncate dark:text-zinc-400">Net Balance</dt>
-                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₵{{ number_format($this->statistics['total_balance'], 2) }}</dd>
+                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₦{{ number_format($this->statistics['total_balance'], 2) }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -229,13 +229,13 @@
                                 {{ $movement->load_dispatch_date->format('M d, Y') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                ₵{{ number_format($movement->fare, 2) }}
+                                ₦{{ number_format($movement->fare, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                ₵{{ number_format($movement->gas_chop_money, 2) }}
+                                ₦{{ number_format($movement->gas_chop_money, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                ₵{{ number_format($movement->balance, 2) }}
+                                ₦{{ number_format($movement->balance, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end space-x-2">

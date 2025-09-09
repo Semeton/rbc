@@ -39,7 +39,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-zinc-500 truncate dark:text-zinc-400">Total Cost</dt>
-                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₵{{ number_format($this->statistics['total_cost'], 2) }}</dd>
+                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₦{{ number_format($this->statistics['total_cost'], 2) }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-zinc-500 truncate dark:text-zinc-400">Average Cost</dt>
-                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₵{{ number_format($this->statistics['average_cost'], 2) }}</dd>
+                            <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-100">₦{{ number_format($this->statistics['average_cost'], 2) }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -212,7 +212,7 @@
                                 <div class="text-sm text-zinc-900 dark:text-zinc-100 max-w-xs truncate">{{ $maintenance->description }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                ₵{{ number_format($maintenance->cost_of_maintenance, 2) }}
+                                ₦{{ number_format($maintenance->cost_of_maintenance, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <x-status-badge :status="$maintenance->status_string" />

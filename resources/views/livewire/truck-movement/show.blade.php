@@ -29,15 +29,15 @@
                     <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Fare Amount</dt>
-                            <dd class="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">₵{{ number_format($truckMovement->fare, 2) }}</dd>
+                            <dd class="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">₦{{ number_format($truckMovement->fare, 2) }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Gas Chop Money</dt>
-                            <dd class="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">₵{{ number_format($truckMovement->gas_chop_money, 2) }}</dd>
+                            <dd class="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">₦{{ number_format($truckMovement->gas_chop_money, 2) }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Net Balance</dt>
-                            <dd class="mt-1 text-lg font-semibold text-green-600 dark:text-green-400">₵{{ number_format($truckMovement->balance, 2) }}</dd>
+                            <dd class="mt-1 text-lg font-semibold text-green-600 dark:text-green-400">₦{{ number_format($truckMovement->balance, 2) }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Status</dt>

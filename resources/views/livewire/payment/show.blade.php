@@ -29,7 +29,7 @@
                     <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Payment Amount</dt>
-                            <dd class="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">₵{{ $payment->formatted_amount }}</dd>
+                            <dd class="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">₦{{ $payment->formatted_amount }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Payment Date</dt>

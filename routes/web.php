@@ -154,6 +154,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/maintenance/{maintenance}/edit', function (\App\Models\TruckMaintenanceRecord $maintenance) {
             return view('maintenance.edit', compact('maintenance'));
         })->name('maintenance.edit');
+
+        // Reports Routes
+        Route::get('/reports', [\App\Reports\ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/customer-balance', [\App\Reports\ReportController::class, 'customerBalance'])->name('reports.customer-balance');
+        Route::get('/reports/monthly-sales', [\App\Reports\ReportController::class, 'monthlySales'])->name('reports.monthly-sales');
+        Route::get('/reports/driver-performance', [\App\Reports\ReportController::class, 'driverPerformance'])->name('reports.driver-performance');
+        Route::get('/reports/truck-utilization', [\App\Reports\ReportController::class, 'truckUtilization'])->name('reports.truck-utilization');
+        Route::get('/reports/maintenance-cost', [\App\Reports\ReportController::class, 'maintenanceCost'])->name('reports.maintenance-cost');
+        Route::get('/reports/export/{reportType}', [\App\Reports\ReportController::class, 'export'])->name('reports.export');
+
+        // Dashboard Routes
+        Route::get('/dashboard', function () {
+            return view('dashboard.index');
+        })->name('dashboard.index');
     });
 });
 
