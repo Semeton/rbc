@@ -16,7 +16,6 @@
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                 </flux:navlist.group>
 
-                {{-- TODO: Uncomment when routes are created in Phase 2 --}}
                 <flux:navlist.group :heading="__('Data Management')" class="grid">
                     <flux:navlist.item icon="users" :href="route('customers.index')" :current="request()->routeIs('customers.*')" wire:navigate>{{ __('Customers') }}</flux:navlist.item>
                     <flux:navlist.item icon="user-group" :href="route('drivers.index')" :current="request()->routeIs('drivers.*')" wire:navigate>{{ __('Drivers') }}</flux:navlist.item>
@@ -24,13 +23,11 @@
                     <flux:navlist.item icon="document-text" :href="route('atcs.index')" :current="request()->routeIs('atcs.*')" wire:navigate>{{ __('ATCs') }}</flux:navlist.item>
                 </flux:navlist.group>
 
-                {{-- <flux:navlist.group :heading="__('Transactions')" class="grid">
-                    <flux:navlist.item icon="currency-dollar" :href="route('payments.index')" :current="request()->routeIs('payments.*')" wire:navigate>{{ __('Payments') }}</flux:navlist.item>
+                <flux:navlist.group :heading="__('Transactions')" class="grid">
                     <flux:navlist.item icon="clipboard-document-list" :href="route('transactions.index')" :current="request()->routeIs('transactions.*')" wire:navigate>{{ __('Daily Transactions') }}</flux:navlist.item>
-                    <flux:navlist.item icon="truck" :href="route('truck-records.index')" :current="request()->routeIs('truck-records.*')" wire:navigate>{{ __('Truck Records') }}</flux:navlist.item>
                 </flux:navlist.group>
 
-                <flux:navlist.group :heading="__('Maintenance')" class="grid">
+                {{-- <flux:navlist.group :heading="__('Maintenance')" class="grid">
                     <flux:navlist.item icon="wrench-screwdriver" :href="route('maintenance.index')" :current="request()->routeIs('maintenance.*')" wire:navigate>{{ __('Truck Maintenance') }}</flux:navlist.item>
                 </flux:navlist.group>
 

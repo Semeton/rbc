@@ -17,6 +17,9 @@ class DailyCustomerTransactionFactory extends Factory
     public function definition(): array
     {
         return [
+            'customer_id' => \App\Models\Customer::factory(),
+            'driver_id' => \App\Models\Driver::factory(),
+            'atc_id' => \App\Models\Atc::factory(),
             'date' => fake()->dateTimeBetween('-2 months', 'now'),
             'origin' => fake()->city(),
             'deport_details' => fake()->sentence(),

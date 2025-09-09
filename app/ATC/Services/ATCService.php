@@ -63,7 +63,7 @@ class ATCService
 
         $atc = Atc::create($data);
 
-        AuditTrailService::log('ATC', 'created', "ATC '{$atc->atc_number}' was created", $atc->id);
+        AuditTrailService::log('create', 'ATC', "ATC '{$atc->atc_number}' was created");
 
         return $atc;
     }
@@ -80,7 +80,7 @@ class ATCService
 
         $atc->update($data);
 
-        AuditTrailService::log('ATC', 'updated', "ATC '{$atc->atc_number}' was updated", $atc->id);
+        AuditTrailService::log('update', 'ATC', "ATC '{$atc->atc_number}' was updated");
 
         return $atc;
     }
@@ -94,7 +94,7 @@ class ATCService
         $result = $atc->delete();
 
         if ($result) {
-            AuditTrailService::log('ATC', 'deleted', "ATC '{$atcNumber}' was deleted", $atc->id);
+            AuditTrailService::log('delete', 'ATC', "ATC '{$atcNumber}' was deleted");
         }
 
         return $result;
@@ -109,7 +109,7 @@ class ATCService
         $result = $atc->restore();
 
         if ($result) {
-            AuditTrailService::log('ATC', 'restored', "ATC '{$atcNumber}' was restored", $atc->id);
+            AuditTrailService::log('restore', 'ATC', "ATC '{$atcNumber}' was restored");
         }
 
         return $result;
@@ -124,7 +124,7 @@ class ATCService
         $result = $atc->forceDelete();
 
         if ($result) {
-            AuditTrailService::log('ATC', 'force_deleted', "ATC '{$atcNumber}' was permanently deleted", $atc->id);
+            AuditTrailService::log('force_delete', 'ATC', "ATC '{$atcNumber}' was permanently deleted");
         }
 
         return $result;

@@ -36,7 +36,7 @@ class Edit extends Component
         $this->atc = $atc;
         $this->company = $atc->company;
         $this->atc_number = $atc->atc_number;
-        $this->atc_type = $atc->atc_type;
+        $this->atc_type = $atc->getRawOriginal('atc_type');
         $this->amount = $atc->amount;
         $this->tons = $atc->tons;
         $this->status = $atc->status_string;

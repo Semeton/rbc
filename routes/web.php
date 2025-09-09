@@ -86,6 +86,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/atcs/{atc}/edit', function (\App\Models\Atc $atc) {
             return view('atcs.edit', compact('atc'));
         })->name('atcs.edit');
+
+        // Transaction Management Routes
+        Route::get('/transactions', function () {
+            return view('transactions.index');
+        })->name('transactions.index');
+
+        Route::get('/transactions/create', function () {
+            return view('transactions.create');
+        })->name('transactions.create');
+
+        Route::get('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction) {
+            return view('transactions.show', compact('transaction'));
+        })->name('transactions.show');
+
+        Route::get('/transactions/{transaction}/edit', function (\App\Models\DailyCustomerTransaction $transaction) {
+            return view('transactions.edit', compact('transaction'));
+        })->name('transactions.edit');
     });
 });
 
