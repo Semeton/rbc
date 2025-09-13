@@ -33,14 +33,21 @@
                     <flux:navlist.item icon="wrench-screwdriver" :href="route('maintenance.index')" :current="request()->routeIs('maintenance.*')" wire:navigate>{{ __('Truck Maintenance') }}</flux:navlist.item>
                 </flux:navlist.group>
 
-                <flux:navlist.group :heading="__('Reports')" class="grid">
-                    <flux:navlist.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>{{ __('Reports') }}</flux:navlist.item>
-                </flux:navlist.group>
+        <flux:navlist.group :heading="__('Reports')" class="grid">
+            <flux:navlist.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.index')" wire:navigate>{{ __('All Reports') }}</flux:navlist.item>
+            <flux:navlist.item icon="users" :href="route('reports.customer-balance')" :current="request()->routeIs('reports.customer-balance')" wire:navigate>{{ __('Customer Balance') }}</flux:navlist.item>
+            <flux:navlist.item icon="exclamation-triangle" :href="route('reports.outstanding-balances')" :current="request()->routeIs('reports.outstanding-balances')" wire:navigate>{{ __('Outstanding Balances') }}</flux:navlist.item>
+            <flux:navlist.item icon="calendar" :href="route('reports.monthly-sales')" :current="request()->routeIs('reports.monthly-sales')" wire:navigate>{{ __('Monthly Sales') }}</flux:navlist.item>
+            <flux:navlist.item icon="credit-card" :href="route('reports.customer-payment-history')" :current="request()->routeIs('reports.customer-payment-history')" wire:navigate>{{ __('Payment History') }}</flux:navlist.item>
+            <flux:navlist.item icon="building-office" :href="route('reports.depot-performance')" :current="request()->routeIs('reports.depot-performance')" wire:navigate>{{ __('Depot Performance') }}</flux:navlist.item>
+            <flux:navlist.item icon="user" :href="route('reports.driver-performance')" :current="request()->routeIs('reports.driver-performance')" wire:navigate>{{ __('Driver Performance') }}</flux:navlist.item>
+            <flux:navlist.item icon="truck" :href="route('reports.truck-utilization')" :current="request()->routeIs('reports.truck-utilization')" wire:navigate>{{ __('Truck Utilization') }}</flux:navlist.item>
+        </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
 
-            <flux:navlist variant="outline">
+            {{-- <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
                 {{ __('Repository') }}
                 </flux:navlist.item>
@@ -48,7 +55,7 @@
                 <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
                 {{ __('Documentation') }}
                 </flux:navlist.item>
-            </flux:navlist>
+            </flux:navlist> --}}
 
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">

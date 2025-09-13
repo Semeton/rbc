@@ -157,12 +157,40 @@ Route::middleware(['auth'])->group(function () {
 
         // Reports Routes
         Route::get('/reports', [\App\Reports\ReportController::class, 'index'])->name('reports.index');
-        Route::get('/reports/customer-balance', [\App\Reports\ReportController::class, 'customerBalance'])->name('reports.customer-balance');
+        // Route::get('/reports/customer-balance', [\App\Reports\ReportController::class, 'customerBalance'])->name('reports.customer-balance');
+        Route::get('/reports/customer-balance', function (\App\Models\Customer $customer) {
+            return view('reports.customer-balance', compact('customer'));
+        })->name('reports.customer-balance');
         Route::get('/reports/monthly-sales', [\App\Reports\ReportController::class, 'monthlySales'])->name('reports.monthly-sales');
         Route::get('/reports/driver-performance', [\App\Reports\ReportController::class, 'driverPerformance'])->name('reports.driver-performance');
         Route::get('/reports/truck-utilization', [\App\Reports\ReportController::class, 'truckUtilization'])->name('reports.truck-utilization');
         Route::get('/reports/maintenance-cost', [\App\Reports\ReportController::class, 'maintenanceCost'])->name('reports.maintenance-cost');
         Route::get('/reports/export/{reportType}', [\App\Reports\ReportController::class, 'export'])->name('reports.export');
+
+        // New Reports Routes
+        Route::get('/reports/monthly-sales', function () {
+            return view('reports.monthly-sales');
+        })->name('reports.monthly-sales');
+
+        Route::get('/reports/customer-payment-history', function () {
+            return view('reports.customer-payment-history');
+        })->name('reports.customer-payment-history');
+
+        Route::get('/reports/depot-performance', function () {
+            return view('reports.depot-performance');
+        })->name('reports.depot-performance');
+
+        Route::get('/reports/driver-performance', function () {
+            return view('reports.driver-performance');
+        })->name('reports.driver-performance');
+
+        Route::get('/reports/truck-utilization', function () {
+            return view('reports.truck-utilization');
+        })->name('reports.truck-utilization');
+
+        Route::get('/reports/outstanding-balances', function () {
+            return view('reports.outstanding-balances');
+        })->name('reports.outstanding-balances');
 
         // Dashboard Routes
         Route::get('/dashboard', function () {

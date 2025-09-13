@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace App\Reports;
 
+use App\Models\DailyTruckRecord;
 use App\Models\Truck;
-use Carbon\Carbon;
+use App\Models\TruckMaintenanceRecord;
 use Illuminate\Support\Collection;
 
 class TruckUtilizationReport
 {
     public function generate(array $filters = []): Collection
     {
-        $startDate = $filters['start_date'] ?? now()->startOfMonth();
-        $endDate = $filters['end_date'] ?? now()->endOfMonth();
+        $startDate = $filters['start_date'] ?? now()->startOfYear();
+        $endDate = $filters['end_date'] ?? now()->endOfYear();
         $truckId = $filters['truck_id'] ?? null;
 
         $query = Truck::query();
@@ -22,67 +23,42 @@ class TruckUtilizationReport
             $query->where('id', $truckId);
         }
 
-        $trucks = $query->with(['truckRecords', 'maintenanceRecords'])->get();
-
-        return $trucks->map(function (Truck $truck) use ($startDate, $endDate) {
-            // Get truck movements in period
-            $movements = $truck->truckRecords()
+        return $query->get()->map(function ($truck) use ($startDate, $endDate) {
+            // Get truck records for this truck within the date range
+            $truckRecords = DailyTruckRecord::where('truck_id', $truck->id)
+                ->where('status', 1) // Only completed records
                 ->whereBetween('atc_collection_date', [$startDate, $endDate])
                 ->get();
 
-            // Get maintenance records in period
-            $maintenanceRecords = $truck->maintenanceRecords()
+            // Get maintenance records for this truck within the date range
+            $maintenanceRecords = TruckMaintenanceRecord::where('truck_id', $truck->id)
+                ->where('status', 1) // Only completed maintenance
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->get();
 
-            // Calculate utilization metrics
-            $totalTrips = $movements->count();
-            $totalDistance = 0; // Not available in current schema
-            $totalFuelCost = $movements->sum('gas_chop_money');
+            $totalTrips = $truckRecords->count();
+            $totalIncomeGenerated = $truckRecords->sum('fare');
+            $totalGasChopMoney = $truckRecords->sum('gas_chop_money');
+            $totalBalance = $truckRecords->sum('balance');
             $totalMaintenanceCost = $maintenanceRecords->sum('cost_of_maintenance');
-            $totalRevenue = $movements->sum('fare');
-
-            // Calculate working days
-            $workingDays = $movements->pluck('atc_collection_date')
-                ->map(fn ($date) => $date->format('Y-m-d'))
-                ->unique()
-                ->count();
-
-            // Calculate period days
-            $periodDays = Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate)) + 1;
-
-            // Calculate utilization percentage
-            $utilizationPercentage = $periodDays > 0 ? ($workingDays / $periodDays) * 100 : 0;
-
-            // Calculate efficiency metrics
-            $revenuePerKm = $totalDistance > 0 ? $totalRevenue / $totalDistance : 0;
-            $fuelEfficiency = $totalDistance > 0 ? $totalFuelCost / $totalDistance : 0;
-            $maintenanceCostPerKm = $totalDistance > 0 ? $totalMaintenanceCost / $totalDistance : 0;
-            $tripsPerDay = $workingDays > 0 ? $totalTrips / $workingDays : 0;
+            $totalMaintenanceRecords = $maintenanceRecords->count();
 
             return [
                 'truck_id' => $truck->id,
-                'registration_number' => $truck->registration_number,
                 'cab_number' => $truck->cab_number,
+                'registration_number' => $truck->registration_number,
                 'truck_model' => $truck->truck_model,
                 'year_of_manufacture' => $truck->year_of_manufacture,
-                'status' => $truck->status_string,
-                'total_trips' => $totalTrips,
-                'total_distance_km' => $totalDistance,
-                'total_fuel_cost' => $totalFuelCost,
-                'total_maintenance_cost' => $totalMaintenanceCost,
-                'total_revenue' => $totalRevenue,
-                'working_days' => $workingDays,
-                'period_days' => $periodDays,
-                'utilization_percentage' => $utilizationPercentage,
-                'revenue_per_km' => $revenuePerKm,
-                'fuel_efficiency' => $fuelEfficiency,
-                'maintenance_cost_per_km' => $maintenanceCostPerKm,
-                'trips_per_day' => $tripsPerDay,
-                'maintenance_count' => $maintenanceRecords->count(),
-                'net_profit' => $totalRevenue - $totalFuelCost - $totalMaintenanceCost,
+                'truck_status' => $truck->status,
+                'total_trips' => (int) $totalTrips,
+                'total_income_generated' => (float) $totalIncomeGenerated,
+                'total_gas_chop_money' => (float) $totalGasChopMoney,
+                'total_balance' => (float) $totalBalance,
+                'total_maintenance_cost' => (float) $totalMaintenanceCost,
+                'total_maintenance_records' => (int) $totalMaintenanceRecords,
+                'utilization_status' => $this->getUtilizationStatus($totalTrips, $totalIncomeGenerated, $totalMaintenanceCost),
             ];
-        });
+        })->sortByDesc('total_income_generated');
     }
 
     public function getSummary(array $filters = []): array
@@ -91,46 +67,92 @@ class TruckUtilizationReport
 
         return [
             'total_trucks' => $data->count(),
-            'active_trucks' => $data->where('status', 'active')->count(),
+            'active_trucks' => $data->where('truck_status', 1)->count(),
             'total_trips' => $data->sum('total_trips'),
-            'total_distance' => $data->sum('total_distance_km'),
-            'total_fuel_cost' => $data->sum('total_fuel_cost'),
+            'total_income_generated' => $data->sum('total_income_generated'),
+            'total_gas_chop_money' => $data->sum('total_gas_chop_money'),
+            'total_balance' => $data->sum('total_balance'),
             'total_maintenance_cost' => $data->sum('total_maintenance_cost'),
-            'total_revenue' => $data->sum('total_revenue'),
-            'total_net_profit' => $data->sum('net_profit'),
-            'average_utilization' => $data->avg('utilization_percentage'),
-            'average_revenue_per_truck' => $data->avg('total_revenue'),
-            'most_utilized' => $data->sortByDesc('utilization_percentage')->first(),
-            'highest_revenue' => $data->sortByDesc('total_revenue')->first(),
-            'most_efficient' => $data->sortByDesc('revenue_per_km')->first(),
+            'total_maintenance_records' => $data->sum('total_maintenance_records'),
+            'average_trips_per_truck' => $data->avg('total_trips'),
+            'average_income_per_truck' => $data->avg('total_income_generated'),
+            'average_maintenance_cost_per_truck' => $data->avg('total_maintenance_cost'),
+            'most_utilized_truck' => $data->sortByDesc('total_income_generated')->first()['cab_number'] ?? 'N/A',
+            'most_maintained_truck' => $data->sortByDesc('total_maintenance_cost')->first()['cab_number'] ?? 'N/A',
         ];
     }
 
-    public function getTopUtilized(array $filters = [], int $limit = 10): Collection
+    public function getChartData(array $filters = []): array
     {
-        return $this->generate($filters)
-            ->sortByDesc('utilization_percentage')
-            ->take($limit);
+        $data = $this->generate($filters);
+
+        // Income distribution
+        $incomeDistribution = $data->sortByDesc('total_income_generated')->take(10);
+
+        // Trip distribution
+        $tripDistribution = $data->sortByDesc('total_trips')->take(10);
+
+        // Maintenance cost distribution
+        $maintenanceDistribution = $data->sortByDesc('total_maintenance_cost')->take(10);
+
+        // Truck age vs income correlation
+        $ageIncomeData = $data->map(function ($truck) {
+            $age = now()->year - $truck['year_of_manufacture'];
+
+            return [
+                'cab_number' => $truck['cab_number'],
+                'age' => $age,
+                'income' => $truck['total_income_generated'],
+                'trips' => $truck['total_trips'],
+            ];
+        })->sortBy('age');
+
+        return [
+            'income_distribution' => [
+                'labels' => $incomeDistribution->pluck('cab_number')->toArray(),
+                'income' => $incomeDistribution->pluck('total_income_generated')->toArray(),
+            ],
+            'trip_distribution' => [
+                'labels' => $tripDistribution->pluck('cab_number')->toArray(),
+                'trips' => $tripDistribution->pluck('total_trips')->toArray(),
+            ],
+            'maintenance_distribution' => [
+                'labels' => $maintenanceDistribution->pluck('cab_number')->toArray(),
+                'costs' => $maintenanceDistribution->pluck('total_maintenance_cost')->toArray(),
+            ],
+            'age_income_correlation' => [
+                'labels' => $ageIncomeData->pluck('cab_number')->toArray(),
+                'ages' => $ageIncomeData->pluck('age')->toArray(),
+                'income' => $ageIncomeData->pluck('income')->toArray(),
+                'trips' => $ageIncomeData->pluck('trips')->toArray(),
+            ],
+        ];
     }
 
-    public function getTopRevenue(array $filters = [], int $limit = 10): Collection
+    public function getTruckList(): Collection
     {
-        return $this->generate($filters)
-            ->sortByDesc('total_revenue')
-            ->take($limit);
+        return Truck::where('status', 1)
+            ->orderBy('cab_number')
+            ->get(['id', 'cab_number', 'registration_number']);
     }
 
-    public function getMostEfficient(array $filters = [], int $limit = 10): Collection
+    private function getUtilizationStatus(int $totalTrips, float $totalIncomeGenerated, float $totalMaintenanceCost): string
     {
-        return $this->generate($filters)
-            ->sortByDesc('revenue_per_km')
-            ->take($limit);
-    }
+        if ($totalTrips === 0) {
+            return 'Not Utilized';
+        }
 
-    public function getMaintenanceAnalysis(array $filters = []): Collection
-    {
-        return $this->generate($filters)
-            ->sortByDesc('maintenance_cost_per_km')
-            ->take(10);
+        $incomePerTrip = $totalIncomeGenerated / $totalTrips;
+        $maintenanceRatio = $totalMaintenanceCost > 0 ? $totalIncomeGenerated / $totalMaintenanceCost : 0;
+
+        if ($totalTrips >= 20 && $incomePerTrip >= 5000 && $maintenanceRatio >= 3) {
+            return 'Highly Utilized';
+        } elseif ($totalTrips >= 10 && $incomePerTrip >= 3000 && $maintenanceRatio >= 2) {
+            return 'Well Utilized';
+        } elseif ($totalTrips >= 5 && $incomePerTrip >= 2000) {
+            return 'Moderately Utilized';
+        } else {
+            return 'Under Utilized';
+        }
     }
 }

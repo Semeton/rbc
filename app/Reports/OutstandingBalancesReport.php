@@ -7,7 +7,7 @@ namespace App\Reports;
 use App\Models\Customer;
 use Illuminate\Support\Collection;
 
-class CustomerBalanceReport
+class OutstandingBalancesReport
 {
     public function generate(array $filters = []): Collection
     {
@@ -22,29 +22,36 @@ class CustomerBalanceReport
         }
 
         return $query->get()->map(function ($customer) use ($startDate, $endDate) {
-            // Calculate total ATC value (transactions within date range)
-            $totalAtcValue = $customer->transactions()
+            // Calculate outstanding amount (only show customers who owe money)
+            $totalTransactions = $customer->transactions()
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->get()
                 ->sum(function ($transaction) {
                     return $transaction->atc_cost + $transaction->transport_cost;
                 });
 
-            // Calculate total payments (within date range)
             $totalPayments = $customer->payments()
                 ->whereBetween('payment_date', [$startDate, $endDate])
                 ->sum('amount');
 
-            // Calculate outstanding balance
-            $outstandingBalance = $totalAtcValue - $totalPayments;
+            $outstandingAmount = $totalTransactions - $totalPayments;
+
+            // Only include customers who owe money
+            if ($outstandingAmount <= 0) {
+                return null;
+            }
+
+            // Get last payment date
+            $lastPayment = $customer->payments()
+                ->orderBy('payment_date', 'desc')
+                ->first();
 
             return [
                 'customer_name' => $customer->name,
-                'total_atc_value' => $totalAtcValue,
-                'total_payments' => $totalPayments,
-                'outstanding_balance' => $outstandingBalance,
+                'last_payment_date' => $lastPayment ? $lastPayment->payment_date : null,
+                'outstanding_amount' => $outstandingAmount,
             ];
-        });
+        })->filter(); // Remove null entries
     }
 
     public function getSummary(array $filters = []): array
@@ -52,12 +59,9 @@ class CustomerBalanceReport
         $data = $this->generate($filters);
 
         return [
-            'total_customers' => $data->count(),
-            'total_atc_value' => $data->sum('total_atc_value'),
-            'total_payments' => $data->sum('total_payments'),
-            'total_outstanding_balance' => $data->sum('outstanding_balance'),
-            'customers_with_debt' => $data->where('outstanding_balance', '>', 0)->count(),
-            'customers_with_credit' => $data->where('outstanding_balance', '<', 0)->count(),
+            'total_customers_with_debt' => $data->count(),
+            'total_outstanding_amount' => $data->sum('outstanding_amount'),
+            'average_outstanding_amount' => $data->count() > 0 ? $data->avg('outstanding_amount') : 0,
         ];
     }
 
@@ -67,9 +71,7 @@ class CustomerBalanceReport
 
         return [
             'labels' => $data->pluck('customer_name')->toArray(),
-            'atc_values' => $data->pluck('total_atc_value')->toArray(),
-            'payments' => $data->pluck('total_payments')->toArray(),
-            'outstanding_balances' => $data->pluck('outstanding_balance')->toArray(),
+            'outstanding_amounts' => $data->pluck('outstanding_amount')->toArray(),
         ];
     }
 }

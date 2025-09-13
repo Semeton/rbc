@@ -1,371 +1,204 @@
-# Comprehensive Reports Implementation Plan
+# Reports (Expanded)
+
+Reports will provide insightful summaries and analysis for decision-making. These reports should be filterable (by date range, customer, driver, depot, truck) and exportable to Excel and PDF. Charts and tables should be included if possible for visual clarity.
+
+## 1. Customer Balance Report
+
+-   **Purpose:** Show balances per customer.
+-   **Fields:**
+    -   Customer Name
+    -   Total ATC Value (Naira)
+    -   Total Payments (Naira)
+    -   Outstanding Balance (Naira)
+-   **Filters:**
+    -   Date range
+    -   Customer name
+-   **Export:** Excel/PDF
+
+## 2. Outstanding Balances
+
+-   **Purpose:** List customers who owe money.
+-   **Fields:**
+    -   Customer Name
+    -   Last Payment Date
+    -   Outstanding Amount
+-   **Additional Feature:** Highlight those with overdue balances.
+
+## 3. Monthly Sales Report
+
+-   **Purpose:** Show monthly cement sales.
+-   **Fields:**
+    -   Month
+    -   Total Metric Tons Delivered
+    -   Total ATC Cost
+    -   Total Transport Fees
+-   **Visuals:**
+    -   Bar chart for monthly revenue
+    -   Pie chart for cement type distribution
+
+## 4. Customer Payment History
+
+-   **Purpose:** Track all payments per customer.
+-   **Fields:**
+    -   Payment Date
+    -   Customer Name
+    -   Amount Paid
+    -   Payment Type (Cash/Transfer)
+    -   Bank Name (if transfer)
+-   **Filters:**
+    -   Date range
+    -   Payment type
+
+## 5. Depot Performance Report
+
+-   **Purpose:** Analyze depot-wise activity.
+-   **Fields:**
+    -   Depot Name
+    -   Total Dispatches
+    -   Total Revenue (ATC + Transport)
+-   **Visual:**
+    -   Bar chart comparing depot performance.
+
+## 6. Driver Performance Report
+
+-   **Purpose:** Track driver activity per month.
+-   **Fields:**
+    -   Driver Name
+    -   Number of Trips
+    -   Total Fare Earned
+-   **Visual:**
+    -   Line graph showing trip trends.
+
+## 7. Truck Utilization Report
+
+-   **Purpose:** Track how often each truck is used.
+-   **Fields:**
+    -   Truck (Cab Number)
+    -   Total Trips
+    -   Total Income Generated
+    -   Total Maintenance Cost
+-   **Visual:**
+    -   Bar chart comparing trucks’ performance.
+
+## 8. Truck Maintenance Cost Report
+
+-   **Purpose:** Track maintenance expenses by month.
+-   **Fields:**
+    -   Truck (Cab Number)
+    -   Date
+    -   Maintenance Cost
+-   **Visual:**
+    -   Line graph for maintenance cost trends.
+
+## 9. Pending ATC Report
+
+-   **Purpose:** Show unassigned ATCs.
+-   **Fields:**
+    -   ATC Number
+    -   ATC Type
+    -   Status
+-   **Use Case:** Helps in ensuring ATCs are fully utilized.
+
+## 10. Cash Flow Report
 
-## Overview
+-   **Purpose:** Monitor incoming and outgoing cash.
+-   **Incoming:**
+    -   Customer Payments
+-   **Outgoing:**
+    -   Truck Maintenance
+    -   Gas & Chop
+    -   Fare
+-   **Visual:**
+    -   Cash inflow vs outflow graph.
 
-This document details a comprehensive implementation plan for all reports required by the RBC Trucking Management System, as specified in the PRD.md. The plan ensures each report is highly comprehensive, featuring rich data tables, interactive and static charts, and robust export options (PDF and Excel) tailored to the report type.
+## 11. Daily Activity Summary
 
-## Report Categories
+-   **Purpose:** Show a daily overview of transactions and movements.
+-   **Fields:**
+    -   Date
+    -   Number of Transactions
+    -   Total Sales
+    -   Total Payments
+-   **Visual:**
+    -   Dashboard widget summary.
 
-Reports are grouped into the following categories, each supporting advanced visualizations and export features:
+## 12. Profit Estimate Report
 
-1. **Financial Reports** – Revenue, payments, balances, cash flow
-2. **Operational Reports** – Transactions, movements, performance
-3. **Asset Reports** – Truck utilization, maintenance, ATC management
-4. **Analytical Reports** – Trends, summaries, insights
+-   **Purpose:** Estimate profit based on revenue and key costs.
+-   **Calculation:**
+    -   (ATC Cost + Transport Fee) – (Gas & Chop + Maintenance + Fare)
+-   **Visual:**
+    -   Trend chart showing monthly profit margin
 
-## Complete Report Inventory
+---
 
-Each report below will provide:
+## Implementation Plan for Reports Module
 
--   **Tabular Data:** Detailed tables with all relevant fields
--   **Charts/Visuals:** Bar, line, or pie charts, and dashboard widgets as appropriate
--   **Export Options:** PDF and Excel (xlsx) for all reports
+This plan outlines the steps for implementing the reports feature as described above. Each report will strictly adhere to the specified fields, and all reports will be accessible via the sidebar, including an "All Reports" quick access menu.
 
-### 1. Financial Reports
+### 1. Sidebar Integration
 
-#### 1.1 Customer Balance Report ✅ (Implemented)
+-   **Add a "Reports" section to the sidebar** in `resources/views/components/layouts/app/sidebar.blade.php`.
+    -   Each report (1–12) should have its own menu item.
+    -   Add an "All Reports" menu item at the top of the section for quick access to a consolidated reports dashboard.
 
--   **Purpose:** Show balances per customer
--   **Fields:** Customer Name, Total ATC Value (₦), Total Payments (₦), Outstanding Balance (₦)
--   **Filters:** Date range, Customer name
--   **Visuals:** Table, summary widget
--   **Export:** PDF, Excel
--   **Status:** ✅ Completed
+### 2. Routing
 
-#### 1.2 Outstanding Balances Report
+-   **Define named routes** for each report in `routes/web.php` (e.g., `reports.maintenance`, `reports.cash-flow`, etc.).
+-   Add a route for the "All Reports" dashboard (e.g., `reports.index`).
 
--   **Purpose:** List customers who owe money
--   **Fields:** Customer Name, Last Payment Date, Outstanding Amount, Days Overdue
--   **Features:** Highlight overdue balances (>30 days)
--   **Filters:** Date range, Customer name, Overdue status
--   **Visuals:** Table with conditional formatting, bar chart for overdue distribution
--   **Export:** PDF, Excel
--   **Priority:** High
+### 3. Report Pages
 
-#### 1.3 Customer Payment History Report
+-   **Create a Livewire Volt component for each report** in `resources/views/reports/` (e.g., `maintenance.blade.php`, `cash-flow.blade.php`, etc.).
+    -   Each Volt component should:
+        -   Display only the fields specified for that report.
+        -   Include the required visual/chart if specified.
+        -   Use Flux UI components for consistency.
+-   **Create an "All Reports" dashboard** as a Livewire Volt component that provides quick links and summary widgets for each report.
 
--   **Purpose:** Track all payments per customer
--   **Fields:** Payment Date, Customer Name, Amount Paid, Payment Type (Cash/Transfer), Bank Name
--   **Filters:** Date range, Customer name, Payment type
--   **Visuals:** Table, line chart for payment trends
--   **Export:** PDF, Excel
--   **Priority:** High
+### 4. Data Handling
 
-#### 1.4 Cash Flow Report
+-   **Fetch and display data** for each report using Eloquent models and relationships.
+-   Ensure each report only queries and displays the fields listed in the requirements.
+-   For reports requiring calculations (e.g., Profit Estimate), implement the calculation logic in the corresponding Volt component.
 
--   **Purpose:** Monitor incoming and outgoing cash
--   **Fields:** Date, Incoming Amount, Outgoing Amount, Net Cash Flow, Running Balance
--   **Visuals:** Table, cash inflow vs outflow line/bar chart
--   **Filters:** Date range
--   **Export:** PDF, Excel
--   **Priority:** High
+### 5. Visualizations
 
-#### 1.5 Profit Estimate Report
+-   **Integrate charts/graphs** using a preferred charting library (e.g., Chart.js via a Blade component or Livewire integration).
+-   Ensure visuals match the requirements (line graph, trend chart, dashboard widget, etc.).
 
--   **Purpose:** Estimate profit based on revenue and key costs
--   **Calculation:** (ATC Cost + Transport Fee) – (Gas & Chop + Maintenance + Fare)
--   **Fields:** Date, Revenue, Total Costs, Net Profit, Profit Margin %
--   **Visuals:** Table, trend chart for monthly profit margin
--   **Filters:** Date range, Customer, Driver, Truck
--   **Export:** PDF, Excel
--   **Priority:** Medium
+### 6. Permissions & Access
 
-### 2. Operational Reports
+-   **Restrict access** to reports based on user roles/permissions if required by the application.
 
-#### 2.1 Monthly Sales Report ✅ (Implemented)
+### 7. Testing
 
--   **Purpose:** Show monthly cement sales
--   **Fields:** Month, Total Metric Tons Delivered, Total ATC Cost, Total Transport Fees
--   **Visuals:** Table, bar chart for monthly revenue, pie chart for cement type distribution
--   **Filters:** Date range, Customer, Driver
--   **Export:** PDF, Excel
--   **Status:** ✅ Completed
+-   **Write feature tests** for each report page to ensure:
+    -   The correct fields are displayed.
+    -   The sidebar menus link to the correct pages.
+    -   Visualizations render as expected.
 
-#### 2.2 Daily Activity Summary Report
+### 8. Audit Trail
 
--   **Purpose:** Show a daily overview of transactions and movements
--   **Fields:** Date, Number of Transactions, Total Sales, Total Payments, Active Trucks, Active Drivers
--   **Visuals:** Table, dashboard widgets, line chart for daily activity
--   **Filters:** Date range
--   **Export:** PDF, Excel
--   **Priority:** Medium
+-   **Log report views** in the activity log for audit purposes.
 
-#### 2.3 Driver Performance Report ✅ (Implemented)
-
--   **Purpose:** Track driver activity per month
--   **Fields:** Driver Name, Number of Trips, Total Fare Earned, Average Trip Value
--   **Visuals:** Table, line graph for trip trends
--   **Filters:** Date range, Driver name
--   **Export:** PDF, Excel
--   **Status:** ✅ Completed
+---
 
-#### 2.4 Depot Performance Report
+**Summary Table of Reports and Sidebar Menu Items**
 
--   **Purpose:** Analyze depot-wise activity
--   **Fields:** Depot Name (Origin), Total Dispatches, Total Revenue (ATC + Transport), Average Transaction Value
--   **Visuals:** Table, bar chart comparing depot performance
--   **Filters:** Date range, Depot name
--   **Export:** PDF, Excel
--   **Priority:** Medium
+| Report Name                           | Sidebar Menu Item | Route Name              | Fields/Visuals Strictly As Listed            |
+| ------------------------------------- | ----------------- | ----------------------- | -------------------------------------------- |
+| All Reports                           | All Reports       | reports.index           | Quick links/summary for all                  |
+| Maintenance Report                    | Maintenance       | reports.maintenance     | Truck, Date, Maintenance Cost, Line Graph    |
+| Pending ATC Report                    | Pending ATCs      | reports.pending-atc     | ATC Number, ATC Type, Status                 |
+| Cash Flow Report                      | Cash Flow         | reports.cash-flow       | Incoming/Outgoing, Graph                     |
+| Daily Activity Summary                | Daily Activity    | reports.daily-activity  | Date, #Transactions, Sales, Payments, Widget |
+| Profit Estimate Report                | Profit Estimate   | reports.profit-estimate | Calculation, Trend Chart                     |
+| ... (add all other reports as needed) | ...               | ...                     | ...                                          |
 
-#### 2.5 Top 20 Destinations Report
+---
 
--   **Purpose:** List the top 20 most frequent destinations for deliveries
--   **Fields:** Destination, Number of Deliveries, Total Revenue, Average Revenue per Delivery
--   **Visuals:** Table, bar chart for top destinations
--   **Filters:** Date range
--   **Export:** PDF, Excel
--   **Priority:** Low
+**Next Steps:**
 
-### 3. Asset Reports
-
-#### 3.1 Truck Utilization Report ✅ (Implemented)
-
--   **Purpose:** Track how often each truck is used
--   **Fields:** Truck (Cab Number), Total Trips, Total Income Generated, Total Maintenance Cost, Utilization %
--   **Visuals:** Table, bar chart comparing trucks' performance
--   **Filters:** Date range, Truck
--   **Export:** PDF, Excel
--   **Status:** ✅ Completed
-
-#### 3.2 Truck Maintenance Cost Report ✅ (Implemented)
-
--   **Purpose:** Track maintenance expenses by month
--   **Fields:** Truck (Cab Number), Date, Maintenance Cost, Description
--   **Visuals:** Table, line graph for maintenance cost trends
--   **Filters:** Date range, Truck
--   **Export:** PDF, Excel
--   **Status:** ✅ Completed
-
-#### 3.3 Monthly Truck Maintenance Cost Report
-
--   **Purpose:** Provides monthly maintenance costs for each truck
--   **Fields:** Month, Truck (Cab Number), Total Maintenance Cost, Number of Maintenance Records
--   **Visuals:** Table, bar/line chart for monthly costs
--   **Filters:** Date range, Truck
--   **Export:** PDF, Excel
--   **Priority:** Medium
-
-#### 3.4 Pending ATC Report
-
--   **Purpose:** Show unassigned ATCs
--   **Fields:** ATC Number, ATC Type, Amount, Tons, Status, Days Since Created
--   **Visuals:** Table, dashboard widget for pending ATCs
--   **Filters:** ATC Type, Status, Date range
--   **Export:** PDF, Excel
--   **Priority:** High
-
-#### 3.5 Unassigned ATC Numbers Report
-
--   **Purpose:** Returns ATC numbers that have been recorded but not yet linked to a customer
--   **Fields:** ATC Number, ATC Type, Amount, Tons, Created Date, Days Unassigned
--   **Visuals:** Table, bar chart for unassigned ATCs by type
--   **Filters:** ATC Type, Date range
--   **Export:** PDF, Excel
--   **Priority:** High
-
-### 4. Analytical Reports
-
-#### 4.1 Driver Monthly Trips Report
-
--   **Purpose:** Counts the number of trips made by each driver every month
--   **Fields:** Month, Driver Name, Number of Trips, Total Revenue, Average Revenue per Trip
--   **Visuals:** Table, line/bar chart for trip trends
--   **Filters:** Date range, Driver name
--   **Export:** PDF, Excel
--   **Priority:** Medium
-
-#### 4.2 Customer Transaction Summary Report
-
--   **Purpose:** Summary of ATC, Metric Tons, Cost per customer
--   **Fields:** Customer Name, Total ATCs, Total Metric Tons, Total ATC Cost, Total Transport Cost, Average Transaction Value
--   **Visuals:** Table, pie/bar chart for customer distribution
--   **Filters:** Date range, Customer name
--   **Export:** PDF, Excel
--   **Priority:** Medium
-
-#### 4.3 Total Debt Report
-
--   **Purpose:** Returns the aggregate debt owed by all customers
--   **Fields:** Total Outstanding Debt, Number of Customers with Debt, Average Debt per Customer, Largest Single Debt
--   **Visuals:** Table, summary widgets, bar chart for debt distribution
--   **Filters:** Date range
--   **Export:** PDF, Excel
--   **Priority:** High
-
-## Implementation Plan
-
-All reports will be implemented to render comprehensive tables and relevant charts, with export options for both PDF and Excel.
-
-### Phase 1: Core Financial Reports (Week 1)
-
-**Priority:** Critical  
-**Estimated Time:** 3-4 days
-
-#### Tasks:
-
-1. **Outstanding Balances Report**
-
-    - Create `app/Reports/OutstandingBalancesReport.php`
-    - Implement overdue calculation logic and conditional formatting in tables
-    - Render bar chart for overdue balances
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-2. **Customer Payment History Report**
-
-    - Create `app/Reports/CustomerPaymentHistoryReport.php`
-    - Implement payment type filtering and bank grouping
-    - Render payment trend line chart
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-3. **Cash Flow Report**
-    - Create `app/Reports/CashFlowReport.php`
-    - Implement incoming/outgoing calculations and running balance
-    - Render cash flow line/bar chart
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-#### Deliverables:
-
--   3 new report service classes
--   3 new Livewire components
--   3 new report views (with tables and charts)
--   Comprehensive tests
--   Export functionality (PDF, Excel)
-
-### Phase 2: Asset Management Reports (Week 2)
-
-**Priority:** High  
-**Estimated Time:** 3-4 days
-
-#### Tasks:
-
-1. **Pending ATC Report**
-
-    - Create `app/Reports/PendingATCReport.php`
-    - Implement ATC assignment status logic and days since created
-    - Render dashboard widget and table
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-2. **Unassigned ATC Numbers Report**
-
-    - Create `app/Reports/UnassignedATCReport.php`
-    - Implement ATC-customer relationship checking and days unassigned
-    - Render bar chart for unassigned ATCs
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-3. **Monthly Truck Maintenance Cost Report**
-    - Create `app/Reports/MonthlyTruckMaintenanceReport.php`
-    - Implement monthly aggregation and maintenance count
-    - Render line/bar chart for costs
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-#### Deliverables:
-
--   3 new report service classes
--   3 new Livewire components
--   3 new report views (with tables and charts)
--   Comprehensive tests
--   Export functionality (PDF, Excel)
-
-### Phase 3: Operational Analytics (Week 3)
-
-**Priority:** Medium  
-**Estimated Time:** 3-4 days
-
-#### Tasks:
-
-1. **Daily Activity Summary Report**
-
-    - Create `app/Reports/DailyActivitySummaryReport.php`
-    - Implement daily aggregation and active trucks/drivers calculation
-    - Render dashboard widgets and line chart
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-2. **Depot Performance Report**
-
-    - Create `app/Reports/DepotPerformanceReport.php`
-    - Implement depot-wise aggregation and performance metrics
-    - Render bar chart for depot comparison
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-3. **Driver Monthly Trips Report**
-    - Create `app/Reports/DriverMonthlyTripsReport.php`
-    - Implement monthly trip counting and revenue calculations
-    - Render line/bar chart for trip trends
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-#### Deliverables:
-
--   3 new report service classes
--   3 new Livewire components
--   3 new report views (with tables and charts)
--   Comprehensive tests
--   Export functionality (PDF, Excel)
-
-### Phase 4: Advanced Analytics (Week 4)
-
-**Priority:** Low  
-**Estimated Time:** 2-3 days
-
-#### Tasks:
-
-1. **Profit Estimate Report**
-
-    - Create `app/Reports/ProfitEstimateReport.php`
-    - Implement profit and margin calculations
-    - Render trend chart for profit margin
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-2. **Top 20 Destinations Report**
-
-    - Create `app/Reports/TopDestinationsReport.php`
-    - Implement destination aggregation and ranking
-    - Render bar chart for top destinations
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-3. **Customer Transaction Summary Report**
-
-    - Create `app/Reports/CustomerTransactionSummaryReport.php`
-    - Implement customer aggregation and metric tons calculations
-    - Render pie/bar chart for customer distribution
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-4. **Total Debt Report**
-    - Create `app/Reports/TotalDebtReport.php`
-    - Implement debt aggregation and statistics
-    - Render bar chart and summary widgets
-    - Enable PDF and Excel export
-    - Create Livewire component and views
-
-#### Deliverables:
-
--   4 new report service classes
--   4 new Livewire components
--   4 new report views (with tables and charts)
--   Comprehensive tests
--   Export functionality (PDF, Excel)
-
-## Technical Implementation Details
-
-### Report Service Structure
-
-Each report service will:
-
--   Generate comprehensive tabular data
--   Provide summary statistics
--   Generate chart data for visualizations (bar, line, pie, widgets)
--   Support export to PDF and Excel
-
-Example structure:
+-   Confirm the above plan with the team.
+-   Begin with sidebar and routing setup, then implement each report page following the strict field requirements.

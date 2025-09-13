@@ -4,75 +4,41 @@ declare(strict_types=1);
 
 namespace App\Reports;
 
-use App\Models\Driver;
+use App\Models\DailyCustomerTransaction;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class DriverPerformanceReport
 {
     public function generate(array $filters = []): Collection
     {
-        $startDate = $filters['start_date'] ?? now()->startOfMonth();
-        $endDate = $filters['end_date'] ?? now()->endOfMonth();
+        $startDate = $filters['start_date'] ?? now()->startOfYear();
+        $endDate = $filters['end_date'] ?? now()->endOfYear();
         $driverId = $filters['driver_id'] ?? null;
 
-        $query = Driver::query();
+        $query = DailyCustomerTransaction::query()
+            ->join('drivers', 'daily_customer_transactions.driver_id', '=', 'drivers.id')
+            ->select([
+                'drivers.name as driver_name',
+                'drivers.id as driver_id',
+                DB::raw('COUNT(*) as number_of_trips'),
+                DB::raw('SUM(transport_cost) as total_fare_earned'),
+            ])
+            ->whereBetween('daily_customer_transactions.date', [$startDate, $endDate])
+            ->where('daily_customer_transactions.status', 1) // Only completed trips
+            ->groupBy('drivers.id', 'drivers.name')
+            ->orderBy('total_fare_earned', 'desc');
 
         if ($driverId) {
-            $query->where('id', $driverId);
+            $query->where('drivers.id', $driverId);
         }
 
-        $drivers = $query->with(['transactions', 'truckRecords'])->get();
-
-        return $drivers->map(function (Driver $driver) use ($startDate, $endDate) {
-            // Get transactions in period
-            $transactions = $driver->transactions()
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->get();
-
-            // Get truck movements in period
-            $truckMovements = $driver->truckRecords()
-                ->whereBetween('atc_collection_date', [$startDate, $endDate])
-                ->get();
-
-            // Calculate performance metrics
-            $totalRevenue = $transactions->sum(function ($transaction) {
-                return $transaction->atc_cost + $transaction->transport_cost;
-            });
-            $totalTrips = $transactions->count();
-            $totalTons = $transactions->sum('tons');
-            $totalDistance = 0; // Not available in current schema
-            $totalFuelCost = $truckMovements->sum('gas_chop_money');
-
-            // Calculate efficiency metrics
-            $revenuePerTrip = $totalTrips > 0 ? $totalRevenue / $totalTrips : 0;
-            $revenuePerTon = $totalTons > 0 ? $totalRevenue / $totalTons : 0;
-            $revenuePerKm = $totalDistance > 0 ? $totalRevenue / $totalDistance : 0;
-            $fuelEfficiency = $totalDistance > 0 ? $totalFuelCost / $totalDistance : 0;
-
-            // Calculate working days
-            $workingDays = $transactions->pluck('created_at')
-                ->map(fn ($date) => $date->format('Y-m-d'))
-                ->unique()
-                ->count();
-
+        return $query->get()->map(function ($record) {
             return [
-                'driver_id' => $driver->id,
-                'driver_name' => $driver->name,
-                'driver_phone' => $driver->phone,
-                'license_number' => $driver->license_number,
-                'total_revenue' => $totalRevenue,
-                'total_trips' => $totalTrips,
-                'total_tons' => $totalTons,
-                'total_distance_km' => $totalDistance,
-                'total_fuel_cost' => $totalFuelCost,
-                'working_days' => $workingDays,
-                'revenue_per_trip' => $revenuePerTrip,
-                'revenue_per_ton' => $revenuePerTon,
-                'revenue_per_km' => $revenuePerKm,
-                'fuel_efficiency' => $fuelEfficiency,
-                'average_trip_value' => $totalTrips > 0 ? $totalRevenue / $totalTrips : 0,
-                'average_tons_per_trip' => $totalTrips > 0 ? $totalTons / $totalTrips : 0,
-                'trips_per_day' => $workingDays > 0 ? $totalTrips / $workingDays : 0,
+                'driver_id' => $record->driver_id,
+                'driver_name' => $record->driver_name,
+                'number_of_trips' => (int) $record->number_of_trips,
+                'total_fare_earned' => (float) $record->total_fare_earned,
             ];
         });
     }
@@ -83,41 +49,84 @@ class DriverPerformanceReport
 
         return [
             'total_drivers' => $data->count(),
-            'total_revenue' => $data->sum('total_revenue'),
-            'total_trips' => $data->sum('total_trips'),
-            'total_tons' => $data->sum('total_tons'),
-            'total_distance' => $data->sum('total_distance_km'),
-            'total_fuel_cost' => $data->sum('total_fuel_cost'),
-            'average_revenue_per_driver' => $data->avg('total_revenue'),
-            'average_trips_per_driver' => $data->avg('total_trips'),
-            'average_revenue_per_trip' => $data->avg('revenue_per_trip'),
-            'top_performer' => $data->sortByDesc('total_revenue')->first(),
-            'most_efficient' => $data->sortByDesc('revenue_per_km')->first(),
+            'total_trips' => $data->sum('number_of_trips'),
+            'total_fare_earned' => $data->sum('total_fare_earned'),
+            'average_trips_per_driver' => $data->avg('number_of_trips'),
+            'average_fare_per_driver' => $data->avg('total_fare_earned'),
+            'top_performer' => $data->first()['driver_name'] ?? 'N/A',
         ];
     }
 
-    public function getTopPerformers(array $filters = [], int $limit = 10): Collection
-    {
-        return $this->generate($filters)
-            ->sortByDesc('total_revenue')
-            ->take($limit);
-    }
-
-    public function getMostEfficient(array $filters = [], int $limit = 10): Collection
-    {
-        return $this->generate($filters)
-            ->sortByDesc('revenue_per_km')
-            ->take($limit);
-    }
-
-    public function getDriverRanking(array $filters = []): Collection
+    public function getChartData(array $filters = []): array
     {
         $data = $this->generate($filters);
 
-        return $data->map(function ($driver, $index) {
-            $driver['rank'] = $index + 1;
+        // Trip trends over time
+        $tripTrends = $this->getTripTrends($filters);
 
-            return $driver;
-        })->sortByDesc('total_revenue');
+        // Top performers for bar chart
+        $topPerformers = $data->take(10); // Top 10 drivers
+
+        return [
+            'trip_trends' => [
+                'labels' => $tripTrends->keys()->toArray(),
+                'trips' => $tripTrends->values()->toArray(),
+            ],
+            'top_performers' => [
+                'labels' => $topPerformers->pluck('driver_name')->toArray(),
+                'trips' => $topPerformers->pluck('number_of_trips')->toArray(),
+                'fare_earned' => $topPerformers->pluck('total_fare_earned')->toArray(),
+            ],
+        ];
+    }
+
+    public function getTripTrends(array $filters = []): Collection
+    {
+        $startDate = $filters['start_date'] ?? now()->startOfYear();
+        $endDate = $filters['end_date'] ?? now()->endOfYear();
+        $driverId = $filters['driver_id'] ?? null;
+
+        // Use database-agnostic date formatting for testing compatibility
+        $dateFormat = $this->getDateFormat();
+
+        $query = DailyCustomerTransaction::query()
+            ->select([
+                DB::raw($dateFormat.' as month'),
+                DB::raw('COUNT(*) as total_trips'),
+            ])
+            ->whereBetween('date', [$startDate, $endDate])
+            ->where('status', 1)
+            ->groupBy(DB::raw($dateFormat))
+            ->orderBy('month');
+
+        if ($driverId) {
+            $query->where('driver_id', $driverId);
+        }
+
+        return $query->get()->mapWithKeys(function ($record) {
+            $monthKey = $record->month;
+            $monthName = \Carbon\Carbon::createFromFormat('Y-m', $monthKey)->format('M Y');
+
+            return [$monthName => (int) $record->total_trips];
+        });
+    }
+
+    public function getDriverList(): Collection
+    {
+        return \App\Models\Driver::where('status', 1)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+    }
+
+    private function getDateFormat(): string
+    {
+        $driver = DB::getDriverName();
+
+        return match ($driver) {
+            'sqlite' => "strftime('%Y-%m', date)",
+            'mysql' => "DATE_FORMAT(date, '%Y-%m')",
+            'pgsql' => "TO_CHAR(date, 'YYYY-MM')",
+            default => "strftime('%Y-%m', date)", // Default to SQLite format for testing
+        };
     }
 }
