@@ -200,6 +200,18 @@ Route::middleware(['auth'])->group(function () {
             return view('reports.pending-atc');
         })->name('reports.pending-atc');
 
+        Route::get('/reports/cash-flow', function () {
+            return view('reports.cash-flow');
+        })->name('reports.cash-flow');
+
+Route::get('/reports/daily-activity-summary', function () {
+    return view('reports.daily-activity-summary');
+})->name('reports.daily-activity-summary');
+
+Route::get('/reports/profit-estimate', function () {
+    return view('reports.profit-estimate');
+})->name('reports.profit-estimate');
+
         // Dashboard Routes
         Route::get('/dashboard', function () {
             return view('dashboard.index');

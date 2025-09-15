@@ -44,6 +44,9 @@
             <flux:navlist.item icon="truck" :href="route('reports.truck-utilization')" :current="request()->routeIs('reports.truck-utilization')" wire:navigate>{{ __('Truck Utilization') }}</flux:navlist.item>
                         <flux:navlist.item icon="wrench-screwdriver" :href="route('reports.truck-maintenance-cost')" :current="request()->routeIs('reports.truck-maintenance-cost')" wire:navigate>{{ __('Truck Maintenance Cost') }}</flux:navlist.item>
                         <flux:navlist.item icon="document-text" :href="route('reports.pending-atc')" :current="request()->routeIs('reports.pending-atc')" wire:navigate>{{ __('Pending ATC') }}</flux:navlist.item>
+                        <flux:navlist.item icon="currency-dollar" :href="route('reports.cash-flow')" :current="request()->routeIs('reports.cash-flow')" wire:navigate>{{ __('Cash Flow') }}</flux:navlist.item>
+                        <flux:navlist.item icon="calendar" :href="route('reports.daily-activity-summary')" :current="request()->routeIs('reports.daily-activity-summary')" wire:navigate>{{ __('Daily Activity Summary') }}</flux:navlist.item>
+                        <flux:navlist.item icon="chart-bar" :href="route('reports.profit-estimate')" :current="request()->routeIs('reports.profit-estimate')" wire:navigate>{{ __('Profit Estimate') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
