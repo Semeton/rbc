@@ -192,6 +192,14 @@ Route::middleware(['auth'])->group(function () {
             return view('reports.outstanding-balances');
         })->name('reports.outstanding-balances');
 
+        Route::get('/reports/truck-maintenance-cost', function () {
+            return view('reports.truck-maintenance-cost');
+        })->name('reports.truck-maintenance-cost');
+
+        Route::get('/reports/pending-atc', function () {
+            return view('reports.pending-atc');
+        })->name('reports.pending-atc');
+
         // Dashboard Routes
         Route::get('/dashboard', function () {
             return view('dashboard.index');

@@ -42,7 +42,9 @@
             <flux:navlist.item icon="building-office" :href="route('reports.depot-performance')" :current="request()->routeIs('reports.depot-performance')" wire:navigate>{{ __('Depot Performance') }}</flux:navlist.item>
             <flux:navlist.item icon="user" :href="route('reports.driver-performance')" :current="request()->routeIs('reports.driver-performance')" wire:navigate>{{ __('Driver Performance') }}</flux:navlist.item>
             <flux:navlist.item icon="truck" :href="route('reports.truck-utilization')" :current="request()->routeIs('reports.truck-utilization')" wire:navigate>{{ __('Truck Utilization') }}</flux:navlist.item>
-        </flux:navlist.group>
+                        <flux:navlist.item icon="wrench-screwdriver" :href="route('reports.truck-maintenance-cost')" :current="request()->routeIs('reports.truck-maintenance-cost')" wire:navigate>{{ __('Truck Maintenance Cost') }}</flux:navlist.item>
+                        <flux:navlist.item icon="document-text" :href="route('reports.pending-atc')" :current="request()->routeIs('reports.pending-atc')" wire:navigate>{{ __('Pending ATC') }}</flux:navlist.item>
+                </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
