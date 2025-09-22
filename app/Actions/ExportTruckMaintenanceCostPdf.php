@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Reports\TruckMaintenanceCostReport;
-use Dompdf\Dompdf;
-use Dompdf\Options;
-use Illuminate\Http\Response;
-
+// use Dompdf\Dompdf;
+// use Dompdf\Options;
+use Spatie\LaravelPdf\Facades\Pdf;
 class ExportTruckMaintenanceCostPdf
 {
-    public function execute(array $filters = []): Response
+    public function execute(array $filters = []): mixed
     {
         $report = new TruckMaintenanceCostReport;
         $data = $report->generate($filters);
@@ -19,34 +18,22 @@ class ExportTruckMaintenanceCostPdf
 
         $html = $this->generateHtml($data, $summary, $filters);
 
-        $dompdf = new Dompdf;
-        $options = new Options;
-        $options->set('defaultFont', 'DejaVu Sans');
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', false);
-        $options->set('isPhpEnabled', false);
-        $options->set('isJavascriptEnabled', false);
-        $options->set('defaultMediaType', 'screen');
-        $options->set('isFontSubsettingEnabled', true);
-        $dompdf->setOptions($options);
-
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-
         $filename = 'truck-maintenance-cost-'.now()->format('Y-m-d_H-i-s').'.pdf';
 
-        return response($dompdf->output(), 200, [
-            'Content-Type' => 'application/pdf; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
-        ]);
+        return response()->streamDownload(function () use ($html, $filename) {
+            echo Pdf::html($html)
+                ->format('a4')
+                ->landscape()
+                ->name($filename)
+                ->toResponse(request());
+        }, $filename);
     }
 
     private function generateHtml($data, $summary, $filters): string
     {
         $startDate = $filters['start_date'] ?? now()->startOfYear()->format('Y-m-d');
         $endDate = $filters['end_date'] ?? now()->endOfYear()->format('Y-m-d');
-        $truckName = $filters['truck_id'] ? \App\Models\Truck::find($filters['truck_id'])->cab_number : 'All Trucks';
+        $truckName = isset($filters['truck_id']) && $filters['truck_id'] ? \App\Models\Truck::find($filters['truck_id'])->cab_number : 'All Trucks';
 
         $html = '
         <!DOCTYPE html>

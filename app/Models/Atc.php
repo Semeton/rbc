@@ -88,6 +88,74 @@ class Atc extends Model
     }
 
     /**
+     * Get the total tons allocated to transactions
+     */
+    public function getAllocatedTonsAttribute(): float
+    {
+        return $this->transactions()->sum('tons') ?? 0;
+    }
+
+    /**
+     * Get the remaining tons available for allocation
+     */
+    public function getRemainingTonsAttribute(): float
+    {
+        return $this->tons - $this->allocated_tons;
+    }
+
+    /**
+     * Check if the ATC is fully allocated
+     */
+    public function getIsFullyAllocatedAttribute(): bool
+    {
+        return $this->remaining_tons <= 0;
+    }
+
+    /**
+     * Check if the ATC is over-allocated
+     */
+    public function getIsOverAllocatedAttribute(): bool
+    {
+        return $this->allocated_tons > $this->tons;
+    }
+
+    /**
+     * Get allocation percentage
+     */
+    public function getAllocationPercentageAttribute(): float
+    {
+        if ($this->tons == 0) {
+            return 0;
+        }
+        
+        return ($this->allocated_tons / $this->tons) * 100;
+    }
+
+    /**
+     * Get remaining amount based on allocation
+     */
+    public function getRemainingAmountAttribute(): float
+    {
+        $allocatedAmount = $this->transactions()
+            ->where('status', true)
+            ->sum('atc_cost');
+        
+        return $this->amount - $allocatedAmount;
+    }
+
+    /**
+     * Get price per ton
+     */
+    public function getPricePerTonAttribute(): float
+    {
+        if ($this->tons == 0) {
+            return 0;
+        }
+        
+        return $this->amount / $this->tons;
+    }
+
+    /**
      * Scope to get only inactive ATCs
      */
     public function scopeInactive(Builder $query): void

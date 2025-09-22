@@ -1,257 +1,212 @@
 <div>
-    <div class="mb-6">
+    <div class="mb-8">
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="xl">Reports Dashboard</flux:heading>
-                <flux:subheading>Generate and analyze business reports</flux:subheading>
+                <flux:subheading>Access all business reports and analytics</flux:subheading>
+            </div>
+            <div class="flex items-center space-x-3">
+                <flux:button variant="outline" icon="arrow-path">
+                    Refresh
+                </flux:button>
             </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <!-- Report Selection -->
-        <div class="lg:col-span-1">
-            <div class="rounded-lg bg-white p-6 shadow dark:bg-zinc-800">
-                <h3 class="mb-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">Select Report</h3>
-                
-                <div class="space-y-3">
-                    @foreach($this->reportTypes as $key => $report)
-                        <div class="cursor-pointer rounded-lg border p-3 transition-colors {{ $selectedReport === $key ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700' }}"
-                             wire:click="$set('selectedReport', '{{ $key }}')">
-                            <div class="flex items-start space-x-3">
-                                <flux:icon name="{{ $report['icon'] }}" class="mt-1 h-5 w-5 text-zinc-500" />
-                                <div class="flex-1">
-                                    <h4 class="font-medium text-zinc-900 dark:text-zinc-100">{{ $report['name'] }}</h4>
-                                    <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $report['description'] }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div class="rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-blue-100 text-sm font-medium">Total Reports</p>
+                    <p class="text-3xl font-bold">{{ count($this->reportTypes) }}</p>
                 </div>
+                <flux:icon name="chart-bar" class="h-8 w-8 text-blue-200" />
             </div>
         </div>
+        
+        <div class="rounded-lg bg-gradient-to-r from-green-500 to-green-600 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-green-100 text-sm font-medium">Financial Reports</p>
+                    <p class="text-3xl font-bold">6</p>
+                </div>
+                <flux:icon name="currency-dollar" class="h-8 w-8 text-green-200" />
+            </div>
+        </div>
+        
+        <div class="rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-purple-100 text-sm font-medium">Performance Reports</p>
+                    <p class="text-3xl font-bold">4</p>
+                </div>
+                <flux:icon name="presentation-chart-bar" class="h-8 w-8 text-purple-200" />
+            </div>
+        </div>
+        
+        <div class="rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-orange-100 text-sm font-medium">Operational Reports</p>
+                    <p class="text-3xl font-bold">2</p>
+                </div>
+                <flux:icon name="cog-6-tooth" class="h-8 w-8 text-orange-200" />
+            </div>
+        </div>
+    </div>
 
-        <!-- Filters and Controls -->
-        <div class="lg:col-span-2">
-            <div class="rounded-lg bg-white p-6 shadow dark:bg-zinc-800">
-                <h3 class="mb-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">Report Filters</h3>
-                
-                <form wire:submit.prevent="generateReport" class="space-y-4">
-                    <!-- Date Range -->
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div>
-                            <flux:field>
-                                <flux:label>Start Date</flux:label>
-                                <flux:input type="date" wire:model="startDate" />
-                            </flux:field>
-                        </div>
-                        <div>
-                            <flux:field>
-                                <flux:label>End Date</flux:label>
-                                <flux:input type="date" wire:model="endDate" />
-                            </flux:field>
-                        </div>
-                    </div>
+    <!-- Reports Grid -->
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        @foreach($this->reportTypes as $key => $report)
+            @php
+                $color = $report['color'];
+                $icon = $report['icon'];
+                $route = $report['route'];
+                $name = $report['name'];
+                $description = $report['description'];
 
-                    <!-- Additional Filters -->
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                        @if(in_array($selectedReport, ['customer-balance', 'monthly-sales']))
-                            <div>
-                                <flux:field>
-                                    <flux:label>Customer</flux:label>
-                                    <flux:select wire:model="customerId" searchable>
-                                        <flux:select.option value="">All Customers</flux:select.option>
-                                        @foreach($this->customers as $customer)
-                                            <flux:select.option value="{{ $customer->id }}">{{ $customer->name }}</flux:select.option>
-                                        @endforeach
-                                    </flux:select>
-                                </flux:field>
-                            </div>
-                        @endif
-
-                        @if(in_array($selectedReport, ['monthly-sales', 'driver-performance']))
-                            <div>
-                                <flux:field>
-                                    <flux:label>Driver</flux:label>
-                                    <flux:select wire:model="driverId" searchable>
-                                        <flux:select.option value="">All Drivers</flux:select.option>
-                                        @foreach($this->drivers as $driver)
-                                            <flux:select.option value="{{ $driver->id }}">{{ $driver->name }}</flux:select.option>
-                                        @endforeach
-                                    </flux:select>
-                                </flux:field>
-                            </div>
-                        @endif
-
-                        @if(in_array($selectedReport, ['truck-utilization', 'maintenance-cost']))
-                            <div>
-                                <flux:field>
-                                    <flux:label>Truck</flux:label>
-                                    <flux:select wire:model="truckId" searchable>
-                                        <flux:select.option value="">All Trucks</flux:select.option>
-                                        @foreach($this->trucks as $truck)
-                                            <flux:select.option value="{{ $truck->id }}">{{ $truck->registration_number }} ({{ $truck->cab_number }})</flux:select.option>
-                                        @endforeach
-                                    </flux:select>
-                                </flux:field>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex items-center justify-between pt-4">
-                        <flux:button variant="outline" wire:click="resetFilters">
-                            Reset Filters
-                        </flux:button>
-                        
+                $cardRing = "hover:ring-2 hover:ring-{$color}-500";
+                $cardBg = "bg-white dark:bg-zinc-800";
+                $cardRingBase = "ring-1 ring-zinc-200 dark:ring-zinc-700";
+                $iconBg = "bg-{$color}-100 dark:bg-{$color}-900/20";
+                $iconColor = "text-{$color}-600 dark:text-{$color}-400";
+                $badgeBg = "bg-{$color}-100 dark:bg-{$color}-900/20";
+                $badgeText = "text-{$color}-800 dark:text-{$color}-400";
+                $buttonText = "hover:text-{$color}-600 dark:hover:text-{$color}-400";
+                $hoverEffect = "from-{$color}-500/5";
+            @endphp
+            <div class="group relative overflow-hidden rounded-xl {{ $cardBg }} shadow-sm {{ $cardRingBase }} transition-all duration-200 hover:shadow-lg {{ $cardRing }}">
+                <!-- Card Header -->
+                <div class="p-6">
+                    <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <flux:button variant="outline" wire:click="exportReport('pdf')">
-                                <flux:icon name="document-arrow-down" />
-                                Export PDF
-                            </flux:button>
-                            <flux:button variant="outline" wire:click="exportReport('excel')">
-                                <flux:icon name="table-cells" />
-                                Export Excel
-                            </flux:button>
-                            <flux:button variant="primary" type="submit">
-                                <flux:icon name="chart-bar" />
-                                Generate Report
+                            <div class="flex h-10 w-10 items-center justify-center rounded-lg {{ $iconBg }}">
+                                <flux:icon name="presentation-chart-bar" class="h-5 w-5 {{ $iconColor }}" />
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{{ $name }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="mt-3 text-sm text-zinc-600 dark:text-zinc-400">{{ $description }}</p>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="border-t border-zinc-200 bg-zinc-50 px-6 py-4 dark:border-zinc-700 dark:bg-zinc-900/50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="inline-flex items-center rounded-full {{ $badgeBg }} px-2 py-1 text-xs font-medium {{ $badgeText }}">
+                                {{ ucfirst($name) }}
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <flux:button 
+                                variant="ghost" 
+                                size="sm" 
+                                href="{{ route($route) }}"
+                                class="text-zinc-600 dark:text-zinc-400 {{ $buttonText }}"
+                            >
+                                <flux:icon name="arrow-right" class="h-4 w-4" />
                             </flux:button>
                         </div>
                     </div>
-                </form>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute inset-0 bg-gradient-to-r {{ $hoverEffect }} to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none"></div>
+            </div>
+        @endforeach
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="mt-12">
+        <div class="mb-6">
+            <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Quick Actions</h2>
+            <p class="text-sm text-zinc-600 dark:text-zinc-400">Commonly used report actions</p>
+        </div>
+        
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Quick Financial Overview -->
+            <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-800 dark:ring-zinc-700">
+                <div class="flex items-center space-x-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/20">
+                        <flux:icon name="currency-dollar" class="h-5 w-5 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Financial Overview</h3>
+                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Quick financial reports</p>
+                    </div>
+                </div>
+                <div class="mt-4 flex space-x-2">
+                    <flux:button variant="outline" size="sm" :href="route('reports.customer-balance')">
+                        Balances
+                    </flux:button>
+                    <flux:button variant="outline" size="sm" :href="route('reports.cash-flow')">
+                        Cash Flow
+                    </flux:button>
+                </div>
             </div>
 
-            <!-- Report Results -->
-            <div class="mt-6 rounded-lg bg-white p-6 shadow dark:bg-zinc-800">
-                <h3 class="mb-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">Report Results</h3>
-                
-                <div id="report-results" class="min-h-[400px]">
-                    <div class="flex h-64 items-center justify-center text-zinc-500 dark:text-zinc-400">
-                        <div class="text-center">
-                            <flux:icon name="chart-bar" class="mx-auto h-12 w-12 mb-4" />
-                            <p>Select filters and click "Generate Report" to view results</p>
-                        </div>
+            <!-- Performance Reports -->
+            <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-800 dark:ring-zinc-700">
+                <div class="flex items-center space-x-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/20">
+                        <flux:icon name="presentation-chart-bar" class="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Performance</h3>
+                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Driver & depot performance</p>
+                    </div>
+                </div>
+                <div class="mt-4 flex space-x-2">
+                    <flux:button variant="outline" size="sm" :href="route('reports.driver-performance')">
+                        Drivers
+                    </flux:button>
+                    <flux:button variant="outline" size="sm" :href="route('reports.depot-performance')">
+                        Depots
+                    </flux:button>
+                </div>
+            </div>
+
+            <!-- Operational Reports -->
+            <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-800 dark:ring-zinc-700">
+                <div class="flex items-center space-x-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/20">
+                        <flux:icon name="truck" class="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Operations</h3>
+                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Truck & maintenance</p>
+                    </div>
+                </div>
+                <div class="mt-4 flex space-x-2">
+                    <flux:button variant="outline" size="sm" :href="route('reports.truck-utilization')">
+                        Utilization
+                    </flux:button>
+                    <flux:button variant="outline" size="sm" :href="route('reports.truck-maintenance-cost')">
+                        Maintenance
+                    </flux:button>
                 </div>
             </div>
         </div>
     </div>
 
-    @script
-    <script>
-        document.addEventListener('livewire:init', () => {
-            // Listen for report generation events from Livewire
-            Livewire.on('generate-report', (data) => {
-                generateReport(data.report_type, data.filters);
-            });
-
-            Livewire.on('export-report', (data) => {
-                exportReport(data.report_type, data.format, data.filters);
-            });
-        });
-
-        function generateReport(reportType, filters) {
-            const url = `/reports/${reportType}`;
-            const params = new URLSearchParams(filters);
-            
-            // Show loading state
-            const resultsContainer = document.getElementById('report-results');
-            resultsContainer.innerHTML = `
-                <div class="flex h-64 items-center justify-center text-zinc-500 dark:text-zinc-400">
-                    <div class="text-center">
-                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                        <p>Generating report...</p>
-                    </div>
-                </div>
-            `;
-            
-            // Get CSRF token from meta tag
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            
-            fetch(`${url}?${params}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'same-origin'
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    displayReportResults(data);
-                })
-                .catch(error => {
-                    console.error('Error generating report:', error);
-                    resultsContainer.innerHTML = `
-                        <div class="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
-                            <h4 class="font-medium text-red-800 dark:text-red-200">Error Generating Report</h4>
-                            <p class="text-sm text-red-600 dark:text-red-300">Please try again or contact support if the problem persists.</p>
-                            <p class="text-xs text-red-500 dark:text-red-400 mt-2">Error: ${error.message}</p>
-                        </div>
-                    `;
-                });
-        }
-
-        function exportReport(reportType, format, filters) {
-            const url = `/reports/export/${reportType}`;
-            const params = new URLSearchParams({...filters, format});
-            
-            // Get CSRF token from meta tag
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            
-            // Create a temporary link to download the file
-            const link = document.createElement('a');
-            link.href = `${url}?${params}`;
-            link.download = `${reportType}-report.${format === 'excel' ? 'xlsx' : 'pdf'}`;
-            
-            // Add CSRF token to the link if needed
-            if (csrfToken) {
-                link.href += `&_token=${csrfToken}`;
-            }
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function displayReportResults(data) {
-            const resultsContainer = document.getElementById('report-results');
-            
-            // This is a simplified display - in a real implementation,
-            // you would render charts, tables, etc. based on the report type
-            resultsContainer.innerHTML = `
-                <div class="space-y-4">
-                    <div class="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
-                        <h4 class="font-medium text-green-800 dark:text-green-200">Report Generated Successfully</h4>
-                        <p class="text-sm text-green-600 dark:text-green-300">Data loaded: ${data.data?.length || 0} records</p>
-                    </div>
-                    
-                    ${data.summary ? `
-                        <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
-                            ${Object.entries(data.summary).map(([key, value]) => `
-                                <div class="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-700">
-                                    <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">${key.replace(/_/g, ' ').toUpperCase()}</div>
-                                    <div class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">${typeof value === 'number' ? value.toLocaleString() : value}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                    
-                    <div class="text-sm text-zinc-500 dark:text-zinc-400">
-                        <p>Report generated at: ${new Date().toLocaleString()}</p>
-                        <p>Filters applied: ${JSON.stringify(data.filters)}</p>
-                    </div>
-                </div>
-            `;
-        }
-    </script>
-    @endscript
+    <!-- Help Section -->
+    <div class="mt-12 rounded-lg bg-zinc-50 p-6 dark:bg-zinc-800/50">
+        <div class="flex items-start space-x-4">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/20">
+                <flux:icon name="question-mark-circle" class="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div class="flex-1">
+                <h3 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Need Help?</h3>
+                <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                    Each report provides detailed analytics and can be exported to PDF or Excel. 
+                    Use the filters in individual reports to customize your data view.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>

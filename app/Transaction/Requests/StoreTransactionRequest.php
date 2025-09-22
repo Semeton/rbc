@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Transaction\Requests;
 
+use App\Models\Atc;
+use App\Services\AtcAllocationValidator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\ValidationException;
 
 class StoreTransactionRequest extends FormRequest
 {
@@ -27,6 +30,7 @@ class StoreTransactionRequest extends FormRequest
             'destination' => ['required', 'string', 'max:255'],
             'atc_cost' => ['required', 'numeric', 'min:0'],
             'transport_cost' => ['required', 'numeric', 'min:0'],
+            'tons' => ['required', 'numeric', 'min:0.01'],
             'status' => ['required', 'in:active,inactive'],
         ];
     }
@@ -55,8 +59,48 @@ class StoreTransactionRequest extends FormRequest
             'transport_cost.required' => 'Please enter the transport cost.',
             'transport_cost.numeric' => 'The transport cost must be a number.',
             'transport_cost.min' => 'The transport cost must be at least 0.',
+            'tons.required' => 'Please enter the number of tons.',
+            'tons.numeric' => 'Tons must be a number.',
+            'tons.min' => 'Tons must be at least 0.01.',
             'status.required' => 'Please select a status.',
             'status.in' => 'The status must be either active or inactive.',
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $this->validateAtcAllocation($validator);
+        });
+    }
+
+    /**
+     * Validate ATC allocation
+     */
+    private function validateAtcAllocation($validator): void
+    {
+        $atcId = $this->input('atc_id');
+        $tons = (float) $this->input('tons');
+
+        if (!$atcId || !$tons) {
+            return;
+        }
+
+        $atc = Atc::find($atcId);
+        if (!$atc) {
+            return;
+        }
+
+        $allocationValidator = app(AtcAllocationValidator::class);
+        $remainingTons = $allocationValidator->getRemainingTons($atc);
+
+        if ($tons > $remainingTons) {
+            $validator->errors()->add('tons', 
+                "The tons allocated ({$tons}) exceeds the remaining capacity ({$remainingTons}) for ATC #{$atc->atc_number}."
+            );
+        }
     }
 }

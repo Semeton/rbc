@@ -19,6 +19,7 @@ class DailyCustomerTransaction extends Model
         'date' => 'datetime',
         'atc_cost' => 'decimal:2',
         'transport_cost' => 'decimal:2',
+        'tons' => 'decimal:2',
         'status' => 'boolean',
     ];
 

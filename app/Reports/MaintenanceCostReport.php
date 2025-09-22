@@ -167,4 +167,24 @@ class MaintenanceCostReport
             return $truck;
         })->sortByDesc('maintenance_frequency');
     }
+
+    public function getChartData(array $filters = []): array
+    {
+        $data = $this->generate($filters);
+        $monthlyTrend = $this->getMonthlyTrend($filters);
+        $topCostlyTrucks = $this->getTopCostlyTrucks($filters, 10);
+
+        return [
+            'monthly_trend' => [
+                'labels' => $monthlyTrend->pluck('month')->toArray(),
+                'costs' => $monthlyTrend->pluck('total_cost')->toArray(),
+                'counts' => $monthlyTrend->pluck('maintenance_count')->toArray(),
+            ],
+            'top_costly_trucks' => [
+                'labels' => $topCostlyTrucks->pluck('cab_number')->toArray(),
+                'costs' => $topCostlyTrucks->pluck('total_cost')->toArray(),
+                'counts' => $topCostlyTrucks->pluck('maintenance_count')->toArray(),
+            ],
+        ];
+    }
 }

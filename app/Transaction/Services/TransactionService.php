@@ -6,6 +6,7 @@ namespace App\Transaction\Services;
 
 use App\Models\DailyCustomerTransaction;
 use App\Services\AuditTrailService;
+use App\Services\AtcAllocationValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -71,12 +72,15 @@ class TransactionService
             $data['status'] = $data['status'] === 'active';
         }
 
+        // Validate ATC allocation before creating transaction
+        $this->validateAtcAllocation($data);
+
         $transaction = DailyCustomerTransaction::create($data);
 
         AuditTrailService::log(
             'create',
             'Transaction',
-            "Transaction for customer '{$transaction->customer->name}' was created"
+            "Transaction for customer '{$transaction->customer->name}' was created with {$data['tons']} tons allocated from ATC #{$transaction->atc->atc_number}"
         );
 
         return $transaction;
@@ -89,12 +93,16 @@ class TransactionService
             $data['status'] = $data['status'] === 'active';
         }
 
+        // Validate ATC allocation before updating transaction
+        $this->validateAtcAllocation($data, $transaction->id);
+
+        $oldTons = $transaction->tons;
         $transaction->update($data);
 
         AuditTrailService::log(
             'update',
             'Transaction',
-            "Transaction for customer '{$transaction->customer->name}' was updated"
+            "Transaction for customer '{$transaction->customer->name}' was updated. Tons changed from {$oldTons} to {$data['tons']} for ATC #{$transaction->atc->atc_number}"
         );
 
         return $transaction;
@@ -234,5 +242,89 @@ class TransactionService
         AuditTrailService::logDataExport('transactions', 'array', $transactions->count());
 
         return $transactions->toArray();
+    }
+
+    /**
+     * Validate ATC allocation for a transaction
+     */
+    private function validateAtcAllocation(array $data, ?int $excludeTransactionId = null): void
+    {
+        if (!isset($data['atc_id']) || !isset($data['tons'])) {
+            return;
+        }
+
+        $atc = \App\Models\Atc::find($data['atc_id']);
+        if (!$atc) {
+            return;
+        }
+
+        $allocationValidator = app(AtcAllocationValidator::class);
+        $remainingTons = $allocationValidator->getRemainingTons($atc, $excludeTransactionId);
+
+        if ($data['tons'] > $remainingTons) {
+            throw new \Illuminate\Validation\ValidationException(
+                validator([], []),
+                ['tons' => ["The tons allocated ({$data['tons']}) exceeds the remaining capacity ({$remainingTons}) for ATC #{$atc->atc_number}."]]
+            );
+        }
+    }
+
+    /**
+     * Get ATC allocation statistics for transactions
+     */
+    public function getAtcAllocationStatistics(): array
+    {
+        $allocationValidator = app(AtcAllocationValidator::class);
+        
+        // Get all ATCs with their allocation status
+        $atcsWithAllocation = $allocationValidator->getAllAtcsWithAllocationStatus();
+        
+        $stats = [
+            'total_atcs' => count($atcsWithAllocation),
+            'available_atcs' => 0,
+            'fully_allocated_atcs' => 0,
+            'over_allocated_atcs' => 0,
+            'total_tons' => 0,
+            'allocated_tons' => 0,
+            'remaining_tons' => 0,
+            'total_transactions' => DailyCustomerTransaction::count(),
+            'total_tons_allocated' => DailyCustomerTransaction::sum('tons'),
+        ];
+
+        foreach ($atcsWithAllocation as $atcData) {
+            $allocation = $atcData['allocation'];
+            
+            $stats['total_tons'] += $allocation['total_tons'];
+            $stats['allocated_tons'] += $allocation['allocated_tons'];
+            $stats['remaining_tons'] += $allocation['remaining_tons'];
+            
+            if ($allocation['is_over_allocated']) {
+                $stats['over_allocated_atcs']++;
+            } elseif ($allocation['is_fully_allocated']) {
+                $stats['fully_allocated_atcs']++;
+            } else {
+                $stats['available_atcs']++;
+            }
+        }
+
+        return $stats;
+    }
+
+    /**
+     * Get transactions with ATC allocation information
+     */
+    public function getTransactionsWithAllocationInfo(Request $request, int $perPage = 15): LengthAwarePaginator
+    {
+        $transactions = $this->getPaginatedTransactions($request, $perPage);
+        
+        // Add allocation info to each transaction
+        $allocationValidator = app(AtcAllocationValidator::class);
+        
+        $transactions->getCollection()->transform(function (DailyCustomerTransaction $transaction) use ($allocationValidator) {
+            $transaction->atc_allocation = $allocationValidator->getAllocationSummary($transaction->atc);
+            return $transaction;
+        });
+
+        return $transactions;
     }
 }

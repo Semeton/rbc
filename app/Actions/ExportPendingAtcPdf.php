@@ -6,13 +6,12 @@ namespace App\Actions;
 
 use App\Reports\PendingAtcReport;
 use Carbon\Carbon;
-use Dompdf\Dompdf;
-use Dompdf\Options;
-use Illuminate\Http\Response;
-
+// use Dompdf\Dompdf;
+// use Dompdf\Options;
+use Spatie\LaravelPdf\Facades\Pdf;
 class ExportPendingAtcPdf
 {
-    public function execute(array $filters = []): Response
+    public function execute(array $filters = []): mixed
     {
         $report = new PendingAtcReport;
         $data = $report->generate($filters);
@@ -20,27 +19,15 @@ class ExportPendingAtcPdf
 
         $html = $this->generateHtml($data, $summary, $filters);
 
-        $dompdf = new Dompdf;
-        $options = new Options;
-        $options->set('defaultFont', 'DejaVu Sans');
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', false);
-        $options->set('isPhpEnabled', false);
-        $options->set('isJavascriptEnabled', false);
-        $options->set('defaultMediaType', 'screen');
-        $options->set('isFontSubsettingEnabled', true);
-        $dompdf->setOptions($options);
-
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-
         $filename = 'pending-atc-report-'.now()->format('Y-m-d_H-i-s').'.pdf';
 
-        return response($dompdf->output(), 200, [
-            'Content-Type' => 'application/pdf; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
-        ]);
+        return response()->streamDownload(function () use ($html, $filename) {
+            echo Pdf::html($html)
+                ->format('a4')
+                ->landscape()
+                ->name($filename)
+                ->toResponse(request());
+        }, $filename);
     }
 
     private function generateHtml($data, $summary, $filters): string

@@ -149,15 +149,71 @@
         <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Daily Activity Trend</h3>
-                <flux:icon name="chart-bar" class="size-5 text-zinc-500" />
+                <flux:icon name="presentation-chart-bar" class="size-5 text-zinc-500" />
             </div>
-            <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
-                <div class="text-center">
-                    <flux:icon name="chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
-                    <p class="text-zinc-500 dark:text-zinc-400">Daily activity trend chart</p>
-                    <p class="text-sm text-zinc-400">Chart data: {{ json_encode($this->chartData['daily_trend']) }}</p>
+            @if(count($this->chartData['daily_trend']) > 0)
+                <x-chart 
+                    type="line"
+                    data="{{ json_encode([
+                        'labels' => array_column($this->chartData['daily_trend'], 'date'),
+                        'datasets' => [
+                            [
+                                'label' => 'Transactions',
+                                'data' => array_column($this->chartData['daily_trend'], 'transactions'),
+                                'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
+                                'borderColor' => 'rgba(59, 130, 246, 1)',
+                                'borderWidth' => 3,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ],
+                            [
+                                'label' => 'Payments',
+                                'data' => array_column($this->chartData['daily_trend'], 'payments'),
+                                'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
+                                'borderColor' => 'rgba(16, 185, 129, 1)',
+                                'borderWidth' => 3,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ],
+                            [
+                                'label' => 'Net Activity',
+                                'data' => array_column($this->chartData['daily_trend'], 'net_activity'),
+                                'backgroundColor' => 'rgba(139, 92, 246, 0.1)',
+                                'borderColor' => 'rgba(139, 92, 246, 1)',
+                                'borderWidth' => 4,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'xAxisLabel' => 'Date',
+                        'yAxisLabel' => 'Count/Amount',
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'top'
+                            ],
+                            'tooltip' => [
+                                'callbacks' => [
+                                ]
+                            ]
+                        ],
+                        'scales' => [
+                            'y' => [
+                                'beginAtZero' => true
+                            ]
+                        ]
+                    ]"
+                    height="300px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div class="text-center">
+                        <flux:icon name="presentation-chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
+                        <p class="text-zinc-500 dark:text-zinc-400">No daily activity trend data available</p>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         <!-- Day of Week Distribution Chart -->
@@ -166,13 +222,121 @@
                 <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Day of Week Distribution</h3>
                 <flux:icon name="chart-pie" class="size-5 text-zinc-500" />
             </div>
-            <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
-                <div class="text-center">
-                    <flux:icon name="chart-pie" class="size-12 text-zinc-400 mx-auto mb-2" />
-                    <p class="text-zinc-500 dark:text-zinc-400">Day of week distribution chart</p>
-                    <p class="text-sm text-zinc-400">Chart data: {{ json_encode($this->chartData['day_of_week_distribution']) }}</p>
+            @if(count($this->chartData['day_of_week_distribution']) > 0)
+                <x-chart 
+                    type="bar"
+                    data="{{ json_encode([
+                        'labels' => array_column($this->chartData['day_of_week_distribution'], 'day'),
+                        'datasets' => [
+                            [
+                                'label' => 'Transactions',
+                                'data' => array_column($this->chartData['day_of_week_distribution'], 'transactions'),
+                                'backgroundColor' => 'rgba(59, 130, 246, 0.8)',
+                                'borderColor' => 'rgba(59, 130, 246, 1)',
+                                'borderWidth' => 1
+                            ],
+                            [
+                                'label' => 'Payments',
+                                'data' => array_column($this->chartData['day_of_week_distribution'], 'payments'),
+                                'backgroundColor' => 'rgba(16, 185, 129, 0.8)',
+                                'borderColor' => 'rgba(16, 185, 129, 1)',
+                                'borderWidth' => 1
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'xAxisLabel' => 'Day of Week',
+                        'yAxisLabel' => 'Count',
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'top'
+                            ],
+                            'tooltip' => [
+                                'callbacks' => [
+                                ]
+                            ]
+                        ],
+                        'scales' => [
+                            'y' => [
+                                'beginAtZero' => true,
+                                'ticks' => [
+                                    'stepSize' => 1
+                                ]
+                            ]
+                        ]
+                    ]"
+                    height="300px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div class="text-center">
+                        <flux:icon name="chart-pie" class="size-12 text-zinc-400 mx-auto mb-2" />
+                        <p class="text-zinc-500 dark:text-zinc-400">No day of week distribution data available</p>
+                    </div>
                 </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Weekly Summary Chart -->
+    <div class="mt-6">
+        <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Weekly Activity Summary</h3>
+                <flux:icon name="presentation-chart-bar" class="size-5 text-zinc-500" />
             </div>
+            @if(count($this->chartData['weekly_summary']) > 0)
+                <x-chart 
+                    type="bar"
+                    data="{{ json_encode([
+                        'labels' => array_column($this->chartData['weekly_summary'], 'week'),
+                        'datasets' => [
+                            [
+                                'label' => 'Total Sales',
+                                'data' => array_column($this->chartData['weekly_summary'], 'sales'),
+                                'backgroundColor' => 'rgba(16, 185, 129, 0.8)',
+                                'borderColor' => 'rgba(16, 185, 129, 1)',
+                                'borderWidth' => 1
+                            ],
+                            [
+                                'label' => 'Total Payments',
+                                'data' => array_column($this->chartData['weekly_summary'], 'payments_amount'),
+                                'backgroundColor' => 'rgba(59, 130, 246, 0.8)',
+                                'borderColor' => 'rgba(59, 130, 246, 1)',
+                                'borderWidth' => 1
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'xAxisLabel' => 'Week',
+                        'yAxisLabel' => 'Amount (₦)',
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'top'
+                            ],
+                            'tooltip' => [
+                                'callbacks' => [
+                                ]
+                            ]
+                        ],
+                        'scales' => [
+                            'y' => [
+                                'beginAtZero' => true,
+                                'ticks' => [
+                                ]
+                            ]
+                        ]
+                    ]"
+                    height="300px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div class="text-center">
+                        <flux:icon name="presentation-chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
+                        <p class="text-zinc-500 dark:text-zinc-400">No weekly summary data available</p>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 

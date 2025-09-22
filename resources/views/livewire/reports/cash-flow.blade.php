@@ -149,15 +149,72 @@
         <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Daily Cash Flow</h3>
-                <flux:icon name="chart-bar" class="size-5 text-zinc-500" />
+                <flux:icon name="presentation-chart-bar" class="size-5 text-zinc-500" />
             </div>
-            <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
-                <div class="text-center">
-                    <flux:icon name="chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
-                    <p class="text-zinc-500 dark:text-zinc-400">Daily cash flow chart</p>
-                    <p class="text-sm text-zinc-400">Chart data: {{ json_encode($this->chartData['daily_flow']) }}</p>
+            @if(count($this->chartData['daily_flow']) > 0)
+                <x-chart 
+                    type="line"
+                    data="{{ json_encode([
+                        'labels' => array_column($this->chartData['daily_flow'], 'date'),
+                        'datasets' => [
+                            [
+                                'label' => 'Incoming',
+                                'data' => array_column($this->chartData['daily_flow'], 'incoming'),
+                                'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
+                                'borderColor' => 'rgba(16, 185, 129, 1)',
+                                'borderWidth' => 3,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ],
+                            [
+                                'label' => 'Outgoing',
+                                'data' => array_column($this->chartData['daily_flow'], 'outgoing'),
+                                'backgroundColor' => 'rgba(239, 68, 68, 0.1)',
+                                'borderColor' => 'rgba(239, 68, 68, 1)',
+                                'borderWidth' => 3,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ],
+                            [
+                                'label' => 'Net Cash Flow',
+                                'data' => array_column($this->chartData['daily_flow'], 'net'),
+                                'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
+                                'borderColor' => 'rgba(59, 130, 246, 1)',
+                                'borderWidth' => 4,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'xAxisLabel' => 'Date',
+                        'yAxisLabel' => 'Amount (₦)',
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'top'
+                            ],
+                            'tooltip' => [
+                                'callbacks' => [
+                                ]
+                            ]
+                        ],
+                        'scales' => [
+                            'y' => [
+                                'ticks' => [
+                                ]
+                            ]
+                        ]
+                    ]"
+                    height="300px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div class="text-center">
+                        <flux:icon name="presentation-chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
+                        <p class="text-zinc-500 dark:text-zinc-400">No daily cash flow data available</p>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         <!-- Category Breakdown Chart -->
@@ -166,13 +223,130 @@
                 <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Category Breakdown</h3>
                 <flux:icon name="chart-pie" class="size-5 text-zinc-500" />
             </div>
-            <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
-                <div class="text-center">
-                    <flux:icon name="chart-pie" class="size-12 text-zinc-400 mx-auto mb-2" />
-                    <p class="text-zinc-500 dark:text-zinc-400">Category breakdown chart</p>
-                    <p class="text-sm text-zinc-400">Chart data: {{ json_encode($this->chartData['category_breakdown']) }}</p>
+            @if(count($this->chartData['category_breakdown']) > 0)
+                <x-chart 
+                    type="doughnut"
+                    data="{{ json_encode([
+                        'labels' => array_column($this->chartData['category_breakdown'], 'category'),
+                        'datasets' => [
+                            [
+                                'data' => array_column($this->chartData['category_breakdown'], 'net'),
+                                'backgroundColor' => [
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(239, 68, 68, 0.8)',
+                                    'rgba(59, 130, 246, 0.8)',
+                                    'rgba(245, 158, 11, 0.8)',
+                                    'rgba(139, 92, 246, 0.8)',
+                                    'rgba(236, 72, 153, 0.8)'
+                                ],
+                                'borderColor' => [
+                                    'rgba(16, 185, 129, 1)',
+                                    'rgba(239, 68, 68, 1)',
+                                    'rgba(59, 130, 246, 1)',
+                                    'rgba(245, 158, 11, 1)',
+                                    'rgba(139, 92, 246, 1)',
+                                    'rgba(236, 72, 153, 1)'
+                                ],
+                                'borderWidth' => 2
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'bottom'
+                            ],
+                            'tooltip' => [
+                                'callbacks' => [
+                                ]
+                            ]
+                        ]
+                    ]"
+                    height="300px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div class="text-center">
+                        <flux:icon name="chart-pie" class="size-12 text-zinc-400 mx-auto mb-2" />
+                        <p class="text-zinc-500 dark:text-zinc-400">No category breakdown data available</p>
+                    </div>
                 </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Monthly Trend Chart -->
+    <div class="mt-6">
+        <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Monthly Cash Flow Trend</h3>
+                <flux:icon name="presentation-chart-bar" class="size-5 text-zinc-500" />
             </div>
+            @if(count($this->chartData['monthly_trend']) > 0)
+                <x-chart 
+                    type="line"
+                    data="{{ json_encode([
+                        'labels' => array_column($this->chartData['monthly_trend'], 'month'),
+                        'datasets' => [
+                            [
+                                'label' => 'Incoming',
+                                'data' => array_column($this->chartData['monthly_trend'], 'incoming'),
+                                'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
+                                'borderColor' => 'rgba(16, 185, 129, 1)',
+                                'borderWidth' => 3,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ],
+                            [
+                                'label' => 'Outgoing',
+                                'data' => array_column($this->chartData['monthly_trend'], 'outgoing'),
+                                'backgroundColor' => 'rgba(239, 68, 68, 0.1)',
+                                'borderColor' => 'rgba(239, 68, 68, 1)',
+                                'borderWidth' => 3,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ],
+                            [
+                                'label' => 'Net Cash Flow',
+                                'data' => array_column($this->chartData['monthly_trend'], 'net'),
+                                'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
+                                'borderColor' => 'rgba(59, 130, 246, 1)',
+                                'borderWidth' => 4,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'xAxisLabel' => 'Month',
+                        'yAxisLabel' => 'Amount (₦)',
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'top'
+                            ],
+                            'tooltip' => [
+                                'callbacks' => [
+                                ]
+                            ]
+                        ],
+                        'scales' => [
+                            'y' => [
+                                'beginAtZero' => true,
+                                'ticks' => [
+                                ]
+                            ]
+                        ]
+                    ]"
+                    height="300px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div class="text-center">
+                        <flux:icon name="presentation-chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
+                        <p class="text-zinc-500 dark:text-zinc-400">No monthly trend data available</p>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 

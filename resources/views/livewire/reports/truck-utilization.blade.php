@@ -213,30 +213,214 @@ new class extends Component
             </div>
         </div>
 
-        <!-- Income Distribution Chart -->
+        <!-- Truck Utilization Charts -->
         <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
-            <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">Income Distribution by Truck</h3>
-            <div class="h-80 overflow-y-auto">
-                @if(count($this->chartData()['income_distribution']['labels']) > 0)
-                    <div class="space-y-4">
-                        @foreach($this->chartData()['income_distribution']['labels'] as $index => $cabNumber)
-                            <div class="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
-                                <div class="flex-1">
-                                    <div class="font-semibold text-zinc-900 dark:text-zinc-100">{{ $cabNumber }}</div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                                        ₦{{ number_format($this->chartData()['income_distribution']['income'][$index], 2) }}
-                                    </div>
-                                </div>
+            <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">Truck Utilization Analytics</h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Income Distribution Chart -->
+                <div>
+                    <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Top 10 Trucks by Income</h4>
+                    @if(count($this->chartData()['income_distribution']['labels']) > 0)
+                        <x-chart 
+                            type="bar"
+                            data="{{ json_encode([
+                                'labels' => $this->chartData()['income_distribution']['labels'],
+                                'datasets' => [
+                                    [
+                                        'label' => 'Total Income Generated',
+                                        'data' => $this->chartData()['income_distribution']['income'],
+                                        'backgroundColor' => 'rgba(59, 130, 246, 0.8)',
+                                        'borderColor' => 'rgba(59, 130, 246, 1)',
+                                        'borderWidth' => 1
+                                    ]
+                                ]
+                            ]) }}"
+                            options="{{ json_encode([
+                                'xAxisLabel' => 'Truck Cab Numbers',
+                                'yAxisLabel' => 'Income (₦)',
+                                'plugins' => [
+                                    'legend' => [
+                                        'position' => 'top'
+                                    ]
+                                ],
+                                'scales' => [
+                                    'y' => [
+                                        'beginAtZero' => true
+                                    ]
+                                ]
+                            ]) }}"
+                            height="300px"
+                        />
+                    @else
+                        <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                            <div class="text-center">
+                                <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                                <p>No income data available</p>
                             </div>
-                        @endforeach
-                    </div>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Trip Distribution Chart -->
+                <div>
+                    <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Top 10 Trucks by Trips</h4>
+                    @if(count($this->chartData()['trip_distribution']['labels']) > 0)
+                        <x-chart 
+                            type="bar"
+                            data="{{ json_encode([
+                                'labels' => $this->chartData()['trip_distribution']['labels'],
+                                'datasets' => [
+                                    [
+                                        'label' => 'Total Trips',
+                                        'data' => $this->chartData()['trip_distribution']['trips'],
+                                        'backgroundColor' => 'rgba(16, 185, 129, 0.8)',
+                                        'borderColor' => 'rgba(16, 185, 129, 1)',
+                                        'borderWidth' => 1
+                                    ]
+                                ]
+                            ]"
+                            options="{{ json_encode([
+                                'xAxisLabel' => 'Truck Cab Numbers',
+                                'yAxisLabel' => 'Number of Trips',
+                                'plugins' => [
+                                    'legend' => [
+                                        'position' => 'top'
+                                    ]
+                                ],
+                                'scales' => [
+                                    'y' => [
+                                        'beginAtZero' => true,
+                                        'ticks' => [
+                                            'stepSize' => 1
+                                        ]
+                                    ]
+                                ]
+                            ]"
+                            height="300px"
+                        />
+                    @else
+                        <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                            <div class="text-center">
+                                <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                                <p>No trip data available</p>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Maintenance Cost Distribution -->
+            <div class="mt-8">
+                <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Maintenance Costs by Truck</h4>
+                @if(count($this->chartData()['maintenance_distribution']['labels']) > 0)
+                    <x-chart 
+                        type="bar"
+                        data="{{ json_encode([
+                            'labels' => $this->chartData()['maintenance_distribution']['labels'],
+                            'datasets' => [
+                                [
+                                    'label' => 'Maintenance Cost',
+                                    'data' => $this->chartData()['maintenance_distribution']['costs'],
+                                    'backgroundColor' => 'rgba(239, 68, 68, 0.8)',
+                                    'borderColor' => 'rgba(239, 68, 68, 1)',
+                                    'borderWidth' => 1
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'xAxisLabel' => 'Truck Cab Numbers',
+                            'yAxisLabel' => 'Maintenance Cost (₦)',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ],
+                            'scales' => [
+                                'y' => [
+                                    'beginAtZero' => true,
+                                    'ticks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
                 @else
-                    <div class="flex items-center justify-center h-full">
+                    <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                         <div class="text-center">
-                            <flux:icon name="chart-bar" class="mx-auto size-12 text-zinc-300 dark:text-zinc-600 mb-4" />
-                            <p class="text-zinc-500 dark:text-zinc-400">No income data available for the selected criteria.</p>
+                            <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                            <p>No maintenance data available</p>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Age vs Income Correlation -->
+            <div class="mt-8">
+                <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Truck Age vs Income Correlation</h4>
+                @if(count($this->chartData()['age_income_correlation']['labels']) > 0)
+                    <x-chart 
+                        type="scatter"
+                        data="{{ json_encode([
+                            'datasets' => [
+                                [
+                                    'label' => 'Truck Performance',
+                                        return [
+                                            'x' => $age,
+                                            'y' => $income,
+                                            'label' => $this->chartData()['age_income_correlation']['labels'][$index]
+                                        ];
+                                    }, $this->chartData()['age_income_correlation']['ages'], $this->chartData()['age_income_correlation']['income'], array_keys($this->chartData()['age_income_correlation']['ages'])),
+                                    'backgroundColor' => 'rgba(139, 92, 246, 0.8)',
+                                    'borderColor' => 'rgba(139, 92, 246, 1)',
+                                    'borderWidth' => 2,
+                                    'pointRadius' => 6
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'xAxisLabel' => 'Truck Age (Years)',
+                            'yAxisLabel' => 'Income Generated (₦)',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ],
+                            'scales' => [
+                                'x' => [
+                                    'title' => [
+                                        'display' => true,
+                                        'text' => 'Truck Age (Years)'
+                                    ],
+                                    'beginAtZero' => true
+                                ],
+                                'y' => [
+                                    'title' => [
+                                        'display' => true,
+                                        'text' => 'Income Generated (₦)'
+                                    ],
+                                    'beginAtZero' => true,
+                                    'ticks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
+                @else
+                    <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                        <div class="text-center">
+                            <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                            <p>No age vs income data available</p>
                         </div>
                     </div>
                 @endif

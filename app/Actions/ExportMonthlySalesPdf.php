@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Reports\MonthlySalesReport;
-use Dompdf\Dompdf;
-use Dompdf\Options;
-use Illuminate\Http\Response;
-
+// use Dompdf\Dompdf;
+// use Dompdf\Options;
+use Spatie\LaravelPdf\Facades\Pdf;
 class ExportMonthlySalesPdf
 {
-    public function execute(array $filters = []): Response
+    public function execute(array $filters = []): mixed
     {
         $report = app(MonthlySalesReport::class);
         $data = $report->generate($filters);
@@ -19,27 +18,15 @@ class ExportMonthlySalesPdf
 
         $html = $this->generateHtml($data, $summary, $filters);
 
-        $dompdf = new Dompdf;
-        $options = new Options;
-        $options->set('defaultFont', 'DejaVu Sans');
-        $options->set('isRemoteEnabled', false);
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('defaultMediaType', 'screen');
-        $options->set('isFontSubsettingEnabled', true);
-        $options->set('isPhpEnabled', false);
-        $options->set('isJavascriptEnabled', false);
-        $dompdf->setOptions($options);
+        $filename = 'monthly-sales-report-'.now()->format('Y-m-d_H-i-s').'.pdf';
 
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-
-        $filename = 'monthly-sales-report-'.now()->format('Y-m-d-H-i-s').'.pdf';
-
-        return response($dompdf->output(), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
-        ]);
+        return response()->streamDownload(function () use ($html, $filename) {
+            echo Pdf::html($html)
+                ->format('a4')
+                ->landscape()
+                ->name($filename)
+                ->toResponse(request());
+        }, $filename);
     }
 
     private function generateHtml($data, $summary, array $filters): string

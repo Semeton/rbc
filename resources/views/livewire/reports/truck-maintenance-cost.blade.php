@@ -126,15 +126,55 @@
             <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Monthly Maintenance Cost Trend</h3>
-                    <flux:icon name="chart-bar" class="size-5 text-zinc-500" />
+                    <flux:icon name="presentation-chart-bar" class="size-5 text-zinc-500" />
                 </div>
-                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
-                    <div class="text-center">
-                        <flux:icon name="chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
-                        <p class="text-zinc-500 dark:text-zinc-400">Monthly trend chart</p>
-                        <p class="text-sm text-zinc-400">Chart data: {{ json_encode($this->chartData['monthly_trend']) }}</p>
+                @if(count($this->chartData['monthly_trend']['labels']) > 0)
+                    <x-chart 
+                        type="line"
+                        data="{{ json_encode([
+                            'labels' => $this->chartData['monthly_trend']['labels'],
+                            'datasets' => [
+                                [
+                                    'label' => 'Maintenance Cost',
+                                    'data' => $this->chartData['monthly_trend']['data'],
+                                    'backgroundColor' => 'rgba(139, 92, 246, 0.1)',
+                                    'borderColor' => 'rgba(139, 92, 246, 1)',
+                                    'borderWidth' => 3,
+                                    'fill' => true,
+                                    'tension' => 0.4
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'xAxisLabel' => 'Month',
+                            'yAxisLabel' => 'Maintenance Cost (₦)',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ],
+                            'scales' => [
+                                'y' => [
+                                    'beginAtZero' => true,
+                                    'ticks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
+                @else
+                    <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                        <div class="text-center">
+                            <flux:icon name="presentation-chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
+                            <p class="text-zinc-500 dark:text-zinc-400">No monthly trend data available</p>
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
 
             <!-- Truck Comparison Chart -->
@@ -143,13 +183,51 @@
                     <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Truck Maintenance Comparison</h3>
                     <flux:icon name="chart-bar" class="size-5 text-zinc-500" />
                 </div>
-                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
-                    <div class="text-center">
-                        <flux:icon name="chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
-                        <p class="text-zinc-500 dark:text-zinc-400">Truck comparison chart</p>
-                        <p class="text-sm text-zinc-400">Chart data: {{ json_encode($this->chartData['truck_comparison']) }}</p>
+                @if(count($this->chartData['truck_comparison']['labels']) > 0)
+                    <x-chart 
+                        type="bar"
+                        data="{{ json_encode([
+                            'labels' => $this->chartData['truck_comparison']['labels'],
+                            'datasets' => [
+                                [
+                                    'label' => 'Maintenance Cost',
+                                    'data' => $this->chartData['truck_comparison']['data'],
+                                    'backgroundColor' => 'rgba(139, 92, 246, 0.8)',
+                                    'borderColor' => 'rgba(139, 92, 246, 1)',
+                                    'borderWidth' => 1
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'xAxisLabel' => 'Truck Cab Numbers',
+                            'yAxisLabel' => 'Maintenance Cost (₦)',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ],
+                            'scales' => [
+                                'y' => [
+                                    'beginAtZero' => true,
+                                    'ticks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
+                @else
+                    <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                        <div class="text-center">
+                            <flux:icon name="chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
+                            <p class="text-zinc-500 dark:text-zinc-400">No truck comparison data available</p>
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
 

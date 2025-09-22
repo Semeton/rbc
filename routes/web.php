@@ -212,6 +212,12 @@ Route::get('/reports/profit-estimate', function () {
     return view('reports.profit-estimate');
 })->name('reports.profit-estimate');
 
+        // ATC Management routes
+        Route::get('/atc/allocation-manager', \App\Livewire\AtcAllocationManager::class)->name('atc.allocation-manager');
+        
+        // Transaction Management routes
+        Route::get('/transactions', \App\Livewire\TransactionManager::class)->name('transactions.index');
+
         // Dashboard Routes
         Route::get('/dashboard', function () {
             return view('dashboard.index');

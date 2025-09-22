@@ -198,30 +198,184 @@
         <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Monthly Profit Trend</h3>
-                <flux:icon name="chart-bar" class="size-5 text-zinc-500" />
+                <flux:icon name="presentation-chart-bar" class="size-5 text-zinc-500" />
             </div>
-            <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
-                <div class="text-center">
-                    <flux:icon name="chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
-                    <p class="text-zinc-500 dark:text-zinc-400">Monthly profit trend chart</p>
-                    <p class="text-sm text-zinc-400">Chart data: {{ json_encode($this->chartData['monthly_trend']) }}</p>
+            @if(count($this->chartData['monthly_trend']) > 0)
+                <x-chart 
+                    type="line"
+                    data="{{ json_encode([
+                        'labels' => array_column($this->chartData['monthly_trend'], 'month'),
+                        'datasets' => [
+                            [
+                                'label' => 'Revenue',
+                                'data' => array_column($this->chartData['monthly_trend'], 'revenue'),
+                                'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
+                                'borderColor' => 'rgba(16, 185, 129, 1)',
+                                'borderWidth' => 3,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ],
+                            [
+                                'label' => 'Costs',
+                                'data' => array_column($this->chartData['monthly_trend'], 'costs'),
+                                'backgroundColor' => 'rgba(239, 68, 68, 0.1)',
+                                'borderColor' => 'rgba(239, 68, 68, 1)',
+                                'borderWidth' => 3,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ],
+                            [
+                                'label' => 'Profit',
+                                'data' => array_column($this->chartData['monthly_trend'], 'profit'),
+                                'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
+                                'borderColor' => 'rgba(59, 130, 246, 1)',
+                                'borderWidth' => 4,
+                                'fill' => false,
+                                'tension' => 0.4
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'xAxisLabel' => 'Month',
+                        'yAxisLabel' => 'Amount (₦)',
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'top'
+                            ]
+                        ],
+                        'scales' => [
+                            'y' => [
+                                'beginAtZero' => true
+                            ]
+                        ]
+                    ]"
+                    height="300px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div class="text-center">
+                        <flux:icon name="presentation-chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
+                        <p class="text-zinc-500 dark:text-zinc-400">No monthly trend data available</p>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         <!-- Cost vs Revenue Breakdown Chart -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Cost vs Revenue Breakdown</h3>
+                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Revenue & Cost Breakdown</h3>
                 <flux:icon name="chart-pie" class="size-5 text-zinc-500" />
             </div>
-            <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
-                <div class="text-center">
-                    <flux:icon name="chart-pie" class="size-12 text-zinc-400 mx-auto mb-2" />
-                    <p class="text-zinc-500 dark:text-zinc-400">Cost vs revenue breakdown chart</p>
-                    <p class="text-sm text-zinc-400">Chart data: {{ json_encode($this->chartData['cost_breakdown']) }}</p>
+            @if(array_sum($this->chartData['revenue_breakdown']) > 0 || array_sum($this->chartData['cost_breakdown']) > 0)
+                <x-chart 
+                    type="doughnut"
+                    data="{{ json_encode([
+                        'labels' => ['ATC Cost', 'Transport Fee', 'Gas & Chop', 'Fare', 'Maintenance'],
+                        'datasets' => [
+                            [
+                                'data' => [
+                                    $this->chartData['revenue_breakdown']['atc_cost'],
+                                    $this->chartData['revenue_breakdown']['transport_fee'],
+                                    $this->chartData['cost_breakdown']['gas_chop'],
+                                    $this->chartData['cost_breakdown']['fare'],
+                                    $this->chartData['cost_breakdown']['maintenance']
+                                ],
+                                'backgroundColor' => [
+                                    'rgba(16, 185, 129, 0.8)',   // ATC Cost - Green
+                                    'rgba(34, 197, 94, 0.8)',    // Transport Fee - Light Green
+                                    'rgba(239, 68, 68, 0.8)',    // Gas & Chop - Red
+                                    'rgba(245, 158, 11, 0.8)',   // Fare - Orange
+                                    'rgba(139, 92, 246, 0.8)'    // Maintenance - Purple
+                                ],
+                                'borderColor' => [
+                                    'rgba(16, 185, 129, 1)',
+                                    'rgba(34, 197, 94, 1)',
+                                    'rgba(239, 68, 68, 1)',
+                                    'rgba(245, 158, 11, 1)',
+                                    'rgba(139, 92, 246, 1)'
+                                ],
+                                'borderWidth' => 2
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'bottom'
+                            ],
+                            'tooltip' => [
+                                'callbacks' => [
+                                ]
+                            ]
+                        ]
+                    ]"
+                    height="300px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div class="text-center">
+                        <flux:icon name="chart-pie" class="size-12 text-zinc-400 mx-auto mb-2" />
+                        <p class="text-zinc-500 dark:text-zinc-400">No breakdown data available</p>
+                    </div>
                 </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Daily Profit Trend Chart -->
+    <div class="mt-6">
+        <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Daily Profit Trend</h3>
+                <flux:icon name="presentation-chart-bar" class="size-5 text-zinc-500" />
             </div>
+            @if(count($this->chartData['daily_trend']) > 0)
+                <x-chart 
+                    type="line"
+                    data="{{ json_encode([
+                        'labels' => array_column($this->chartData['daily_trend'], 'date'),
+                        'datasets' => [
+                            [
+                                'label' => 'Daily Profit',
+                                'data' => array_column($this->chartData['daily_trend'], 'profit'),
+                                'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
+                                'borderColor' => 'rgba(59, 130, 246, 1)',
+                                'borderWidth' => 2,
+                                'fill' => true,
+                                'tension' => 0.4
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'xAxisLabel' => 'Date',
+                        'yAxisLabel' => 'Profit (₦)',
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'top'
+                            ],
+                            'tooltip' => [
+                                'callbacks' => [
+                                ]
+                            ]
+                        ],
+                        'scales' => [
+                            'y' => [
+                                'ticks' => [
+                                ]
+                            ]
+                        ]
+                    ]"
+                    height="300px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div class="text-center">
+                        <flux:icon name="presentation-chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
+                        <p class="text-zinc-500 dark:text-zinc-400">No daily trend data available</p>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 

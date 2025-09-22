@@ -6,13 +6,11 @@ namespace App\Actions;
 
 use App\Reports\ProfitEstimateReport;
 use Carbon\Carbon;
-use Dompdf\Dompdf;
-use Dompdf\Options;
-use Illuminate\Http\Response;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class ExportProfitEstimatePdf
 {
-    public function execute(array $filters = []): Response
+    public function execute(array $filters = []): mixed
     {
         $report = new ProfitEstimateReport;
         $data = $report->generate($filters);
@@ -20,27 +18,15 @@ class ExportProfitEstimatePdf
 
         $html = $this->generateHtml($data, $summary, $filters);
 
-        $dompdf = new Dompdf;
-        $options = new Options;
-        $options->set('defaultFont', 'DejaVu Sans');
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', false);
-        $options->set('isPhpEnabled', false);
-        $options->set('isJavascriptEnabled', false);
-        $options->set('defaultMediaType', 'screen');
-        $options->set('isFontSubsettingEnabled', true);
-        $dompdf->setOptions($options);
-
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-
         $filename = 'profit-estimate-report-'.now()->format('Y-m-d_H-i-s').'.pdf';
 
-        return response($dompdf->output(), 200, [
-            'Content-Type' => 'application/pdf; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
-        ]);
+        return response()->streamDownload(function () use ($html, $filename) {
+            echo Pdf::html($html)
+                ->format('a4')
+                ->landscape()
+                ->name($filename)
+                ->toResponse(request());
+        }, $filename);
     }
 
     private function generateHtml($data, $summary, $filters): string
@@ -55,7 +41,7 @@ class ExportProfitEstimatePdf
             <meta charset="UTF-8">
             <title>Profit Estimate Report</title>
             <style>
-                body { font-family: DejaVu Sans, Arial, sans-serif; margin: 20px; }
+                body { font-family: Arial, sans-serif; margin: 20px; }
                 .header { text-align: center; margin-bottom: 30px; }
                 .summary { margin-bottom: 30px; }
                 .summary-card { display: inline-block; margin: 10px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; text-align: center; min-width: 150px; }
@@ -87,7 +73,7 @@ class ExportProfitEstimatePdf
 
             <div class="summary">
                 <div class="summary-card">
-                    <div class="summary-value positive">N'.number_format($summary['total_revenue'], 2).'</div>
+                    <div class="summary-value positive">₦'.number_format($summary['total_revenue'], 2).'</div>
                     <div class="summary-label">Total Revenue</div>
                 </div>
                 <div class="summary-card">

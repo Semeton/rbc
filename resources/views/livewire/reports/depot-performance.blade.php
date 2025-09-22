@@ -213,37 +213,165 @@ new class extends Component
             </div>
         </div>
 
-        <!-- Performance Chart -->
+        <!-- Performance Charts -->
         <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
-            <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">Depot Performance Comparison</h3>
-            <div class="h-80 overflow-y-auto">
-                @if(count($this->chartData()['labels']) > 0)
-                    <div class="space-y-4">
-                        @foreach($this->chartData()['labels'] as $index => $depot)
-                            <div class="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
-                                <div class="flex-1">
-                                    <div class="font-semibold text-zinc-900 dark:text-zinc-100">{{ $depot }}</div>
-                                    <div class="text-sm text-zinc-600 dark:text-zinc-400">
-                                        {{ number_format($this->chartData()['dispatches'][$index]) }} dispatches
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                                        ₦{{ number_format($this->chartData()['revenue'][$index], 2) }}
-                                    </div>
-                                    <div class="text-sm text-zinc-600 dark:text-zinc-400">
-                                        ATC: ₦{{ number_format($this->chartData()['atc_costs'][$index], 2) }} | 
-                                        Transport: ₦{{ number_format($this->chartData()['transport_costs'][$index], 2) }}
-                                    </div>
-                                </div>
+            <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">Depot Performance Charts</h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Revenue Comparison Bar Chart -->
+                <div>
+                    <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Revenue by Depot</h4>
+                    @if(count($this->chartData()['labels']) > 0)
+                        <x-chart 
+                            type="bar"
+                            data="{{ json_encode([
+                                'labels' => $this->chartData()['labels'],
+                                'datasets' => [
+                                    [
+                                        'label' => 'Total Revenue',
+                                        'data' => $this->chartData()['revenue'],
+                                        'backgroundColor' => 'rgba(59, 130, 246, 0.8)',
+                                        'borderColor' => 'rgba(59, 130, 246, 1)',
+                                        'borderWidth' => 1
+                                    ]
+                                ]
+                            ]"
+                            options="{{ json_encode([
+                                'xAxisLabel' => 'Depots',
+                                'yAxisLabel' => 'Revenue (₦)',
+                                'plugins' => [
+                                    'legend' => [
+                                        'position' => 'top'
+                                    ],
+                                    'tooltip' => [
+                                        'callbacks' => [
+                                        ]
+                                    ]
+                                ],
+                                'scales' => [
+                                    'y' => [
+                                        'beginAtZero' => true,
+                                        'ticks' => [
+                                        ]
+                                    ]
+                                ]
+                            ]"
+                            height="300px"
+                        />
+                    @else
+                        <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                            <div class="text-center">
+                                <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                                <p>No depot data available</p>
                             </div>
-                        @endforeach
-                    </div>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Dispatches Comparison Bar Chart -->
+                <div>
+                    <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Dispatches by Depot</h4>
+                    @if(count($this->chartData()['labels']) > 0)
+                        <x-chart 
+                            type="bar"
+                            data="{{ json_encode([
+                                'labels' => $this->chartData()['labels'],
+                                'datasets' => [
+                                    [
+                                        'label' => 'Total Dispatches',
+                                        'data' => $this->chartData()['dispatches'],
+                                        'backgroundColor' => 'rgba(16, 185, 129, 0.8)',
+                                        'borderColor' => 'rgba(16, 185, 129, 1)',
+                                        'borderWidth' => 1
+                                    ]
+                                ]
+                            ]"
+                            options="{{ json_encode([
+                                'xAxisLabel' => 'Depots',
+                                'yAxisLabel' => 'Number of Dispatches',
+                                'plugins' => [
+                                    'legend' => [
+                                        'position' => 'top'
+                                    ],
+                                    'tooltip' => [
+                                        'callbacks' => [
+                                        ]
+                                    ]
+                                ],
+                                'scales' => [
+                                    'y' => [
+                                        'beginAtZero' => true,
+                                        'ticks' => [
+                                            'stepSize' => 1
+                                        ]
+                                    ]
+                                ]
+                            ]"
+                            height="300px"
+                        />
+                    @else
+                        <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                            <div class="text-center">
+                                <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                                <p>No depot data available</p>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Revenue Breakdown Chart -->
+            <div class="mt-8">
+                <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Revenue Breakdown by Depot</h4>
+                @if(count($this->chartData()['labels']) > 0)
+                    <x-chart 
+                        type="bar"
+                        data="{{ json_encode([
+                            'labels' => $this->chartData()['labels'],
+                            'datasets' => [
+                                [
+                                    'label' => 'ATC Cost',
+                                    'data' => $this->chartData()['atc_costs'],
+                                    'backgroundColor' => 'rgba(139, 92, 246, 0.8)',
+                                    'borderColor' => 'rgba(139, 92, 246, 1)',
+                                    'borderWidth' => 1
+                                ],
+                                [
+                                    'label' => 'Transport Cost',
+                                    'data' => $this->chartData()['transport_costs'],
+                                    'backgroundColor' => 'rgba(245, 158, 11, 0.8)',
+                                    'borderColor' => 'rgba(245, 158, 11, 1)',
+                                    'borderWidth' => 1
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'xAxisLabel' => 'Depots',
+                            'yAxisLabel' => 'Amount (₦)',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ],
+                            'scales' => [
+                                'y' => [
+                                    'beginAtZero' => true,
+                                    'ticks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
                 @else
-                    <div class="flex items-center justify-center h-full">
+                    <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                         <div class="text-center">
-                            <flux:icon name="chart-bar" class="mx-auto size-12 text-zinc-300 dark:text-zinc-600 mb-4" />
-                            <p class="text-zinc-500 dark:text-zinc-400">No depot data available for the selected criteria.</p>
+                            <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                            <p>No depot data available</p>
                         </div>
                     </div>
                 @endif

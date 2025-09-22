@@ -252,46 +252,98 @@ new class extends Component
             <!-- Payment Type Distribution -->
             <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
                 <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">Payment Type Distribution</h3>
-                <div class="h-64 flex items-center justify-center">
-                    <div class="text-center">
-                        <div class="grid grid-cols-2 gap-4">
-                            @foreach($this->chartData()['payment_types']['labels'] as $index => $type)
-                                <div class="p-4 rounded-lg {{ $type === 'Cash' ? 'bg-yellow-100 dark:bg-yellow-900/20' : 'bg-purple-100 dark:bg-purple-900/20' }}">
-                                    <div class="text-2xl font-bold {{ $type === 'Cash' ? 'text-yellow-600 dark:text-yellow-400' : 'text-purple-600 dark:text-purple-400' }}">
-                                        {{ $this->chartData()['payment_types']['counts'][$index] }}
-                                    </div>
-                                    <div class="text-sm text-zinc-600 dark:text-zinc-400">{{ $type }}</div>
-                                    <div class="text-xs text-zinc-500 dark:text-zinc-500">
-                                        ₦{{ number_format($this->chartData()['payment_types']['amounts'][$index], 2) }}
-                                    </div>
-                                </div>
-                            @endforeach
+                @if(count($this->chartData()['payment_types']['labels']) > 0)
+                    <x-chart 
+                        type="doughnut"
+                        data="{{ json_encode([
+                            'labels' => $this->chartData()['payment_types']['labels'],
+                            'datasets' => [
+                                [
+                                    'data' => $this->chartData()['payment_types']['amounts'],
+                                    'backgroundColor' => [
+                                        'rgba(245, 158, 11, 0.8)',
+                                        'rgba(139, 92, 246, 0.8)'
+                                    ],
+                                    'borderColor' => [
+                                        'rgba(245, 158, 11, 1)',
+                                        'rgba(139, 92, 246, 1)'
+                                    ],
+                                    'borderWidth' => 2
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'bottom'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
+                @else
+                    <div class="h-64 flex items-center justify-center">
+                        <div class="text-center">
+                            <flux:icon name="chart-pie" class="size-12 text-zinc-400 mx-auto mb-2" />
+                            <p class="text-zinc-500 dark:text-zinc-400">No payment type data available</p>
                         </div>
                     </div>
-                </div>
+                @endif
             </div>
 
             <!-- Monthly Trends -->
             <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
                 <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">Monthly Payment Trends</h3>
-                <div class="h-64 flex items-center justify-center">
-                    <div class="text-center">
-                        <div class="text-sm text-zinc-600 dark:text-zinc-400">
-                            @if(count($this->chartData()['monthly_trends']['labels']) > 0)
-                                <div class="space-y-2">
-                                    @foreach($this->chartData()['monthly_trends']['labels'] as $index => $month)
-                                        <div class="flex justify-between items-center">
-                                            <span>{{ \Carbon\Carbon::createFromFormat('Y-m', $month)->format('M Y') }}</span>
-                                            <span class="font-semibold">₦{{ number_format($this->chartData()['monthly_trends']['amounts'][$index], 2) }}</span>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <p>No data available for the selected period</p>
-                            @endif
+                @if(count($this->chartData()['monthly_trends']['labels']) > 0)
+                    <x-chart 
+                        type="line"
+                        data="{{ json_encode([
+                            'datasets' => [
+                                [
+                                    'label' => 'Payment Amount',
+                                    'data' => $this->chartData()['monthly_trends']['amounts'],
+                                    'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
+                                    'borderColor' => 'rgba(59, 130, 246, 1)',
+                                    'borderWidth' => 3,
+                                    'fill' => true,
+                                    'tension' => 0.4
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'xAxisLabel' => 'Month',
+                            'yAxisLabel' => 'Payment Amount (₦)',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ],
+                            'scales' => [
+                                'y' => [
+                                    'beginAtZero' => true,
+                                    'ticks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
+                @else
+                    <div class="h-64 flex items-center justify-center">
+                        <div class="text-center">
+                            <flux:icon name="presentation-chart-bar" class="size-12 text-zinc-400 mx-auto mb-2" />
+                            <p class="text-zinc-500 dark:text-zinc-400">No monthly trend data available</p>
                         </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
 

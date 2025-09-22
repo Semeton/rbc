@@ -145,13 +145,117 @@
         </div>
     </div>
 
-    <!-- Chart Placeholder -->
+    <!-- Outstanding Balances Charts -->
     <div class="mt-8 bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
-        <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-4">Outstanding Amounts by Customer</h3>
-        <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
-            <div class="text-center">
-                <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
-                <p>Chart visualization will be implemented here</p>
+        <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-6">Outstanding Balances Analytics</h3>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Outstanding Amounts Bar Chart -->
+            <div>
+                <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Outstanding Amounts by Customer</h4>
+                @if(count($this->chartData['labels']) > 0)
+                    <x-chart 
+                        type="bar"
+                        data="{{ json_encode([
+                            'labels' => $this->chartData['labels'],
+                            'datasets' => [
+                                [
+                                    'label' => 'Outstanding Amount',
+                                    'data' => $this->chartData['outstanding_amounts'],
+                                    'backgroundColor' => 'rgba(239, 68, 68, 0.8)',
+                                    'borderColor' => 'rgba(239, 68, 68, 1)',
+                                    'borderWidth' => 1
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'xAxisLabel' => 'Customers',
+                            'yAxisLabel' => 'Outstanding Amount (₦)',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ],
+                            'scales' => [
+                                'y' => [
+                                    'beginAtZero' => true,
+                                    'ticks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
+                @else
+                    <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                        <div class="text-center">
+                            <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                            <p>No outstanding balances data available</p>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Outstanding Amounts Pie Chart -->
+            <div>
+                <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Outstanding Balances Distribution</h4>
+                @if(count($this->chartData['labels']) > 0)
+                    <x-chart 
+                        type="doughnut"
+                        data="{{ json_encode([
+                            'labels' => $this->chartData['labels'],
+                            'datasets' => [
+                                [
+                                    'data' => $this->chartData['outstanding_amounts'],
+                                    'backgroundColor' => [
+                                        'rgba(239, 68, 68, 0.8)',
+                                        'rgba(245, 158, 11, 0.8)',
+                                        'rgba(59, 130, 246, 0.8)',
+                                        'rgba(16, 185, 129, 0.8)',
+                                        'rgba(139, 92, 246, 0.8)',
+                                        'rgba(236, 72, 153, 0.8)',
+                                        'rgba(14, 165, 233, 0.8)',
+                                        'rgba(34, 197, 94, 0.8)'
+                                    ],
+                                    'borderColor' => [
+                                        'rgba(239, 68, 68, 1)',
+                                        'rgba(245, 158, 11, 1)',
+                                        'rgba(59, 130, 246, 1)',
+                                        'rgba(16, 185, 129, 1)',
+                                        'rgba(139, 92, 246, 1)',
+                                        'rgba(236, 72, 153, 1)',
+                                        'rgba(14, 165, 233, 1)',
+                                        'rgba(34, 197, 94, 1)'
+                                    ],
+                                    'borderWidth' => 2
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'bottom'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
+                @else
+                    <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                        <div class="text-center">
+                            <flux:icon name="chart-pie" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                            <p>No outstanding balances data available</p>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

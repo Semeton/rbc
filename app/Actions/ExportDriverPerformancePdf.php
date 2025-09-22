@@ -3,13 +3,12 @@
 namespace App\Actions;
 
 use App\Reports\DriverPerformanceReport;
-use Dompdf\Dompdf;
-use Dompdf\Options;
-use Illuminate\Http\Response;
-
+// use Dompdf\Dompdf;
+// use Dompdf\Options;
+use Spatie\LaravelPdf\Facades\Pdf;
 class ExportDriverPerformancePdf
 {
-    public function execute(array $filters = []): Response
+    public function execute(array $filters = []): mixed
     {
         $report = new DriverPerformanceReport;
         $data = $report->generate($filters);
@@ -17,23 +16,15 @@ class ExportDriverPerformancePdf
 
         $html = $this->generateHtml($data, $summary, $filters);
 
-        $options = new Options;
-        $options->set('defaultFont', 'Arial');
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isPhpEnabled', true);
-
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-
         $filename = 'driver_performance_'.now()->format('Y-m-d_H-i-s').'.pdf';
 
-
-        return response($dompdf->output(), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
-        ]);
+        return response()->streamDownload(function () use ($html, $filename) {
+            echo Pdf::html($html)
+                ->format('a4')
+                ->landscape()
+                ->name($filename)
+                ->toResponse(request());
+        }, $filename);
     }
 
     private function generateHtml($data, $summary, $filters): string

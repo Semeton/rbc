@@ -218,24 +218,122 @@
     <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Monthly Revenue Bar Chart -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
-            <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-4">Monthly Revenue</h3>
-            <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
-                <div class="text-center">
-                    <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
-                    <p>Bar chart visualization will be implemented here</p>
+            <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-4">Monthly Revenue Trend</h3>
+            @if(count($this->chartData['monthly_revenue']['labels']) > 0)
+                <x-chart 
+                    type="bar"
+                    data="{{ json_encode([
+                        'labels' => $this->chartData['monthly_revenue']['labels'],
+                        'datasets' => [
+                            [
+                                'label' => 'ATC Cost',
+                                'data' => $this->chartData['monthly_revenue']['atc_cost'],
+                                'backgroundColor' => 'rgba(59, 130, 246, 0.8)',
+                                'borderColor' => 'rgba(59, 130, 246, 1)',
+                                'borderWidth' => 1
+                            ],
+                            [
+                                'label' => 'Transport Fees',
+                                'data' => $this->chartData['monthly_revenue']['transport_fees'],
+                                'backgroundColor' => 'rgba(16, 185, 129, 0.8)',
+                                'borderColor' => 'rgba(16, 185, 129, 1)',
+                                'borderWidth' => 1
+                            ],
+                            [
+                                'label' => 'Total Revenue',
+                                'data' => $this->chartData['monthly_revenue']['revenue'],
+                                'backgroundColor' => 'rgba(139, 92, 246, 0.8)',
+                                'borderColor' => 'rgba(139, 92, 246, 1)',
+                                'borderWidth' => 2,
+                                'type' => 'line',
+                                'fill' => false
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'xAxisLabel' => 'Month',
+                        'yAxisLabel' => 'Amount (₦)',
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'top'
+                            ],
+                            'tooltip' => [
+                                'callbacks' => [
+                                ]
+                            ]
+                        ],
+                        'scales' => [
+                            'y' => [
+                                'beginAtZero' => true,
+                                'ticks' => [
+                                ]
+                            ]
+                        ]
+                    ]"
+                    height="400px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                    <div class="text-center">
+                        <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                        <p>No data available for the selected period</p>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         <!-- Cement Type Distribution Pie Chart -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
             <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-4">Cement Type Distribution</h3>
-            <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
-                <div class="text-center">
-                    <flux:icon name="chart-pie" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
-                    <p>Pie chart visualization will be implemented here</p>
+            @if(count($this->chartData['cement_distribution']['labels']) > 0)
+                <x-chart 
+                    type="doughnut"
+                    data="{{ json_encode([
+                        'labels' => $this->chartData['cement_distribution']['labels'],
+                        'datasets' => [
+                            [
+                                'data' => $this->chartData['cement_distribution']['transactions'],
+                                'backgroundColor' => [
+                                    'rgba(59, 130, 246, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(139, 92, 246, 0.8)',
+                                    'rgba(245, 158, 11, 0.8)',
+                                    'rgba(239, 68, 68, 0.8)',
+                                    'rgba(236, 72, 153, 0.8)'
+                                ],
+                                'borderColor' => [
+                                    'rgba(59, 130, 246, 1)',
+                                    'rgba(16, 185, 129, 1)',
+                                    'rgba(139, 92, 246, 1)',
+                                    'rgba(245, 158, 11, 1)',
+                                    'rgba(239, 68, 68, 1)',
+                                    'rgba(236, 72, 153, 1)'
+                                ],
+                                'borderWidth' => 2
+                            ]
+                        ]
+                    ]"
+                    options="{{ json_encode([
+                        'plugins' => [
+                            'legend' => [
+                                'position' => 'bottom'
+                            ],
+                            'tooltip' => [
+                                'callbacks' => [
+                                ]
+                            ]
+                        ]
+                    ]"
+                    height="400px"
+                />
+            @else
+                <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                    <div class="text-center">
+                        <flux:icon name="chart-pie" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                        <p>No cement type data available for the selected period</p>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 </div>

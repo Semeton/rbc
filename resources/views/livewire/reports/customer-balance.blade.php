@@ -124,6 +124,118 @@
         </div>
     </div>
 
+    <!-- Customer Balance Charts -->
+    <div class="mt-8 bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
+        <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-6">Customer Balance Analytics</h3>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Outstanding Balances Chart -->
+            <div>
+                <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Outstanding Balances by Customer</h4>
+                @if(count($this->chartData['labels']) > 0)
+                    <x-chart 
+                        type="bar"
+                        data="{{ json_encode([
+                            'labels' => $this->chartData['labels'],
+                            'datasets' => [
+                                [
+                                    'label' => 'Outstanding Balance',
+                                    'data' => $this->chartData['outstanding_balances'],
+                                    'backgroundColor' => 'rgba(239, 68, 68, 0.8)',
+                                    'borderColor' => 'rgba(239, 68, 68, 1)',
+                                    'borderWidth' => 1
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'xAxisLabel' => 'Customers',
+                            'yAxisLabel' => 'Outstanding Balance (₦)',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ],
+                            'scales' => [
+                                'y' => [
+                                    'ticks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
+                @else
+                    <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                        <div class="text-center">
+                            <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                            <p>No outstanding balance data available</p>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <!-- ATC Values vs Payments Chart -->
+            <div>
+                <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">ATC Values vs Payments</h4>
+                @if(count($this->chartData['labels']) > 0)
+                    <x-chart 
+                        type="bar"
+                        data="{{ json_encode([
+                            'labels' => $this->chartData['labels'],
+                            'datasets' => [
+                                [
+                                    'label' => 'ATC Values',
+                                    'data' => $this->chartData['atc_values'],
+                                    'backgroundColor' => 'rgba(59, 130, 246, 0.8)',
+                                    'borderColor' => 'rgba(59, 130, 246, 1)',
+                                    'borderWidth' => 1
+                                ],
+                                [
+                                    'label' => 'Payments',
+                                    'data' => $this->chartData['payments'],
+                                    'backgroundColor' => 'rgba(16, 185, 129, 0.8)',
+                                    'borderColor' => 'rgba(16, 185, 129, 1)',
+                                    'borderWidth' => 1
+                                ]
+                            ]
+                        ]"
+                        options="{{ json_encode([
+                            'xAxisLabel' => 'Customers',
+                            'yAxisLabel' => 'Amount (₦)',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                    'callbacks' => [
+                                    ]
+                                ]
+                            ],
+                            'scales' => [
+                                'y' => [
+                                    'beginAtZero' => true,
+                                    'ticks' => [
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="300px"
+                    />
+                @else
+                    <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                        <div class="text-center">
+                            <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                            <p>No ATC values vs payments data available</p>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
     <!-- Data Table -->
     <div class="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700">
         <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-700">
@@ -188,14 +300,4 @@
         </div>
     </div>
 
-    <!-- Chart Placeholder -->
-    <div class="mt-8 bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
-        <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-4">Customer Balance Overview</h3>
-        <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
-            <div class="text-center">
-                <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
-                <p>Chart visualization will be implemented here</p>
-            </div>
-        </div>
-    </div>
 </div>
