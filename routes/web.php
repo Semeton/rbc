@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\ATC\AtcAllocationManager;
+use App\Livewire\Transaction\TransactionManager;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -213,10 +215,10 @@ Route::get('/reports/profit-estimate', function () {
 })->name('reports.profit-estimate');
 
         // ATC Management routes
-        Route::get('/atc/allocation-manager', \App\Livewire\AtcAllocationManager::class)->name('atc.allocation-manager');
+        Route::get('/atc/allocation-manager', AtcAllocationManager::class)->name('atc.allocation-manager');
         
         // Transaction Management routes
-        Route::get('/transactions', \App\Livewire\TransactionManager::class)->name('transactions.index');
+        Route::get('/transactions', TransactionManager::class)->name('transactions.index');
 
         // Dashboard Routes
         Route::get('/dashboard', function () {

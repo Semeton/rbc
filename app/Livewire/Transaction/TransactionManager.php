@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Livewire;
+namespace App\Livewire\Transaction;
 
 use App\Models\Atc;
 use App\Models\Customer;
@@ -287,7 +287,7 @@ class TransactionManager extends Component
 
     public function render()
     {
-        return view('livewire.transaction-manager', [
+        return view('livewire.transaction.transaction-manager', [
             'transactions' => $this->transactions,
             'allocationStats' => $this->atcAllocationStats,
             'customers' => $this->customers,

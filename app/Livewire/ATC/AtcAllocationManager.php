@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Livewire;
+namespace App\Livewire\ATC;
 
 use App\Models\Atc;
 use App\Services\AtcAllocationValidator;
@@ -119,7 +119,7 @@ class AtcAllocationManager extends Component
 
     public function render()
     {
-        return view('livewire.atc-allocation-manager', [
+        return view('livewire.atc.allocation-manager', [
             'atcs' => $this->atcs,
             'allocationStats' => $this->allocationStats,
         ]);
