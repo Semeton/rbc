@@ -24,7 +24,7 @@ class InvitationService
     {
         try {
             Mail::to($invitation->email)->send(new UserInvitationMail($invitation));
-            
+
             $this->auditTrailService->log(
                 'create',
                 'UserInvitation',

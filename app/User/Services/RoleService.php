@@ -103,6 +103,12 @@ class RoleService
         $allRoles = $this->getAllRoles();
         $userLevel = $this->getRoleHierarchy()[$user->role] ?? 0;
 
+        // Admins can invite all roles including other admins
+        if ($user->role === 'admin') {
+            return $allRoles;
+        }
+
+        // Other users can only invite roles lower than their level
         return array_filter($allRoles, function ($role) use ($userLevel) {
             $roleLevel = $this->getRoleHierarchy()[$role] ?? 0;
             return $roleLevel < $userLevel;
