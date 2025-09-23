@@ -11,6 +11,7 @@ trait UserRolesAndPermission
             'accountant' => 'Accountant',
             'operations_manager' => 'Operations Manager',
             'staff' => 'Data Entry Staff',
+            default => 'Unknown Role',
         };
     }
 
@@ -31,6 +32,7 @@ trait UserRolesAndPermission
             'staff' => [
                 'create_record' => 'Create Record',
             ],
+            default => [],
         };
     }
 }

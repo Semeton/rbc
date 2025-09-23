@@ -50,6 +50,10 @@ class User extends Authenticatable
      */
     public function initials(): string
     {
+        if (empty($this->name)) {
+            return 'U';
+        }
+        
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
