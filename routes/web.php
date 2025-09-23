@@ -5,9 +5,7 @@ use App\Livewire\Transaction\TransactionManager;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::redirect('/', '/dashboard')->name('home');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -89,22 +87,7 @@ Route::middleware(['auth'])->group(function () {
             return view('atcs.edit', compact('atc'));
         })->name('atcs.edit');
 
-        // Transaction Management Routes
-        Route::get('/transactions', function () {
-            return view('transactions.index');
-        })->name('transactions.index');
-
-        Route::get('/transactions/create', function () {
-            return view('transactions.create');
-        })->name('transactions.create');
-
-        Route::get('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction) {
-            return view('transactions.show', compact('transaction'));
-        })->name('transactions.show');
-
-        Route::get('/transactions/{transaction}/edit', function (\App\Models\DailyCustomerTransaction $transaction) {
-            return view('transactions.edit', compact('transaction'));
-        })->name('transactions.edit');
+        // Transaction Management Routes (removed duplicates - using Livewire component below)
 
         // Payment Management Routes
         Route::get('/payments', function () {
@@ -206,25 +189,40 @@ Route::middleware(['auth'])->group(function () {
             return view('reports.cash-flow');
         })->name('reports.cash-flow');
 
-Route::get('/reports/daily-activity-summary', function () {
-    return view('reports.daily-activity-summary');
-})->name('reports.daily-activity-summary');
+        Route::get('/reports/daily-activity-summary', function () {
+            return view('reports.daily-activity-summary');
+        })->name('reports.daily-activity-summary');
 
-Route::get('/reports/profit-estimate', function () {
-    return view('reports.profit-estimate');
-})->name('reports.profit-estimate');
+        Route::get('/reports/profit-estimate', function () {
+            return view('reports.profit-estimate');
+        })->name('reports.profit-estimate');
 
         // ATC Management routes
         Route::get('/atc/allocation-manager', AtcAllocationManager::class)->name('atc.allocation-manager');
         
         // Transaction Management routes
         Route::get('/transactions', TransactionManager::class)->name('transactions.index');
+        Route::get('/transactions/create', function () {
+            return redirect()->route('transactions.index');
+        })->name('transactions.create');
 
         // Dashboard Routes
         Route::get('/dashboard', function () {
             return view('dashboard.index');
         })->name('dashboard.index');
+
+        // Notifications Routes
+        Route::get('/notifications', function () {
+            return view('notifications.index');
+        })->name('notifications.index');
+
+        // User Management Routes
+        Route::get('/users', \App\Livewire\User\UserManager::class)->name('users.index');
+        Route::get('/users/invite', \App\Livewire\User\InviteUser::class)->name('users.invite');
     });
 });
+
+// Invitation acceptance (public route)
+Route::get('/invitations/accept/{token}', \App\Livewire\User\AcceptInvitation::class)->name('invitations.accept');
 
 require __DIR__.'/auth.php';

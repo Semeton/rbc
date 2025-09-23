@@ -8,6 +8,7 @@ use App\Actions\ExportOutstandingBalancesExcel;
 use App\Actions\ExportOutstandingBalancesPdf;
 use App\Models\Customer;
 use App\Reports\OutstandingBalancesReport;
+use App\Traits\PaginatesReportData;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -15,7 +16,7 @@ use Livewire\WithPagination;
 
 class OutstandingBalances extends Component
 {
-    use WithPagination;
+    use WithPagination, PaginatesReportData;
 
     public string $startDate = '';
 
@@ -83,8 +84,9 @@ class OutstandingBalances extends Component
     public function reportData()
     {
         $report = app(OutstandingBalancesReport::class);
-
-        return $report->generate($this->getFilters());
+        $data = $report->generate($this->getFilters());
+        
+        return $this->paginateCollection($data);
     }
 
     #[Computed]

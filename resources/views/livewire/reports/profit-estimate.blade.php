@@ -442,7 +442,7 @@
             </table>
         </div>
         <div class="px-6 py-3">
-            {{-- Pagination links if needed --}}
+            {{ $this->reportData->links() }}
         </div>
     </div>
 </div>

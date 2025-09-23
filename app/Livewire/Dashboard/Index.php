@@ -11,18 +11,9 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    public string $chartPeriod = '30';
-
-    public string $refreshInterval = '30';
-
     public function mount(): void
     {
         // Initialize dashboard
-    }
-
-    public function updatedChartPeriod(): void
-    {
-        // Chart will automatically update due to computed property
     }
 
     #[Computed]
@@ -46,7 +37,7 @@ class Index extends Component
     #[Computed]
     public function revenueChart()
     {
-        return app(DashboardService::class)->getRevenueChart((int) $this->chartPeriod);
+        return app(DashboardService::class)->getRevenueChart(30);
     }
 
     #[Computed]

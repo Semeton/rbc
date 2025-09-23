@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.min.js" integrity="sha512-n/G+dROKbKL3GVngGWmWfwK0yPctjZQM752diVYnXZtD/48agpUKLIn0xDQL9ydZ91x6BiOmTIFwWjjFi2kEFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
@@ -21,6 +22,11 @@
                     <flux:navlist.item icon="user-group" :href="route('drivers.index')" :current="request()->routeIs('drivers.*')" wire:navigate>{{ __('Drivers') }}</flux:navlist.item>
                     <flux:navlist.item icon="truck" :href="route('trucks.index')" :current="request()->routeIs('trucks.*')" wire:navigate>{{ __('Trucks') }}</flux:navlist.item>
                     <flux:navlist.item icon="document-text" :href="route('atcs.index')" :current="request()->routeIs('atcs.*')" wire:navigate>{{ __('ATCs') }}</flux:navlist.item>
+                </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('User Management')" class="grid">
+                    <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>{{ __('Users') }}</flux:navlist.item>
+                    <flux:navlist.item icon="user-plus" :href="route('users.invite')" :current="request()->routeIs('users.invite')" wire:navigate>{{ __('Invite User') }}</flux:navlist.item>
                 </flux:navlist.group>
 
                 <flux:navlist.group :heading="__('Transactions')" class="grid">

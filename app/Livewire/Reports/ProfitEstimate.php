@@ -7,13 +7,14 @@ namespace App\Livewire\Reports;
 use App\Actions\ExportProfitEstimateExcel;
 use App\Actions\ExportProfitEstimatePdf;
 use App\Reports\ProfitEstimateReport;
+use App\Traits\PaginatesReportData;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class ProfitEstimate extends Component
 {
-    use WithPagination;
+    use WithPagination, PaginatesReportData;
 
     public string $startDate = '';
 
@@ -35,8 +36,9 @@ class ProfitEstimate extends Component
     public function reportData()
     {
         $report = new ProfitEstimateReport;
-
-        return $report->generate($this->getFilters());
+        $data = $report->generate($this->getFilters());
+        
+        return $this->paginateCollection($data);
     }
 
     #[Computed]

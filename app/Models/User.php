@@ -40,6 +40,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -64,5 +65,100 @@ class User extends Authenticatable
     public function permission(): array
     {
         return $this->permissions($this->attributes['role']);
+    }
+
+    /**
+     * Get the user's invitations
+     */
+    public function invitations()
+    {
+        return $this->hasMany(UserInvitation::class, 'invited_by');
+    }
+
+    /**
+     * Get the user's sessions
+     */
+    public function sessions()
+    {
+        return $this->hasMany(UserSession::class);
+    }
+
+    /**
+     * Get the user's preferences
+     */
+    public function preferences()
+    {
+        return $this->hasOne(UserPreference::class);
+    }
+
+    /**
+     * Get the user's notifications
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    /**
+     * Check if user is active
+     */
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    /**
+     * Check if user is inactive
+     */
+    public function isInactive(): bool
+    {
+        return $this->status === 'inactive';
+    }
+
+    /**
+     * Check if user is suspended
+     */
+    public function isSuspended(): bool
+    {
+        return $this->status === 'suspended';
+    }
+
+    /**
+     * Get the user's status display name
+     */
+    public function getStatusDisplayAttribute(): string
+    {
+        return match ($this->status) {
+            'active' => 'Active',
+            'inactive' => 'Inactive',
+            'suspended' => 'Suspended',
+            default => 'Unknown',
+        };
+    }
+
+    /**
+     * Get the user's status color class
+     */
+    public function getStatusColorClassAttribute(): string
+    {
+        return match ($this->status) {
+            'active' => 'text-green-600',
+            'inactive' => 'text-gray-600',
+            'suspended' => 'text-red-600',
+            default => 'text-gray-600',
+        };
+    }
+
+    /**
+     * Get the user's status background color class
+     */
+    public function getStatusBackgroundColorClassAttribute(): string
+    {
+        return match ($this->status) {
+            'active' => 'bg-green-100',
+            'inactive' => 'bg-gray-100',
+            'suspended' => 'bg-red-100',
+            default => 'bg-gray-100',
+        };
     }
 }

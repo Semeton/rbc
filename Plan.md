@@ -525,9 +525,82 @@
 
 ---
 
-## Phase 8: Advanced Features (Week 13-14)
+## Phase 8: User Management System (Week 13-14)
 
-### 8.1 Search & Filtering System
+### 8.1 User Management Module
+
+**Priority:** High  
+**Estimated Time:** 4-5 days
+
+#### Backend Tasks:
+
+-   [ ] **User Management Controller & Service**
+
+    -   Create `app/User/UserController.php`
+    -   Create `app/User/UserService.php`
+    -   Implement user CRUD operations with validation
+    -   Add user search and filtering functionality
+    -   Implement user status management (active/inactive)
+
+-   [ ] **User Invitation System**
+
+    -   Create `app/User/InvitationService.php`
+    -   Implement email invitation functionality
+    -   Add invitation token generation and validation
+    -   Create invitation expiration handling
+    -   Implement invitation acceptance workflow
+
+-   [ ] **Role & Permission Management**
+
+    -   Enhance existing role system with granular permissions
+    -   Create `app/User/RoleService.php` for role management
+    -   Implement permission assignment and validation
+    -   Add role-based access control middleware
+    -   Create user role assignment functionality
+
+-   [ ] **User Profile Management**
+
+    -   Implement user profile update functionality
+    -   Add password change with validation
+    -   Create user preferences system
+    -   Implement user activity tracking
+    -   Add user session management
+
+#### Frontend Tasks:
+
+-   [ ] **User Management Livewire Components**
+
+    -   Create `UserIndex` component with advanced filtering
+    -   Create `UserForm` component for create/edit
+    -   Create `UserShow` component for user details
+    -   Create `UserInvitation` component for sending invites
+    -   Create `UserProfile` component for profile management
+
+-   [ ] **User Management Views**
+
+    -   Create user index page with search and filters
+    -   Create user form with role assignment
+    -   Create user invitation form
+    -   Create user profile page
+    -   Create user details page with activity log
+
+-   [ ] **User Management Features**
+
+    -   Implement user search and filtering
+    -   Add bulk user operations (activate/deactivate)
+    -   Create user activity monitoring
+    -   Implement user session management
+    -   Add user export functionality
+
+#### Deliverables:
+
+-   Complete user CRUD functionality
+-   User invitation system with email
+-   Enhanced role and permission management
+-   User profile and preferences system
+-   User activity tracking and monitoring
+
+### 8.2 Search & Filtering System
 
 **Priority:** Medium  
 **Estimated Time:** 2-3 days
@@ -554,7 +627,7 @@
 -   Search analytics
 -   Filter presets
 
-### 8.2 Notification System
+### 8.3 Notification System
 
 **Priority:** Medium  
 **Estimated Time:** 2-3 days
@@ -717,6 +790,12 @@ app/
 ├── Transaction/
 ├── TruckMovement/
 ├── Maintenance/
+├── User/
+│   ├── Controllers/
+│   ├── Services/
+│   ├── Requests/
+│   ├── Resources/
+│   └── Mail/
 ├── Reports/
 ├── Dashboard/
 ├── Notifications/
@@ -741,6 +820,7 @@ resources/views/
 │   ├── transaction/
 │   ├── truck-movement/
 │   ├── maintenance/
+│   ├── user/
 │   ├── reports/
 │   └── dashboard/
 └── partials/
@@ -750,7 +830,7 @@ resources/views/
 
 -   **Primary Tables:** customers, drivers, trucks, atcs, payments, daily_customer_transactions, daily_truck_records, truck_maintenance_records
 -   **Audit Tables:** audit_trails, activity_logs
--   **User Management:** users, roles, permissions
+-   **User Management:** users, user_invitations, user_sessions, user_preferences
 -   **System Tables:** migrations, failed_jobs, telescope_entries
 
 ---
