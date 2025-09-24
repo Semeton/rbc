@@ -20,6 +20,8 @@ class ProfitEstimate extends Component
 
     public string $endDate = '';
 
+    public int $chartUpdateKey = 0;
+
     public function mount(): void
     {
         $this->startDate = now()->startOfYear()->format('Y-m-d');
@@ -30,6 +32,7 @@ class ProfitEstimate extends Component
     public function updated(): void
     {
         $this->resetPage();
+        $this->refreshChartData();
     }
 
     #[Computed]
@@ -67,10 +70,22 @@ class ProfitEstimate extends Component
         }
 
         if ($format === 'excel') {
-            return ExportProfitEstimateExcel::export($filters);
+            $exportAction = new ExportProfitEstimateExcel;
+            return $exportAction->execute($filters);
         }
 
         return null;
+    }
+
+    private function refreshChartData(): void
+    {
+        // Force refresh of computed properties
+        unset($this->reportData);
+        unset($this->summary);
+        unset($this->chartData);
+        
+        // Increment chart update key to force re-rendering
+        $this->chartUpdateKey++;
     }
 
     private function getFilters(): array

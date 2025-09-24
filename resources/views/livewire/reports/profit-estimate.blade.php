@@ -203,7 +203,7 @@
             @if(count($this->chartData['monthly_trend']) > 0)
                 <x-chart 
                     type="line"
-                    data="{{ json_encode([
+                    :data="[
                         'labels' => array_column($this->chartData['monthly_trend'], 'month'),
                         'datasets' => [
                             [
@@ -235,7 +235,7 @@
                             ]
                         ]
                     ]"
-                    options="{{ json_encode([
+                    :options="[
                         'xAxisLabel' => 'Month',
                         'yAxisLabel' => 'Amount (₦)',
                         'plugins' => [
@@ -250,6 +250,7 @@
                         ]
                     ]"
                     height="300px"
+                    wire:key="monthly-trend-{{ $this->chartUpdateKey }}"
                 />
             @else
                 <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
@@ -270,7 +271,7 @@
             @if(array_sum($this->chartData['revenue_breakdown']) > 0 || array_sum($this->chartData['cost_breakdown']) > 0)
                 <x-chart 
                     type="doughnut"
-                    data="{{ json_encode([
+                    :data="[
                         'labels' => ['ATC Cost', 'Transport Fee', 'Gas & Chop', 'Fare', 'Maintenance'],
                         'datasets' => [
                             [
@@ -299,7 +300,7 @@
                             ]
                         ]
                     ]"
-                    options="{{ json_encode([
+                    :options="[
                         'plugins' => [
                             'legend' => [
                                 'position' => 'bottom'
@@ -311,6 +312,7 @@
                         ]
                     ]"
                     height="300px"
+                    wire:key="revenue-breakdown-{{ $this->chartUpdateKey }}"
                 />
             @else
                 <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
@@ -333,7 +335,7 @@
             @if(count($this->chartData['daily_trend']) > 0)
                 <x-chart 
                     type="line"
-                    data="{{ json_encode([
+                    :data="[
                         'labels' => array_column($this->chartData['daily_trend'], 'date'),
                         'datasets' => [
                             [
@@ -347,7 +349,7 @@
                             ]
                         ]
                     ]"
-                    options="{{ json_encode([
+                    :options="[
                         'xAxisLabel' => 'Date',
                         'yAxisLabel' => 'Profit (₦)',
                         'plugins' => [
@@ -367,6 +369,7 @@
                         ]
                     ]"
                     height="300px"
+                    wire:key="daily-trend-{{ $this->chartUpdateKey }}"
                 />
             @else
                 <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">

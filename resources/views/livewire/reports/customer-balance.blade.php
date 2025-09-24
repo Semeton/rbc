@@ -135,7 +135,7 @@
                 @if(count($this->chartData['labels']) > 0)
                     <x-chart 
                         type="bar"
-                        data="{{ json_encode([
+                        :data="[
                             'labels' => $this->chartData['labels'],
                             'datasets' => [
                                 [
@@ -147,7 +147,7 @@
                                 ]
                             ]
                         ]"
-                        options="{{ json_encode([
+                        :options="[
                             'xAxisLabel' => 'Customers',
                             'yAxisLabel' => 'Outstanding Balance (₦)',
                             'plugins' => [
@@ -167,6 +167,7 @@
                             ]
                         ]"
                         height="300px"
+                        wire:key="outstanding-balances-{{ $this->chartUpdateKey }}"
                     />
                 @else
                     <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
@@ -184,7 +185,7 @@
                 @if(count($this->chartData['labels']) > 0)
                     <x-chart 
                         type="bar"
-                        data="{{ json_encode([
+                        :data="[
                             'labels' => $this->chartData['labels'],
                             'datasets' => [
                                 [
@@ -203,7 +204,7 @@
                                 ]
                             ]
                         ]"
-                        options="{{ json_encode([
+                        :options="[
                             'xAxisLabel' => 'Customers',
                             'yAxisLabel' => 'Amount (₦)',
                             'plugins' => [
@@ -224,6 +225,7 @@
                             ]
                         ]"
                         height="300px"
+                        wire:key="atc-vs-payments-{{ $this->chartUpdateKey }}"
                     />
                 @else
                     <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">

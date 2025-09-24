@@ -23,6 +23,8 @@ class TruckMaintenanceCost extends Component
 
     public ?int $truckId = null;
 
+    public int $chartUpdateKey = 0;
+
     public function mount(): void
     {
         $this->startDate = now()->startOfYear()->format('Y-m-d');
@@ -32,16 +34,19 @@ class TruckMaintenanceCost extends Component
     public function updatedStartDate(): void
     {
         $this->resetPage();
+        $this->refreshChartData();
     }
 
     public function updatedEndDate(): void
     {
         $this->resetPage();
+        $this->refreshChartData();
     }
 
     public function updatedTruckId(): void
     {
         $this->resetPage();
+        $this->refreshChartData();
     }
 
     #[Computed]
@@ -82,15 +87,26 @@ class TruckMaintenanceCost extends Component
 
         if ($format === 'pdf') {
             $exportAction = new ExportTruckMaintenanceCostPdf;
-
             return $exportAction->execute($filters);
         }
 
         if ($format === 'excel') {
-            return ExportTruckMaintenanceCostExcel::export($filters);
+            $exportAction = new ExportTruckMaintenanceCostExcel;
+            return $exportAction->execute($filters);
         }
 
         return null;
+    }
+
+    private function refreshChartData(): void
+    {
+        // Force refresh of computed properties
+        unset($this->reportData);
+        unset($this->summary);
+        unset($this->chartData);
+        
+        // Increment chart update key to force re-rendering
+        $this->chartUpdateKey++;
     }
 
     private function getFilters(): array

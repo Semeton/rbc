@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace App\Livewire\Reports;
 
-use App\Models\Customer;
-use App\Reports\CustomerBalanceReport;
+use App\Actions\ExportDepotPerformanceExcel;
+use App\Actions\ExportDepotPerformancePdf;
+use App\Reports\DepotPerformanceReport;
+use App\Traits\PaginatesReportData;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class CustomerBalance extends Component
+class DepotPerformance extends Component
 {
-    use WithPagination;
+    use WithPagination, PaginatesReportData;
 
     public string $startDate = '';
 
     public string $endDate = '';
 
-    public ?int $customerId = null;
+    public ?string $depotName = null;
 
     public int $chartUpdateKey = 0;
 
@@ -41,7 +43,7 @@ class CustomerBalance extends Component
         $this->refreshChartData();
     }
 
-    public function updatedCustomerId(): void
+    public function updatedDepotName(): void
     {
         $this->resetPage();
         $this->refreshChartData();
@@ -49,11 +51,62 @@ class CustomerBalance extends Component
 
     public function resetFilters(): void
     {
-        $this->customerId = null;
+        $this->depotName = null;
         $this->startDate = now()->startOfMonth()->format('Y-m-d');
         $this->endDate = now()->endOfMonth()->format('Y-m-d');
         $this->resetPage();
         $this->refreshChartData();
+    }
+
+    public function exportReport(string $format): mixed
+    {
+        $filters = $this->getFilters();
+
+        if ($format === 'pdf') {
+            $exportAction = new ExportDepotPerformancePdf;
+            return $exportAction->execute($filters);
+        }
+
+        if ($format === 'excel') {
+            $exportAction = new ExportDepotPerformanceExcel;
+            return $exportAction->execute($filters);
+        }
+
+        $this->dispatch('report-export-error', [
+            'message' => "Unsupported export format: {$format}",
+        ]);
+
+        return null;
+    }
+
+    #[Computed]
+    public function depots()
+    {
+        $report = app(DepotPerformanceReport::class);
+        return $report->getDepotList();
+    }
+
+    #[Computed]
+    public function reportData()
+    {
+        $report = app(DepotPerformanceReport::class);
+        $data = $report->generate($this->getFilters());
+        
+        return $this->paginateCollection($data);
+    }
+
+    #[Computed]
+    public function summary()
+    {
+        $report = app(DepotPerformanceReport::class);
+        return $report->getSummary($this->getFilters());
+    }
+
+    #[Computed]
+    public function chartData()
+    {
+        $report = app(DepotPerformanceReport::class);
+        return $report->getChartData($this->getFilters());
     }
 
     private function refreshChartData(): void
@@ -67,62 +120,17 @@ class CustomerBalance extends Component
         $this->chartUpdateKey++;
     }
 
-    public function exportReport(string $format): mixed
-    {
-        $filters = $this->getFilters();
-
-        if ($format === 'pdf') {
-            return app(\App\Actions\ExportCustomerBalancePdf::class)->execute($filters);
-        }
-
-        if ($format === 'excel') {
-            return app(\App\Actions\ExportCustomerBalanceExcel::class)::export($filters);
-        }
-
-        return null;
-    }
-
-    #[Computed]
-    public function customers(): \Illuminate\Database\Eloquent\Collection
-    {
-        return Customer::orderBy('name')->get();
-    }
-
-    #[Computed]
-    public function reportData(): \Illuminate\Support\Collection
-    {
-        $report = app(CustomerBalanceReport::class);
-
-        return $report->generate($this->getFilters());
-    }
-
-    #[Computed]
-    public function summary(): array
-    {
-        $report = app(CustomerBalanceReport::class);
-
-        return $report->getSummary($this->getFilters());
-    }
-
-    #[Computed]
-    public function chartData(): array
-    {
-        $report = app(CustomerBalanceReport::class);
-
-        return $report->getChartData($this->getFilters());
-    }
-
     private function getFilters(): array
     {
         return [
             'start_date' => $this->startDate,
             'end_date' => $this->endDate,
-            'customer_id' => $this->customerId,
+            'depot_name' => $this->depotName,
         ];
     }
 
     public function render(): View
     {
-        return view('livewire.reports.customer-balance');
+        return view('livewire.reports.depot-performance');
     }
 }

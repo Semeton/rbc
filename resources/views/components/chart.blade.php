@@ -4,7 +4,8 @@
     'data' => [],
     'options' => [],
     'height' => '400px',
-    'width' => '100%'
+    'width' => '100%',
+    'key' => null
 ])
 
 @php
@@ -25,46 +26,61 @@
     <canvas id="{{ $id }}" {{ $attributes->merge(['class' => 'w-full h-full']) }}></canvas>
 </div>
 
-@push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('{{ $id }}');
+    const chartId = '{{ $id }}';
+    const chartType = '{{ $type }}';
+    const chartData = @json($chartData);
+    const chartOptions = @json($chartOptions);
+    
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js is not loaded');
+        return;
+    }
+    
+    const ctx = document.getElementById(chartId);
     if (ctx) {
-        new Chart(ctx, {
-            type: '{{ $type }}',
-            data: @json($chartData),
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                    }
-                },
-                scales: {
-                    x: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: '{{ $chartOptions['xAxisLabel'] ?? '' }}'
+        try {
+            new Chart(ctx, {
+                type: chartType,
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
                         }
                     },
-                    y: {
-                        display: true,
-                        title: {
+                    scales: {
+                        x: {
                             display: true,
-                            text: '{{ $chartOptions['yAxisLabel'] ?? '' }}'
+                            title: {
+                                display: true,
+                                text: chartOptions.xAxisLabel || ''
+                            }
                         },
-                        beginAtZero: true
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: chartOptions.yAxisLabel || ''
+                            },
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        });
+            });
+            console.log('Chart ' + chartId + ' created successfully');
+        } catch (error) {
+            console.error('Error creating chart ' + chartId + ':', error);
+        }
+    } else {
+        console.error('Canvas element ' + chartId + ' not found');
     }
 });
 </script>
-@endpush

@@ -131,7 +131,7 @@
                 @if(count($this->chartData['monthly_trend']['labels']) > 0)
                     <x-chart 
                         type="line"
-                        data="{{ json_encode([
+                        :data="[
                             'labels' => $this->chartData['monthly_trend']['labels'],
                             'datasets' => [
                                 [
@@ -145,7 +145,7 @@
                                 ]
                             ]
                         ]"
-                        options="{{ json_encode([
+                        :options="[
                             'xAxisLabel' => 'Month',
                             'yAxisLabel' => 'Maintenance Cost (₦)',
                             'plugins' => [
@@ -166,6 +166,7 @@
                             ]
                         ]"
                         height="300px"
+                        wire:key="monthly-trend-{{ $this->chartUpdateKey }}"
                     />
                 @else
                     <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
@@ -186,7 +187,7 @@
                 @if(count($this->chartData['truck_comparison']['labels']) > 0)
                     <x-chart 
                         type="bar"
-                        data="{{ json_encode([
+                        :data="[
                             'labels' => $this->chartData['truck_comparison']['labels'],
                             'datasets' => [
                                 [
@@ -198,7 +199,7 @@
                                 ]
                             ]
                         ]"
-                        options="{{ json_encode([
+                        :options="[
                             'xAxisLabel' => 'Truck Cab Numbers',
                             'yAxisLabel' => 'Maintenance Cost (₦)',
                             'plugins' => [
@@ -219,6 +220,7 @@
                             ]
                         ]"
                         height="300px"
+                        wire:key="truck-comparison-{{ $this->chartUpdateKey }}"
                     />
                 @else
                     <div class="h-64 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg">
