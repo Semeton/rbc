@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use App\Notification\Services\NotificationService;
+use App\Enums\NotificationType;
 
 class CustomerPayment extends Model
 {
@@ -106,6 +108,9 @@ class CustomerPayment extends Model
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
             ]);
+
+            // Trigger payment notification
+            static::triggerPaymentNotification($payment);
         });
 
         static::updated(function ($payment) {
@@ -129,5 +134,31 @@ class CustomerPayment extends Model
                 'user_agent' => request()->userAgent(),
             ]);
         });
+    }
+
+    /**
+     * Trigger notifications for payment events
+     */
+    private static function triggerPaymentNotification(CustomerPayment $payment): void
+    {
+        $notificationService = app(NotificationService::class);
+
+        // High-value payment alert (>₦1,000,000)
+        if ($payment->amount > 1000000) {
+            $notificationService->createSystemNotification(
+                NotificationType::TRANSACTION_ALERT,
+                "High-Value Payment Received",
+                "High-value payment received: ₦" . number_format($payment->amount, 2) . " from customer {$payment->customer->name}.",
+                [
+                    'payment_id' => $payment->id,
+                    'customer_id' => $payment->customer->id,
+                    'customer_name' => $payment->customer->name,
+                    'amount' => $payment->amount,
+                    'payment_date' => $payment->payment_date->toDateString(),
+                    'bank_name' => $payment->bank_name,
+                ],
+                now()->addDays(3) // Expire in 3 days
+            );
+        }
     }
 }

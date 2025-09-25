@@ -154,10 +154,8 @@ Route::middleware(['auth'])->group(function () {
             return view('reports.profit-estimate');
         })->name('reports.profit-estimate');
 
-        // Notifications Routes (view only)
-        Route::get('/notifications', function () {
-            return view('notifications.index');
-        })->name('notifications.index');
+            // Notifications Routes (view only)
+            Route::get('/notifications', \App\Livewire\Notification\Index::class)->name('notifications.index');
     });
 
     // Admin and Operations Manager routes (edit operations)

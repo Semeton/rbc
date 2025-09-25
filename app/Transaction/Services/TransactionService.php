@@ -7,6 +7,8 @@ namespace App\Transaction\Services;
 use App\Models\DailyCustomerTransaction;
 use App\Services\AuditTrailService;
 use App\Services\AtcAllocationValidator;
+use App\Notification\Services\NotificationService;
+use App\Enums\NotificationType;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -82,6 +84,9 @@ class TransactionService
             'Transaction',
             "Transaction for customer '{$transaction->customer->name}' was created with {$data['tons']} tons allocated from ATC #{$transaction->atc->atc_number}"
         );
+
+        // Trigger notification for high-value transactions
+        $this->triggerTransactionNotifications($transaction);
 
         return $transaction;
     }
@@ -326,5 +331,32 @@ class TransactionService
         });
 
         return $transactions;
+    }
+
+    /**
+     * Trigger notifications for transaction events
+     */
+    private function triggerTransactionNotifications(DailyCustomerTransaction $transaction): void
+    {
+        $notificationService = app(NotificationService::class);
+
+        // High-value transaction alert (>₦500,000)
+        if ($transaction->atc_cost > 500000) {
+            $notificationService->createSystemNotification(
+                NotificationType::TRANSACTION_ALERT,
+                "High-Value Transaction Alert",
+                "High-value transaction created: ₦" . number_format($transaction->atc_cost, 2) . " for customer {$transaction->customer->name}.",
+                [
+                    'transaction_id' => $transaction->id,
+                    'customer_id' => $transaction->customer->id,
+                    'customer_name' => $transaction->customer->name,
+                    'atc_id' => $transaction->atc->id,
+                    'atc_number' => $transaction->atc->atc_number,
+                    'amount' => $transaction->atc_cost,
+                    'tons' => $transaction->tons,
+                ],
+                now()->addDays(3) // Expire in 3 days
+            );
+        }
     }
 }
