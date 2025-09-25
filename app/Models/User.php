@@ -165,4 +165,44 @@ class User extends Authenticatable
             default => 'bg-gray-100',
         };
     }
+
+    /**
+     * Check if user has a specific permission
+     */
+    public function hasPermission(string $permission): bool
+    {
+        // Admin has all permissions
+        if ($this->role === 'admin') {
+            return true;
+        }
+
+        $userPermissions = $this->permissions($this->role);
+        return array_key_exists($permission, $userPermissions);
+    }
+
+    /**
+     * Check if user has any of the specified permissions
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if ($this->hasPermission($permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if user has all of the specified permissions
+     */
+    public function hasAllPermissions(array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if (!$this->hasPermission($permission)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
