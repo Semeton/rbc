@@ -13,7 +13,6 @@ class CustomerSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 5 demo customers
-        Customer::factory()->count(5)->create();
+        $this->call(ImportCustomersFromSqlSeeder::class);
     }
 }

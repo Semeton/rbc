@@ -25,12 +25,12 @@
                         <div>
                             <flux:field>
                                 <flux:label>Customer *</flux:label>
-                                <flux:select wire:model="customer_id" required>
+                                <select wire:model="customer_id" required class="select2-customer w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">Select Customer</option>
                                     @foreach($this->customers as $customer)
                                         <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                                     @endforeach
-                                </flux:select>
+                                </select>
                                 @error('customer_id') <flux:error>{{ $message }}</flux:error> @enderror
                             </flux:field>
                         </div>
@@ -38,12 +38,12 @@
                         <div>
                             <flux:field>
                                 <flux:label>Driver *</flux:label>
-                                <flux:select wire:model="driver_id" required>
+                                <select wire:model="driver_id" required class="select2-driver w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">Select Driver</option>
                                     @foreach($this->drivers as $driver)
                                         <option value="{{ $driver->id }}">{{ $driver->name }}</option>
                                     @endforeach
-                                </flux:select>
+                                </select>
                                 @error('driver_id') <flux:error>{{ $message }}</flux:error> @enderror
                             </flux:field>
                         </div>
@@ -59,10 +59,10 @@
                         <div>
                             <flux:field>
                                 <flux:label>Status *</flux:label>
-                                <flux:select wire:model="status" required>
+                                <select wire:model="status" required class="select2-status w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
-                                </flux:select>
+                                </select>
                                 @error('status') <flux:error>{{ $message }}</flux:error> @enderror
                             </flux:field>
                         </div>
@@ -76,7 +76,7 @@
                         <div class="md:col-span-2">
                             <flux:field>
                                 <flux:label>ATC *</flux:label>
-                                <flux:select wire:model="atc_id" required>
+                                <select wire:model="atc_id" required class="select2-atc w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">Select ATC</option>
                                     @foreach($this->atcs as $atc)
                                         <option value="{{ $atc->id }}">
@@ -84,7 +84,7 @@
                                             {{ number_format($atc->remaining_tons, 2) }} tons left
                                         </option>
                                     @endforeach
-                                </flux:select>
+                                </select>
                                 @error('atc_id') <flux:error>{{ $message }}</flux:error> @enderror
                             </flux:field>
                             
@@ -248,4 +248,5 @@
             </form>
         </div>
     </div>
+
 </div>

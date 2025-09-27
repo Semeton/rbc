@@ -21,6 +21,8 @@ class CustomerBalance extends Component
 
     public ?int $customerId = null;
 
+    public int $perPage = 10;
+
     public int $chartUpdateKey = 0;
 
     public function mount(): void
@@ -45,6 +47,11 @@ class CustomerBalance extends Component
     {
         $this->resetPage();
         $this->refreshChartData();
+    }
+
+    public function updatedPerPage(): void
+    {
+        $this->resetPage();
     }
 
     public function resetFilters(): void
@@ -89,11 +96,11 @@ class CustomerBalance extends Component
     }
 
     #[Computed]
-    public function reportData(): \Illuminate\Support\Collection
+    public function reportData(): \Illuminate\Pagination\LengthAwarePaginator
     {
         $report = app(CustomerBalanceReport::class);
 
-        return $report->generate($this->getFilters());
+        return $report->generate($this->getFilters(), $this->perPage);
     }
 
     #[Computed]

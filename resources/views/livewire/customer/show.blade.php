@@ -66,7 +66,7 @@
                                     <div>
                                         <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Current Balance</label>
                                         <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
-                                            ${{ number_format($customer->balance, 2) }}
+                                            ₦{{ number_format($customer->balance, 2) }}
                                         </p>
                                     </div>
                                     <div>

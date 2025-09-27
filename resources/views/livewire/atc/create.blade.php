@@ -36,19 +36,19 @@
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <flux:field>
                             <flux:label>ATC Type</flux:label>
-                            <flux:select wire:model="atc_type">
-                                <flux:select.option value="bg">BG</flux:select.option>
-                                <flux:select.option value="cash_payment">Cash Payment</flux:select.option>
-                            </flux:select>
+                            <select wire:model="atc_type" class="select2-atc-type w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <option value="bg">BG</option>
+                                <option value="cash_payment">Cash Payment</option>
+                            </select>
                             <flux:error name="atc_type" />
                         </flux:field>
 
                         <flux:field>
                             <flux:label>Status</flux:label>
-                            <flux:select wire:model="status">
-                                <flux:select.option value="active">Active</flux:select.option>
-                                <flux:select.option value="inactive">Inactive</flux:select.option>
-                            </flux:select>
+                            <select wire:model="status" class="select2-status w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
                             <flux:error name="status" />
                         </flux:field>
                     </div>
@@ -89,4 +89,5 @@
             </div>
         </div>
     </div>
+
 </div>

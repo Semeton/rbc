@@ -20,12 +20,12 @@
                         <div>
                             <flux:field>
                                 <flux:label>Driver</flux:label>
-                                <flux:select wire:model="driver_id" searchable>
-                                    <flux:select.option value="">Select a driver...</flux:select.option>
+                                <select wire:model="driver_id" class="select2-driver w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                    <option value="">Select a driver...</option>
                                     @foreach($this->drivers as $driver)
-                                        <flux:select.option value="{{ $driver->id }}">{{ $driver->name }}</flux:select.option>
+                                        <option value="{{ $driver->id }}">{{ $driver->name }}</option>
                                     @endforeach
-                                </flux:select>
+                                </select>
                                 <flux:error name="driver_id" />
                             </flux:field>
                         </div>
@@ -33,12 +33,12 @@
                         <div>
                             <flux:field>
                                 <flux:label>Truck</flux:label>
-                                <flux:select wire:model="truck_id" searchable>
-                                    <flux:select.option value="">Select a truck...</flux:select.option>
+                                <select wire:model="truck_id" class="select2-truck w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                    <option value="">Select a truck...</option>
                                     @foreach($this->trucks as $truck)
-                                        <flux:select.option value="{{ $truck->id }}">{{ $truck->registration_number }} ({{ $truck->cab_number }})</flux:select.option>
+                                        <option value="{{ $truck->id }}">{{ $truck->registration_number }} ({{ $truck->cab_number }})</option>
                                     @endforeach
-                                </flux:select>
+                                </select>
                                 <flux:error name="truck_id" />
                             </flux:field>
                         </div>
@@ -46,12 +46,12 @@
                         <div>
                             <flux:field>
                                 <flux:label>Customer</flux:label>
-                                <flux:select wire:model="customer_id" searchable>
-                                    <flux:select.option value="">Select a customer...</flux:select.option>
+                                <select wire:model="customer_id" class="select2-customer w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                    <option value="">Select a customer...</option>
                                     @foreach($this->customers as $customer)
-                                        <flux:select.option value="{{ $customer->id }}">{{ $customer->name }}</flux:select.option>
+                                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                                     @endforeach
-                                </flux:select>
+                                </select>
                                 <flux:error name="customer_id" />
                             </flux:field>
                         </div>
@@ -113,10 +113,10 @@
                         <div>
                             <flux:field>
                                 <flux:label>Status</flux:label>
-                                <flux:select wire:model="status">
-                                    <flux:select.option value="active">Active</flux:select.option>
-                                    <flux:select.option value="inactive">Inactive</flux:select.option>
-                                </flux:select>
+                                <select wire:model="status" class="select2-status w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
                                 <flux:error name="status" />
                             </flux:field>
                         </div>
@@ -135,4 +135,5 @@
             </div>
         </form>
     </div>
+
 </div>

@@ -1,4 +1,5 @@
 <div>
+    <!-- Header -->
     <div class="mb-6">
         <div class="flex items-center justify-between">
             <div>
@@ -44,6 +45,20 @@
                 </flux:select>
             </flux:field>
         </div>
+        
+        <!-- Per Page Selection -->
+        <div class="mt-4 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <flux:label>Records per page:</flux:label>
+                <flux:select wire:model.live="perPage" class="w-20">
+                    <flux:select.option value="5">5</flux:select.option>
+                    <flux:select.option value="10">10</flux:select.option>
+                    <flux:select.option value="25">25</flux:select.option>
+                    <flux:select.option value="50">50</flux:select.option>
+                    <flux:select.option value="100">100</flux:select.option>
+                </flux:select>
+            </div>
+        </div>
     </div>
 
     <!-- Summary Cards -->
@@ -55,7 +70,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Total Customers</p>
-                    <p class="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{{ number_format($this->summary['total_customers']) }}</p>
+                    <p class="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{{ number_format($this->summary['total_customers'] ?? 0) }}</p>
                 </div>
             </div>
         </div>
@@ -67,7 +82,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Total ATC Value</p>
-                    <p class="text-2xl font-semibold text-green-600 dark:text-green-400">₦{{ number_format($this->summary['total_atc_value'], 2) }}</p>
+                    <p class="text-2xl font-semibold text-green-600 dark:text-green-400">₦{{ number_format($this->summary['total_atc_value'] ?? 0, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -79,7 +94,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Total Payments</p>
-                    <p class="text-2xl font-semibold text-purple-600 dark:text-purple-400">₦{{ number_format($this->summary['total_payments'], 2) }}</p>
+                    <p class="text-2xl font-semibold text-purple-600 dark:text-purple-400">₦{{ number_format($this->summary['total_payments'] ?? 0, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -94,7 +109,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Outstanding Balance</p>
-                    <p class="text-2xl font-semibold text-red-600 dark:text-red-400">₦{{ number_format($this->summary['total_outstanding_balance'], 2) }}</p>
+                    <p class="text-2xl font-semibold text-red-600 dark:text-red-400">₦{{ number_format($this->summary['total_outstanding_balance'] ?? 0, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -106,7 +121,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Customers with Debt</p>
-                    <p class="text-2xl font-semibold text-orange-600 dark:text-orange-400">{{ number_format($this->summary['customers_with_debt']) }}</p>
+                    <p class="text-2xl font-semibold text-orange-600 dark:text-orange-400">{{ number_format($this->summary['customers_with_debt'] ?? 0) }}</p>
                 </div>
             </div>
         </div>
@@ -118,7 +133,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Customers with Credit</p>
-                    <p class="text-2xl font-semibold text-emerald-600 dark:text-emerald-400">{{ number_format($this->summary['customers_with_credit']) }}</p>
+                    <p class="text-2xl font-semibold text-emerald-600 dark:text-emerald-400">{{ number_format($this->summary['customers_with_credit'] ?? 0) }}</p>
                 </div>
             </div>
         </div>
@@ -132,7 +147,7 @@
             <!-- Outstanding Balances Chart -->
             <div>
                 <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">Outstanding Balances by Customer</h4>
-                @if(count($this->chartData['labels']) > 0)
+                @if(!empty($this->chartData['labels']) && count($this->chartData['labels']) > 0)
                     <x-chart 
                         type="bar"
                         :data="[
@@ -182,7 +197,7 @@
             <!-- ATC Values vs Payments Chart -->
             <div>
                 <h4 class="text-md font-medium text-zinc-800 dark:text-zinc-200 mb-4">ATC Values vs Payments</h4>
-                @if(count($this->chartData['labels']) > 0)
+                @if(!empty($this->chartData['labels']) && count($this->chartData['labels']) > 0)
                     <x-chart 
                         type="bar"
                         :data="[
@@ -263,26 +278,37 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-zinc-800 divide-y divide-zinc-200 dark:divide-zinc-700">
-                    @forelse($this->reportData as $customer)
+                    @forelse($this->reportData && $this->reportData->items() ? $this->reportData->items() : [] as $customer)
                         <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-700/50">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                    {{ $customer['customer_name'] }}
+                                    {{ $customer['customer_name'] ?? '-' }}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">
                                 <div class="text-sm text-zinc-900 dark:text-zinc-100">
-                                    ₦{{ number_format($customer['total_atc_value'], 2) }}
+                                    ₦{{ number_format($customer['total_atc_value'] ?? 0, 2) }}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">
                                 <div class="text-sm text-zinc-900 dark:text-zinc-100">
-                                    ₦{{ number_format($customer['total_payments'], 2) }}
+                                    ₦{{ number_format($customer['total_payments'] ?? 0, 2) }}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">
-                                <div class="text-sm font-semibold {{ $customer['outstanding_balance'] < 0 ? 'text-red-600 dark:text-red-400' : ($customer['outstanding_balance'] > 0 ? 'text-green-600 dark:text-green-400' : 'text-zinc-900 dark:text-zinc-100') }}">
-                                    ₦{{ number_format($customer['outstanding_balance'], 2) }}
+                                @php
+                                    $balance = $customer['outstanding_balance'] ?? 0;
+                                @endphp
+                                <div class="text-sm font-semibold 
+                                    @if($balance < 0)
+                                        text-red-600 dark:text-red-400
+                                    @elseif($balance > 0)
+                                        text-green-600 dark:text-green-400
+                                    @else
+                                        text-zinc-900 dark:text-zinc-100
+                                    @endif
+                                ">
+                                    ₦{{ number_format($balance, 2) }}
                                 </div>
                             </td>
                         </tr>
@@ -300,6 +326,21 @@
                 </tbody>
             </table>
         </div>
+        
+        <!-- Pagination Controls -->
+        @if($this->reportData && $this->reportData->hasPages())
+            <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-700">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-zinc-700 dark:text-zinc-300">
+                        Showing {{ $this->reportData->firstItem() }} to {{ $this->reportData->lastItem() }} 
+                        of {{ $this->reportData->total() }} results
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        {{ $this->reportData->links() }}
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
-
 </div>

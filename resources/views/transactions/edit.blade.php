@@ -19,7 +19,7 @@
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Customer</label>
-                                <select name="customer_id" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <select name="customer_id" required class="select2-customer w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">Select Customer</option>
                                     @foreach(\App\Models\Customer::active()->orderBy('name')->get() as $customer)
                                         <option value="{{ $customer->id }}" {{ $transaction->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
@@ -32,7 +32,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Driver</label>
-                                <select name="driver_id" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <select name="driver_id" required class="select2-driver w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">Select Driver</option>
                                     @foreach(\App\Models\Driver::active()->orderBy('name')->get() as $driver)
                                         <option value="{{ $driver->id }}" {{ $transaction->driver_id == $driver->id ? 'selected' : '' }}>{{ $driver->name }}</option>
@@ -50,7 +50,7 @@
                             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                                 <div class="sm:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">ATC</label>
-                                    <select name="atc_id" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                    <select name="atc_id" required class="select2-atc w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                         <option value="">Select ATC</option>
                                         @foreach(\App\Models\Atc::active()->orderBy('atc_number')->get() as $atc)
                                             <option value="{{ $atc->id }}" {{ $transaction->atc_id == $atc->id ? 'selected' : '' }}>
@@ -178,7 +178,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
-                                <select name="status" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <select name="status" required class="select2-status w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="active" {{ $transaction->status ? 'selected' : '' }}>Active</option>
                                     <option value="inactive" {{ !$transaction->status ? 'selected' : '' }}>Inactive</option>
                                 </select>
@@ -248,4 +248,5 @@
             </div>
         </div>
     </div>
+
 </x-layouts.app>

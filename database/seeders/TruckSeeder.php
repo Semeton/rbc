@@ -12,7 +12,6 @@ class TruckSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 5 demo trucks
-        Truck::factory()->count(5)->create();
+        $this->call(ImportTrucksFromSqlSeeder::class);
     }
 }

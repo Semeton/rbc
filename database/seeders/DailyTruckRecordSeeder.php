@@ -15,18 +15,6 @@ class DailyTruckRecordSeeder extends Seeder
      */
     public function run(): void
     {
-        $trucks = Truck::all();
-        $drivers = Driver::all();
-        $customers = Customer::all();
-
-        foreach ($trucks as $truck) {
-            DailyTruckRecord::factory()
-                ->count(3)
-                ->create([
-                    'truck_id' => $truck->id,
-                    'driver_id' => $drivers->random()->id,
-                    'customer_id' => $customers->random()->id,
-                ]);
-        }
+        $this->call(ImportDtrFromSqlSeeder::class);
     }
 }

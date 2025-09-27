@@ -12,7 +12,6 @@ class DriverSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create drivers using factory
-        Driver::factory()->count(5)->create();
+        $this->call(ImportDriversFromSqlSeeder::class);
     }
 }

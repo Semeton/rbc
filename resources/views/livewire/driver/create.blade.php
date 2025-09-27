@@ -55,10 +55,10 @@
 
                         <flux:field>
                             <flux:label>Status *</flux:label>
-                            <flux:select wire:model="status">
-                                <flux:select.option value="active">Active</flux:select.option>
-                                <flux:select.option value="inactive">Inactive</flux:select.option>
-                            </flux:select>
+                            <select wire:model="status" class="select2-status w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
                             @error('status') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
                         </flux:field>
 
@@ -76,4 +76,5 @@
             </div>
         </div>
     </div>
+
 </div>
