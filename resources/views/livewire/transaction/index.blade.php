@@ -1,337 +1,203 @@
 <div>
-    <x-breadcrumb :items="[
-        ['name' => 'Daily Transactions', 'url' => route('transactions.index')]
-    ]" />
+    <div class="space-y-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Transaction Management</h1>
+                <p class="text-gray-600">Manage daily customer transactions with ATC allocation</p>
+            </div>
+                <flux:button 
+                    href="{{ route('transactions.create') }}" 
+                    variant="primary"
+                >
+                    <flux:icon name="plus" class="w-4 h-4 mr-2" />
+                    Add Transaction
+                </flux:button>
+        </div>
 
-    <!-- Statistics Cards -->
-    <div class="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
+        <!-- ATC Allocation Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white rounded-lg shadow p-6">
                 <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <flux:icon name="clipboard-document-list" class="h-6 w-6 text-gray-400" />
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <flux:icon name="truck" class="w-6 h-6 text-blue-600" />
                     </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Transactions</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['total'] }}</dd>
-                        </dl>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total ATCs</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $this->atcAllocationStats['total_atcs'] }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-green-100 rounded-lg">
+                        <flux:icon name="check-circle" class="w-6 h-6 text-green-600" />
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Available ATCs</p>
+                        <p class="text-2xl font-bold text-green-600">{{ $this->atcAllocationStats['available_atcs'] }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-yellow-100 rounded-lg">
+                        <flux:icon name="exclamation-triangle" class="w-6 h-6 text-yellow-600" />
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Fully Allocated</p>
+                        <p class="text-2xl font-bold text-yellow-600">{{ $this->atcAllocationStats['fully_allocated_atcs'] }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-red-100 rounded-lg">
+                        <flux:icon name="x-circle" class="w-6 h-6 text-red-600" />
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Over Allocated</p>
+                        <p class="text-2xl font-bold text-red-600">{{ $this->atcAllocationStats['over_allocated_atcs'] }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <flux:icon name="check-circle" class="h-6 w-6 text-green-400" />
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Active Transactions</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['active'] }}</dd>
-                        </dl>
-                    </div>
+        <!-- Filters and Search -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <flux:input 
+                        wire:model.live.debounce.300ms="search" 
+                        placeholder="Search transactions..." 
+                        class="w-full"
+                    />
+                </div>
+                <div class="md:w-48">
+                    <flux:select wire:model.live="filter" class="w-full">
+                        <option value="all">All Transactions</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </flux:select>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <flux:icon name="x-circle" class="h-6 w-6 text-red-400" />
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Inactive Transactions</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['inactive'] }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <flux:icon name="clock" class="h-6 w-6 text-blue-400" />
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Recent (30 days)</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['recent'] }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Financial Statistics -->
-    <div class="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <flux:icon name="currency-dollar" class="h-6 w-6 text-green-400" />
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total ATC Cost</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">₦{{ number_format($this->statistics['total_atc_cost'], 2) }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <flux:icon name="truck" class="h-6 w-6 text-blue-400" />
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Transport Cost</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">₦{{ number_format($this->statistics['total_transport_cost'], 2) }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <flux:icon name="calendar-days" class="h-6 w-6 text-purple-400" />
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Today's Transactions</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['today_transactions'] }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <flux:icon name="chart-bar" class="h-6 w-6 text-yellow-400" />
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">This Month</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['month_transactions'] }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Actions and Filters -->
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div class="mb-4 sm:mb-0">
-            <flux:button variant="primary" :href="route('transactions.create')" wire:navigate>
-                <flux:icon name="plus" class="h-4 w-4" />
-                Create Transaction
-            </flux:button>
-        </div>
-
-        <!-- Filters -->
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <flux:field>
-                <flux:label>Search</flux:label>
-                <flux:input
-                    wire:model.live.debounce.300ms="search"
-                    placeholder="Search by origin, destination..."
-                />
-            </flux:field>
-
-            <flux:field>
-                <flux:label>Status</flux:label>
-                <flux:select wire:model.live="status">
-                    <flux:select.option value="">All Status</flux:select.option>
-                    <flux:select.option value="active">Active</flux:select.option>
-                    <flux:select.option value="inactive">Inactive</flux:select.option>
-                </flux:select>
-            </flux:field>
-
-            <flux:field>
-                <flux:label>Customer</flux:label>
-                <flux:select wire:model.live="customer_id">
-                    <flux:select.option value="0">All Customers</flux:select.option>
-                    @foreach($this->customers as $customer)
-                        <flux:select.option value="{{ $customer->id }}">{{ $customer->name }}</flux:select.option>
-                    @endforeach
-                </flux:select>
-            </flux:field>
-
-            <flux:field>
-                <flux:label>Per Page</flux:label>
-                <flux:select wire:model.live="perPage">
-                    <flux:select.option value="10">10</flux:select.option>
-                    <flux:select.option value="15">15</flux:select.option>
-                    <flux:select.option value="25">25</flux:select.option>
-                    <flux:select.option value="50">50</flux:select.option>
-                    <flux:select.option value="100">100</flux:select.option>
-                </flux:select>
-            </flux:field>
-        </div>
-    </div>
-
-    <!-- Additional Filters -->
-    <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
-        <flux:field>
-            <flux:label>Driver</flux:label>
-            <flux:select wire:model.live="driver_id">
-                <flux:select.option value="0">All Drivers</flux:select.option>
-                @foreach($this->drivers as $driver)
-                    <flux:select.option value="{{ $driver->id }}">{{ $driver->name }}</flux:select.option>
-                @endforeach
-            </flux:select>
-        </flux:field>
-
-        <flux:field>
-            <flux:label>ATC</flux:label>
-            <flux:select wire:model.live="atc_id">
-                <flux:select.option value="0">All ATCs</flux:select.option>
-                @foreach($this->atcs as $atc)
-                    <flux:select.option value="{{ $atc->id }}">ATC #{{ $atc->atc_number }}</flux:select.option>
-                @endforeach
-            </flux:select>
-        </flux:field>
-
-        <flux:field>
-            <flux:label>Date From</flux:label>
-            <flux:input
-                wire:model.live="date_from"
-                type="date"
-            />
-        </flux:field>
-
-        <flux:field>
-            <flux:label>Date To</flux:label>
-            <flux:input
-                wire:model.live="date_to"
-                type="date"
-            />
-        </flux:field>
-    </div>
-
-    <!-- Clear Filters -->
-    @if($search || $status || $customer_id || $driver_id || $atc_id || $date_from || $date_to || $cement_type)
-        <div class="mb-4">
-            <flux:button variant="outline" wire:click="clearFilters">
-                <flux:icon name="x-mark" class="h-4 w-4" />
-                Clear Filters
-            </flux:button>
-        </div>
-    @endif
-
-    <!-- Transactions Table -->
-    <div class="bg-white dark:bg-zinc-800 shadow overflow-hidden sm:rounded-md">
-        @if($this->transactions->count() > 0)
+        <!-- Transactions Table -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-zinc-700">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Date
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Transaction Details
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                ATC
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                ATC & Allocation
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Customer
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Remaining Capacity
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Driver
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Costs
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Route
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Cement Type
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Total Cost
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status
                             </th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($this->transactions as $transaction)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $transaction->date->format('M d, Y') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $transaction->atc->atc_number }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $transaction->customer->name }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $transaction->driver->name }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $transaction->origin }} → {{ $transaction->destination }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $transaction->cement_type }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                    ₦{{ number_format($transaction->total_cost, 2) }}
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($this->transactions as $transaction)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {{ $transaction->customer->name }}
+                                        </div>
+                                        <div class="text-sm text-gray-500">{{ $transaction->driver->name }}</div>
+                                        <div class="text-xs text-gray-400">
+                                            {{ $transaction->date->format('M d, Y') }}
+                                        </div>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <x-status-badge :status="$transaction->status_string" />
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">
+                                            ATC #{{ $transaction->atc->atc_number }}
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            {{ number_format($transaction->tons, 2) }} tons
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {{ number_format($transaction->atc->remaining_tons, 2) }} tons left
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            ₦{{ number_format($transaction->atc->remaining_amount, 2) }} left
+                                        </div>
+                                        <div class="text-xs text-gray-400">
+                                            {{ number_format($transaction->atc->allocation_percentage, 1) }}% allocated
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <div>
+                                        <div class="font-medium">₦{{ number_format($transaction->atc_cost, 2) }}</div>
+                                        <div class="text-xs text-gray-500">
+                                            + ₦{{ number_format($transaction->transport_cost, 2) }} transport
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $transaction->status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                        {{ $transaction->status ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex justify-end space-x-2">
-                                        <flux:button variant="outline" size="sm" :href="route('transactions.show', $transaction)" wire:navigate>
-                                            <flux:icon name="eye" class="h-4 w-4" />
-                                        </flux:button>
-                                        <flux:button variant="outline" size="sm" :href="route('transactions.edit', $transaction)" wire:navigate>
-                                            <flux:icon name="pencil" class="h-4 w-4" />
-                                        </flux:button>
+                                            <flux:button variant="outline" size="sm" :href="route('transactions.show', $transaction)">
+                                                <flux:icon name="eye" class="h-4 w-4" />
+                                            </flux:button>
+                                        
+                                            <flux:button variant="outline" size="sm" :href="route('transactions.edit', $transaction)">
+                                                <flux:icon name="pencil" class="h-4 w-4" />
+                                            </flux:button>
+                                            <flux:button 
+                                                variant="outline" 
+                                                size="sm" 
+                                                wire:click="deleteTransaction({{ $transaction->id }})"
+                                                wire:confirm="Are you sure you want to delete this transaction? This action cannot be undone."
+                                                class="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20"
+                                            >
+                                                <flux:icon name="trash" class="h-4 w-4" />
+                                            </flux:button>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                    No transactions found.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
-            </div>
+</div>
 
             <!-- Pagination -->
-            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="px-6 py-4 border-t border-gray-200">
                 {{ $this->transactions->links() }}
             </div>
-        @else
-            <div class="text-center py-12">
-                <flux:icon name="clipboard-document-list" class="mx-auto h-12 w-12 text-gray-400" />
-                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No transactions found</h3>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating a new transaction.</p>
-                <div class="mt-6">
-                    <flux:button variant="primary" :href="route('transactions.create')" wire:navigate>
-                        <flux:icon name="plus" class="h-4 w-4" />
-                        Create Transaction
-                    </flux:button>
-                </div>
-            </div>
-        @endif
+        </div>
     </div>
 </div>

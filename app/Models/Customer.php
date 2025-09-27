@@ -80,7 +80,7 @@ class Customer extends Model
         $totalTransactions = $this->transactions()->sum('atc_cost') + $this->transactions()->sum('transport_cost');
         $totalPayments = $this->payments()->sum('amount');
 
-        return $totalTransactions - $totalPayments;
+        return $totalPayments - $totalTransactions;
     }
 
     /**

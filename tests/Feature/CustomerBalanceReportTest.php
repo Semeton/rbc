@@ -36,6 +36,8 @@ class CustomerBalanceReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 1000.00,
             'transport_cost' => 500.00,
+            'tons' => 50.00,
+            'date' => now(), // Ensure transaction is within current period
         ]);
 
         CustomerPayment::factory()->create([
@@ -68,6 +70,8 @@ class CustomerBalanceReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 1000.00,
             'transport_cost' => 500.00,
+            'tons' => 50.00,
+            'date' => now(), // Ensure transaction is within current period
         ]);
 
         $filters = [
@@ -95,6 +99,8 @@ class CustomerBalanceReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 1000.00,
             'transport_cost' => 500.00,
+            'tons' => 50.00,
+            'date' => now(), // Ensure transaction is within current period
         ]);
 
         // Create partial payment
@@ -113,7 +119,7 @@ class CustomerBalanceReportTest extends TestCase
         $this->assertEquals($customer->name, $customerData['customer_name']);
         $this->assertEquals(1500.0, $customerData['total_atc_value']); // 1000 + 500
         $this->assertEquals(1200.0, $customerData['total_payments']);
-        $this->assertEquals(300.0, $customerData['outstanding_balance']); // 1500 - 1200
+        $this->assertEquals(-300.0, $customerData['outstanding_balance']); // 1200 - 1500 = -300 (customer owes money)
     }
 
     public function test_customer_balance_report_export(): void
@@ -126,6 +132,8 @@ class CustomerBalanceReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 1000.00,
             'transport_cost' => 500.00,
+            'tons' => 50.00,
+            'date' => now(), // Ensure transaction is within current period
         ]);
 
         CustomerPayment::factory()->create([
@@ -162,12 +170,14 @@ class CustomerBalanceReportTest extends TestCase
         $customer2 = Customer::factory()->create();
         $driver = Driver::factory()->create();
 
-        // Customer 1: Has debt
+        // Customer 1: Has debt (no payments)
         DailyCustomerTransaction::factory()->create([
             'customer_id' => $customer1->id,
             'driver_id' => $driver->id,
             'atc_cost' => 1000.00,
             'transport_cost' => 500.00,
+            'tons' => 50.00,
+            'date' => now(), // Ensure transaction is within current period
         ]);
 
         // Customer 2: Has credit (overpaid)
@@ -176,6 +186,8 @@ class CustomerBalanceReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 1000.00,
             'transport_cost' => 500.00,
+            'tons' => 50.00,
+            'date' => now(), // Ensure transaction is within current period
         ]);
 
         CustomerPayment::factory()->create([
@@ -188,10 +200,10 @@ class CustomerBalanceReportTest extends TestCase
         $summary = $report->getSummary();
 
         $this->assertEquals(2, $summary['total_customers']);
-        $this->assertEquals(3000.0, $summary['total_atc_value']); // 1500 + 1500
-        $this->assertEquals(2000.0, $summary['total_payments']);
-        $this->assertEquals(1000.0, $summary['total_outstanding_balance']); // 3000 - 2000
-        $this->assertEquals(1, $summary['customers_with_debt']);
-        $this->assertEquals(1, $summary['customers_with_credit']);
+        $this->assertEquals(3000.0, $summary['total_atc_value']); // 1500 + 1500 (period-specific)
+        $this->assertEquals(2000.0, $summary['total_payments']); // Only customer2 has payments
+        $this->assertEquals(-1000.0, $summary['total_outstanding_balance']); // 2000 - 3000 = -1000
+        $this->assertEquals(1, $summary['customers_with_debt']); // Customer1 owes money (no payments)
+        $this->assertEquals(1, $summary['customers_with_credit']); // Customer2 has credit (overpaid)
     }
 }

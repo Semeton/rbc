@@ -7,7 +7,11 @@ namespace App\Livewire\Transaction;
 use App\Models\Atc;
 use App\Models\Customer;
 use App\Models\Driver;
+use App\Models\DailyCustomerTransaction;
+use App\Transaction\Services\TransactionService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -17,11 +21,12 @@ class Index extends Component
 {
     use WithPagination;
 
+    // UI state
     #[Url]
     public string $search = '';
 
     #[Url]
-    public string $status = '';
+    public string $filter = 'all';
 
     #[Url]
     public int $customer_id = 0;
@@ -47,10 +52,19 @@ class Index extends Component
     #[Computed]
     public function transactions()
     {
-        $transactionService = app(\App\Transaction\Services\TransactionService::class);
-        $request = app(\Illuminate\Http\Request::class);
+        $request = new Request([
+            'search' => $this->search,
+            'status' => $this->filter === 'all' ? null : ($this->filter === 'active'),
+            'customer_id' => $this->customer_id ?: null,
+            'driver_id' => $this->driver_id ?: null,
+            'atc_id' => $this->atc_id ?: null,
+            'date_from' => $this->date_from ?: null,
+            'date_to' => $this->date_to ?: null,
+            'cement_type' => $this->cement_type ?: null,
+        ]);
 
-        return $transactionService->getPaginatedTransactions($request, $this->perPage);
+        $transactionService = app(TransactionService::class);
+        return $transactionService->getTransactionsWithAllocationInfo($request, $this->perPage);
     }
 
     #[Computed]
@@ -59,6 +73,13 @@ class Index extends Component
         $transactionService = app(\App\Transaction\Services\TransactionService::class);
 
         return $transactionService->getTransactionStatistics();
+    }
+
+    #[Computed]
+    public function atcAllocationStats()
+    {
+        $transactionService = app(TransactionService::class);
+        return $transactionService->getAtcAllocationStatistics();
     }
 
     #[Computed]
@@ -84,7 +105,7 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function updatedStatus(): void
+    public function updatedFilter(): void
     {
         $this->resetPage();
     }
@@ -127,7 +148,7 @@ class Index extends Component
     public function clearFilters(): void
     {
         $this->search = '';
-        $this->status = '';
+        $this->filter = 'all';
         $this->customer_id = 0;
         $this->driver_id = 0;
         $this->atc_id = 0;
@@ -136,6 +157,31 @@ class Index extends Component
         $this->cement_type = '';
         $this->perPage = 15;
         $this->resetPage();
+    }
+
+    public function deleteTransaction(int $transactionId): void
+    {
+        $transaction = \App\Models\DailyCustomerTransaction::findOrFail($transactionId);
+        
+        // Check if user can delete this transaction
+
+        try {
+            $transaction->delete();
+            
+            // Reset computed properties to refresh the data
+            unset($this->transactions);
+            unset($this->statistics);
+            
+            $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => 'Transaction deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'Failed to delete transaction: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function render(): View

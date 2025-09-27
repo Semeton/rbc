@@ -36,7 +36,8 @@ class MonthlySalesReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 5000.00,
             'transport_cost' => 2000.00,
-            'created_at' => now()->startOfMonth(),
+            'date' => now()->startOfMonth(),
+            'tons' => 50.00,
         ]);
 
         DailyCustomerTransaction::factory()->create([
@@ -44,7 +45,8 @@ class MonthlySalesReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 7500.00,
             'transport_cost' => 3000.00,
-            'created_at' => now()->subMonth()->startOfMonth(),
+            'date' => now()->subMonth()->startOfMonth(),
+            'tons' => 75.00,
         ]);
 
         $report = new MonthlySalesReport;
@@ -70,7 +72,8 @@ class MonthlySalesReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 5000.00,
             'transport_cost' => 2000.00,
-            'created_at' => now(),
+            'date' => now(),
+            'tons' => 50.00,
         ]);
 
         // Create transaction in previous year (should be filtered out)
@@ -79,7 +82,8 @@ class MonthlySalesReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 10000.00,
             'transport_cost' => 4000.00,
-            'created_at' => now()->subYear(),
+            'date' => now()->subYear(),
+            'tons' => 100.00,
         ]);
 
         $report = new MonthlySalesReport;
@@ -130,7 +134,8 @@ class MonthlySalesReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 5000.00,
             'transport_cost' => 2000.00,
-            'created_at' => now()->startOfMonth(),
+            'date' => now()->startOfMonth(),
+            'tons' => 50.00,
         ]);
 
         DailyCustomerTransaction::factory()->create([
@@ -138,7 +143,8 @@ class MonthlySalesReportTest extends TestCase
             'driver_id' => $driver->id,
             'atc_cost' => 10000.00,
             'transport_cost' => 4000.00,
-            'created_at' => now()->subMonth()->startOfMonth(),
+            'date' => now()->subMonth()->startOfMonth(),
+            'tons' => 100.00,
         ]);
 
         $report = new MonthlySalesReport;

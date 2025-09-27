@@ -6,13 +6,15 @@
                 <h1 class="text-2xl font-bold text-gray-900">Transaction Management</h1>
                 <p class="text-gray-600">Manage daily customer transactions with ATC allocation</p>
             </div>
-            <flux:button 
-                href="{{ route('transactions.create') }}" 
-                variant="primary"
-            >
-                <flux:icon name="plus" class="w-4 h-4 mr-2" />
-                Add Transaction
-            </flux:button>
+            @can('create', \App\Models\DailyCustomerTransaction::class)
+                <flux:button 
+                    href="{{ route('transactions.create') }}" 
+                    variant="primary"
+                >
+                    <flux:icon name="plus" class="w-4 h-4 mr-2" />
+                    Add Transaction
+                </flux:button>
+            @endcan
         </div>
 
         <!-- ATC Allocation Statistics -->
@@ -163,7 +165,24 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <span class="text-gray-500">View Only</span>
+                                    <div class="flex justify-end space-x-2">
+                                            <flux:button variant="outline" size="sm" :href="route('transactions.show', $transaction)">
+                                                <flux:icon name="eye" class="h-4 w-4" />
+                                            </flux:button>
+                                        
+                                            <flux:button variant="outline" size="sm" :href="route('transactions.edit', $transaction)">
+                                                <flux:icon name="pencil" class="h-4 w-4" />
+                                            </flux:button>
+                                            <flux:button 
+                                                variant="outline" 
+                                                size="sm" 
+                                                wire:click="deleteTransaction({{ $transaction->id }})"
+                                                wire:confirm="Are you sure you want to delete this transaction? This action cannot be undone."
+                                                class="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20"
+                                            >
+                                                <flux:icon name="trash" class="h-4 w-4" />
+                                            </flux:button>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

@@ -123,7 +123,7 @@
             @if(count($this->chartData['type_distribution']) > 0)
                 <x-chart 
                     type="bar"
-                    data="{{ json_encode([
+                    :data="[
                         'labels' => array_column($this->chartData['type_distribution'], 'type'),
                         'datasets' => [
                             [
@@ -135,7 +135,7 @@
                             ]
                         ]
                     ]"
-                    options="{{ json_encode([
+                    :options="[
                         'xAxisLabel' => 'ATC Types',
                         'yAxisLabel' => 'Number of ATCs',
                         'plugins' => [
@@ -177,7 +177,7 @@
             @if(count($this->chartData['status_distribution']) > 0)
                 <x-chart 
                     type="doughnut"
-                    data="{{ json_encode([
+                    :data="[
                         'labels' => array_column($this->chartData['status_distribution'], 'status'),
                         'datasets' => [
                             [
@@ -198,7 +198,7 @@
                             ]
                         ]
                     ]"
-                    options="{{ json_encode([
+                    :options="[
                         'plugins' => [
                             'legend' => [
                                 'position' => 'bottom'
@@ -232,7 +232,7 @@
             @if(count($this->chartData['monthly_trend']) > 0)
                 <x-chart 
                     type="line"
-                    data="{{ json_encode([
+                    :data="[
                         'labels' => array_column($this->chartData['monthly_trend'], 'month'),
                         'datasets' => [
                             [
@@ -246,7 +246,7 @@
                             ]
                         ]
                     ]"
-                    options="{{ json_encode([
+                    :options="[
                         'xAxisLabel' => 'Month',
                         'yAxisLabel' => 'Number of ATCs',
                         'plugins' => [

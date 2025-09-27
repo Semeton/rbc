@@ -213,30 +213,128 @@ new class extends Component
             </div>
         </div>
 
-        <!-- Trip Trends Chart -->
-        <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
-            <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">Trip Trends Over Time</h3>
-            <div class="h-80 overflow-y-auto">
+        <!-- Charts Section -->
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Trip Trends Line Chart -->
+            <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
+                <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-4">Trip Trends Over Time</h3>
                 @if(count($this->chartData()['trip_trends']['labels']) > 0)
-                    <div class="space-y-4">
-                        @foreach($this->chartData()['trip_trends']['labels'] as $index => $month)
-                            <div class="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
-                                <div class="flex-1">
-                                    <div class="font-semibold text-zinc-900 dark:text-zinc-100">{{ $month }}</div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                                        {{ number_format($this->chartData()['trip_trends']['trips'][$index]) }} trips
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
+                    <x-chart 
+                        type="line"
+                        :data="[
+                            'labels' => $this->chartData()['trip_trends']['labels'],
+                            'datasets' => [
+                                [
+                                    'label' => 'Total Trips',
+                                    'data' => $this->chartData()['trip_trends']['trips'],
+                                    'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
+                                    'borderColor' => 'rgba(16, 185, 129, 1)',
+                                    'borderWidth' => 3,
+                                    'fill' => true,
+                                    'tension' => 0.4
+                                ]
+                            ]
+                        ]"
+                        :options="[
+                            'xAxisLabel' => 'Month',
+                            'yAxisLabel' => 'Number of Trips',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                ]
+                            ],
+                            'scales' => [
+                                'y' => [
+                                    'beginAtZero' => true,
+                                    'ticks' => [
+                                        'stepSize' => 1
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="400px"
+                    />
                 @else
-                    <div class="flex items-center justify-center h-full">
+                    <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                         <div class="text-center">
-                            <flux:icon name="chart-bar" class="mx-auto size-12 text-zinc-300 dark:text-zinc-600 mb-4" />
-                            <p class="text-zinc-500 dark:text-zinc-400">No trip trend data available for the selected criteria.</p>
+                            <flux:icon name="presentation-chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                            <p>No trip trend data available for the selected period</p>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Top Performers Bar Chart -->
+            <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
+                <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-4">Top 10 Performers</h3>
+                @if(count($this->chartData()['top_performers']['labels']) > 0)
+                    <x-chart 
+                        type="bar"
+                        :data="[
+                            'labels' => $this->chartData()['top_performers']['labels'],
+                            'datasets' => [
+                                [
+                                    'label' => 'Number of Trips',
+                                    'data' => $this->chartData()['top_performers']['trips'],
+                                    'backgroundColor' => 'rgba(59, 130, 246, 0.8)',
+                                    'borderColor' => 'rgba(59, 130, 246, 1)',
+                                    'borderWidth' => 1,
+                                    'yAxisID' => 'y'
+                                ],
+                                [
+                                    'label' => 'Fare Earned (₦)',
+                                    'data' => $this->chartData()['top_performers']['fare_earned'],
+                                    'backgroundColor' => 'rgba(16, 185, 129, 0.8)',
+                                    'borderColor' => 'rgba(16, 185, 129, 1)',
+                                    'borderWidth' => 1,
+                                    'yAxisID' => 'y1'
+                                ]
+                            ]
+                        ]"
+                        :options="[
+                            'xAxisLabel' => 'Drivers',
+                            'plugins' => [
+                                'legend' => [
+                                    'position' => 'top'
+                                ],
+                                'tooltip' => [
+                                ]
+                            ],
+                            'scales' => [
+                                'y' => [
+                                    'type' => 'linear',
+                                    'display' => true,
+                                    'position' => 'left',
+                                    'title' => [
+                                        'display' => true,
+                                        'text' => 'Number of Trips'
+                                    ],
+                                    'beginAtZero' => true
+                                ],
+                                'y1' => [
+                                    'type' => 'linear',
+                                    'display' => true,
+                                    'position' => 'right',
+                                    'title' => [
+                                        'display' => true,
+                                        'text' => 'Fare Earned (₦)'
+                                    ],
+                                    'beginAtZero' => true,
+                                    'grid' => [
+                                        'drawOnChartArea' => false
+                                    ]
+                                ]
+                            ]
+                        ]"
+                        height="400px"
+                    />
+                @else
+                    <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                        <div class="text-center">
+                            <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                            <p>No performance data available for the selected period</p>
                         </div>
                     </div>
                 @endif
@@ -334,134 +432,6 @@ new class extends Component
                     </div>
                 @endforelse
             </div>
-        </div>
-    </div>
-
-    <!-- Charts Section -->
-    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Trip Trends Line Chart -->
-        <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
-            <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-4">Trip Trends Over Time</h3>
-            @if(count($this->chartData()['trip_trends']['labels']) > 0)
-                <x-chart 
-                    type="line"
-                    data="{{ json_encode([
-                        'labels' => $this->chartData()['trip_trends']['labels'],
-                        'datasets' => [
-                            [
-                                'label' => 'Total Trips',
-                                'data' => $this->chartData()['trip_trends']['trips'],
-                                'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
-                                'borderColor' => 'rgba(16, 185, 129, 1)',
-                                'borderWidth' => 3,
-                                'fill' => true,
-                                'tension' => 0.4
-                            ]
-                        ]
-                    ]"
-                    options="{{ json_encode([
-                        'xAxisLabel' => 'Month',
-                        'yAxisLabel' => 'Number of Trips',
-                        'plugins' => [
-                            'legend' => [
-                                'position' => 'top'
-                            ],
-                            'tooltip' => [
-                            ]
-                        ],
-                        'scales' => [
-                            'y' => [
-                                'beginAtZero' => true,
-                                'ticks' => [
-                                    'stepSize' => 1
-                                ]
-                            ]
-                        ]
-                    ]"
-                    height="400px"
-                />
-            @else
-                <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
-                    <div class="text-center">
-                        <flux:icon name="presentation-chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
-                        <p>No trip trend data available for the selected period</p>
-                    </div>
-                </div>
-            @endif
-        </div>
-
-        <!-- Top Performers Bar Chart -->
-        <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
-            <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-4">Top 10 Performers</h3>
-            @if(count($this->chartData()['top_performers']['labels']) > 0)
-                <x-chart 
-                    type="bar"
-                    data="{{ json_encode([
-                        'labels' => $this->chartData()['top_performers']['labels'],
-                        'datasets' => [
-                            [
-                                'label' => 'Number of Trips',
-                                'data' => $this->chartData()['top_performers']['trips'],
-                                'backgroundColor' => 'rgba(59, 130, 246, 0.8)',
-                                'borderColor' => 'rgba(59, 130, 246, 1)',
-                                'borderWidth' => 1,
-                                'yAxisID' => 'y'
-                            ],
-                            [
-                                'label' => 'Fare Earned (₦)',
-                                'data' => $this->chartData()['top_performers']['fare_earned'],
-                                'backgroundColor' => 'rgba(16, 185, 129, 0.8)',
-                                'borderColor' => 'rgba(16, 185, 129, 1)',
-                                'borderWidth' => 1,
-                                'yAxisID' => 'y1'
-                            ]
-                        ]
-                    ]"
-                    options="{{ json_encode([
-                        'xAxisLabel' => 'Drivers',
-                        'plugins' => [
-                            'legend' => [
-                                'position' => 'top'
-                            ],
-                            'tooltip' => [
-                            ]
-                        ],
-                        'scales' => [
-                            'y' => [
-                                'type' => 'linear',
-                                'display' => true,
-                                'position' => 'left',
-                                'title' => [
-                                    'display' => true,
-                                    'text' => 'Number of Trips'
-                                ],
-                                'beginAtZero' => true
-                            ],
-                            'y1' => [
-                                'type' => 'linear',
-                                'display' => true,
-                                'position' => 'right',
-                                'title' => [
-                                    'display' => true,
-                                    'text' => 'Fare Earned (₦)'
-                                ],
-                                'beginAtZero' => true,
-                                'grid' => [
-                                    'drawOnChartArea' => false
-                                ]
-                            ]
-                        ]
-                    ]"
-                    height="400px"
-                />
-            @else
-                <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
-                    <div class="text-center">
-                        <flux:icon name="chart-bar" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
-                        <p>No performance data available for the selected period</p>
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
 </div>

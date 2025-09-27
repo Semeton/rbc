@@ -26,7 +26,7 @@ class MonthlySalesReport
                 DB::raw('SUM(atc_cost) as total_atc_cost'),
                 DB::raw('SUM(transport_cost) as total_transport_fees'),
             ])
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween('date', [$startDate, $endDate])
             ->groupBy(DB::raw($dateFormat))
             ->orderBy('month');
 
@@ -89,7 +89,7 @@ class MonthlySalesReport
                 DB::raw('COUNT(*) as total_transactions'),
                 DB::raw('SUM(atc_cost) as total_cost'),
             ])
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween('date', [$startDate, $endDate])
             ->groupBy('cement_type')
             ->orderByDesc('total_transactions');
 
@@ -111,10 +111,10 @@ class MonthlySalesReport
         $driver = DB::getDriverName();
 
         return match ($driver) {
-            'sqlite' => "strftime('%Y-%m', created_at)",
-            'mysql' => "DATE_FORMAT(created_at, '%Y-%m')",
-            'pgsql' => "TO_CHAR(created_at, 'YYYY-MM')",
-            default => "strftime('%Y-%m', created_at)", // Default to SQLite format for testing
+            'sqlite' => "strftime('%Y-%m', date)",
+            'mysql' => "DATE_FORMAT(date, '%Y-%m')",
+            'pgsql' => "TO_CHAR(date, 'YYYY-MM')",
+            default => "strftime('%Y-%m', date)", // Default to SQLite format for testing
         };
     }
 }

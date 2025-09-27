@@ -255,7 +255,7 @@ new class extends Component
                 @if(count($this->chartData()['payment_types']['labels']) > 0)
                     <x-chart 
                         type="doughnut"
-                        data="{{ json_encode([
+                        :data="[
                             'labels' => $this->chartData()['payment_types']['labels'],
                             'datasets' => [
                                 [
@@ -272,7 +272,7 @@ new class extends Component
                                 ]
                             ]
                         ]"
-                        options="{{ json_encode([
+                        :options="[
                             'plugins' => [
                                 'legend' => [
                                     'position' => 'bottom'
@@ -301,7 +301,8 @@ new class extends Component
                 @if(count($this->chartData()['monthly_trends']['labels']) > 0)
                     <x-chart 
                         type="line"
-                        data="{{ json_encode([
+                        :data="[
+                            'labels' => $this->chartData()['monthly_trends']['labels'],
                             'datasets' => [
                                 [
                                     'label' => 'Payment Amount',
@@ -314,7 +315,7 @@ new class extends Component
                                 ]
                             ]
                         ]"
-                        options="{{ json_encode([
+                        :options="[
                             'xAxisLabel' => 'Month',
                             'yAxisLabel' => 'Payment Amount (₦)',
                             'plugins' => [

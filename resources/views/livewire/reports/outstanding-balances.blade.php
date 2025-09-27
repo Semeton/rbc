@@ -67,7 +67,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Total Outstanding Amount</p>
-                    <p class="text-2xl font-semibold text-red-600 dark:text-red-400">${{ number_format($this->summary['total_outstanding_amount'], 2) }}</p>
+                    <p class="text-2xl font-semibold text-red-600 dark:text-red-400">₦{{ number_format($this->summary['total_outstanding_amount'], 2) }}</p>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Average Outstanding Amount</p>
-                    <p class="text-2xl font-semibold text-yellow-600 dark:text-yellow-400">${{ number_format($this->summary['average_outstanding_amount'], 2) }}</p>
+                    <p class="text-2xl font-semibold text-yellow-600 dark:text-yellow-400">₦{{ number_format($this->summary['average_outstanding_amount'], 2) }}</p>
                 </div>
             </div>
         </div>
@@ -243,7 +243,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">
                                 <div class="text-sm font-semibold text-red-600 dark:text-red-400">
-                                    ${{ number_format($customer['outstanding_amount'], 2) }}
+                                    ₦{{ number_format($customer['outstanding_amount'], 2) }}
                                 </div>
                             </td>
                         </tr>

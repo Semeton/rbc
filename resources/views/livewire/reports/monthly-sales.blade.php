@@ -222,7 +222,7 @@
             @if(count($this->chartData['monthly_revenue']['labels']) > 0)
                 <x-chart 
                     type="bar"
-                    data="{{ json_encode([
+                    :data="[
                         'labels' => $this->chartData['monthly_revenue']['labels'],
                         'datasets' => [
                             [
@@ -250,7 +250,7 @@
                             ]
                         ]
                     ]"
-                    options="{{ json_encode([
+                    :options="[
                         'xAxisLabel' => 'Month',
                         'yAxisLabel' => 'Amount (₦)',
                         'plugins' => [
@@ -288,7 +288,7 @@
             @if(count($this->chartData['cement_distribution']['labels']) > 0)
                 <x-chart 
                     type="doughnut"
-                    data="{{ json_encode([
+                    :data="[
                         'labels' => $this->chartData['cement_distribution']['labels'],
                         'datasets' => [
                             [
@@ -313,7 +313,7 @@
                             ]
                         ]
                     ]"
-                    options="{{ json_encode([
+                    :options="[
                         'plugins' => [
                             'legend' => [
                                 'position' => 'bottom'

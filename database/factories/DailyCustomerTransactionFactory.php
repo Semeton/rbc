@@ -27,6 +27,7 @@ class DailyCustomerTransactionFactory extends Factory
             'destination' => fake()->city(),
             'atc_cost' => fake()->randomFloat(2, 1000, 10000),
             'transport_cost' => fake()->randomFloat(2, 500, 5000),
+            'tons' => fake()->randomFloat(2, 10, 100), // Add the missing tons field
             'status' => true,
         ];
     }

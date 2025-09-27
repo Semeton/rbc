@@ -24,7 +24,7 @@ class CustomerBalanceReport
         return $query->get()->map(function ($customer) use ($startDate, $endDate) {
             // Calculate total ATC value (transactions within date range)
             $totalAtcValue = $customer->transactions()
-                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereBetween('date', [$startDate, $endDate])
                 ->get()
                 ->sum(function ($transaction) {
                     return $transaction->atc_cost + $transaction->transport_cost;
@@ -35,14 +35,23 @@ class CustomerBalanceReport
                 ->whereBetween('payment_date', [$startDate, $endDate])
                 ->sum('amount');
 
-            // Calculate outstanding balance
-            $outstandingBalance = $totalAtcValue - $totalPayments;
+            // Calculate outstanding balance (using ALL transactions and payments for accurate balance)
+            $totalAllTransactions = $customer->transactions()
+                ->get()
+                ->sum(function ($transaction) {
+                    return $transaction->atc_cost + $transaction->transport_cost;
+                });
+            
+            $totalAllPayments = $customer->payments()->sum('amount');
+            $outstandingBalance = $totalAllPayments - $totalAllTransactions;
 
             return [
                 'customer_name' => $customer->name,
-                'total_atc_value' => $totalAtcValue,
-                'total_payments' => $totalPayments,
-                'outstanding_balance' => $outstandingBalance,
+                'total_atc_value' => $totalAtcValue, // Period-specific ATC value
+                'total_payments' => $totalPayments, // Period-specific payments
+                'total_all_transactions' => $totalAllTransactions, // All-time transactions
+                'total_all_payments' => $totalAllPayments, // All-time payments
+                'outstanding_balance' => $outstandingBalance, // All-time outstanding balance
             ];
         });
     }
@@ -53,11 +62,11 @@ class CustomerBalanceReport
 
         return [
             'total_customers' => $data->count(),
-            'total_atc_value' => $data->sum('total_atc_value'),
-            'total_payments' => $data->sum('total_payments'),
-            'total_outstanding_balance' => $data->sum('outstanding_balance'),
-            'customers_with_debt' => $data->where('outstanding_balance', '>', 0)->count(),
-            'customers_with_credit' => $data->where('outstanding_balance', '<', 0)->count(),
+            'total_atc_value' => $data->sum('total_atc_value'), // Period-specific ATC value
+            'total_payments' => $data->sum('total_payments'), // Period-specific payments
+            'total_outstanding_balance' => $data->sum('outstanding_balance'), // All-time outstanding balance
+            'customers_with_debt' => $data->where('outstanding_balance', '<', 0)->count(), // Negative balance = owes money
+            'customers_with_credit' => $data->where('outstanding_balance', '>', 0)->count(), // Positive balance = overpaid
         ];
     }
 

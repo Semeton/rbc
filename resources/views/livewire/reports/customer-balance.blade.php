@@ -281,7 +281,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">
-                                <div class="text-sm font-semibold {{ $customer['outstanding_balance'] > 0 ? 'text-red-600 dark:text-red-400' : ($customer['outstanding_balance'] < 0 ? 'text-green-600 dark:text-green-400' : 'text-zinc-900 dark:text-zinc-100') }}">
+                                <div class="text-sm font-semibold {{ $customer['outstanding_balance'] < 0 ? 'text-red-600 dark:text-red-400' : ($customer['outstanding_balance'] > 0 ? 'text-green-600 dark:text-green-400' : 'text-zinc-900 dark:text-zinc-100') }}">
                                     ₦{{ number_format($customer['outstanding_balance'], 2) }}
                                 </div>
                             </td>

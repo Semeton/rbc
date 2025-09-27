@@ -84,8 +84,48 @@ Route::middleware(['auth'])->group(function () {
         })->name('atcs.show');
 
             // Transaction Management Routes (view and create)
-            Route::get('/transactions', TransactionManager::class)->name('transactions.index');
+            Route::get('/transactions', \App\Livewire\Transaction\Index::class)->name('transactions.index');
             Route::get('/transactions/create', \App\Livewire\Transaction\Create::class)->name('transactions.create');
+            Route::get('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction) {
+                return view('transactions.show', compact('transaction'));
+            })->name('transactions.show');
+            Route::get('/transactions/{transaction}/edit', function (\App\Models\DailyCustomerTransaction $transaction) {
+                return view('transactions.edit', compact('transaction'));
+            })->name('transactions.edit');
+            Route::put('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction, \Illuminate\Http\Request $request) {
+                $request->validate([
+                    'customer_id' => 'required|exists:customers,id',
+                    'driver_id' => 'required|exists:drivers,id',
+                    'atc_id' => 'required|exists:atcs,id',
+                    'date' => 'required|date',
+                    'origin' => 'required|string|max:255',
+                    'destination' => 'required|string|max:255',
+                    'cement_type' => 'required|string|max:255',
+                    'status' => 'required|in:active,inactive',
+                    'atc_cost' => 'required|numeric|min:0',
+                    'transport_cost' => 'required|numeric|min:0',
+                    'tons' => 'required|numeric|min:0',
+                    'deport_details' => 'nullable|string',
+                ]);
+
+                $transaction->update([
+                    'customer_id' => $request->customer_id,
+                    'driver_id' => $request->driver_id,
+                    'atc_id' => $request->atc_id,
+                    'date' => $request->date,
+                    'origin' => $request->origin,
+                    'destination' => $request->destination,
+                    'cement_type' => $request->cement_type,
+                    'status' => $request->status === 'active',
+                    'atc_cost' => $request->atc_cost,
+                    'transport_cost' => $request->transport_cost,
+                    'tons' => $request->tons,
+                    'deport_details' => $request->deport_details ?: null,
+                ]);
+
+                return redirect()->route('transactions.show', $transaction)
+                    ->with('success', 'Transaction updated successfully.');
+            })->name('transactions.update');
 
         // Truck Movement Management Routes (view and create)
         Route::get('/truck-movements', function () {
