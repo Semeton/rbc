@@ -367,8 +367,6 @@ new class extends Component
                                 'position' => 'top'
                             ],
                             'tooltip' => [
-                                'callbacks' => [
-                                ]
                             ]
                         ],
                         'scales' => [
@@ -426,14 +424,6 @@ new class extends Component
                                 'position' => 'top'
                             ],
                             'tooltip' => [
-                                'callbacks' => [
-                                        if (context.datasetIndex === 0) {
-                                            return context.dataset.label + \': \' + context.parsed.y + \' trips\';
-                                        } else {
-                                            return context.dataset.label + \': ₦\' + context.parsed.y.toLocaleString();
-                                        }
-                                    }'
-                                ]
                             ]
                         ],
                         'scales' => [
@@ -456,8 +446,6 @@ new class extends Component
                                     'text' => 'Fare Earned (₦)'
                                 ],
                                 'beginAtZero' => true,
-                                'ticks' => [
-                                ],
                                 'grid' => [
                                     'drawOnChartArea' => false
                                 ]

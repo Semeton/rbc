@@ -83,11 +83,9 @@ Route::middleware(['auth'])->group(function () {
             return view('atcs.show', compact('atc'));
         })->name('atcs.show');
 
-        // Transaction Management Routes (view and create)
-        Route::get('/transactions', TransactionManager::class)->name('transactions.index');
-        Route::get('/transactions/create', function () {
-            return redirect()->route('transactions.index');
-        })->name('transactions.create');
+            // Transaction Management Routes (view and create)
+            Route::get('/transactions', TransactionManager::class)->name('transactions.index');
+            Route::get('/transactions/create', \App\Livewire\Transaction\Create::class)->name('transactions.create');
 
         // Truck Movement Management Routes (view and create)
         Route::get('/truck-movements', function () {
