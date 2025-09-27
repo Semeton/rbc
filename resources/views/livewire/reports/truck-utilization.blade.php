@@ -282,7 +282,7 @@
                 @else
                     <div class="h-64 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                         <div class="text-center">
-                            <flux:icon name="chart-scatter" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
+                            <flux:icon name="chart" class="h-12 w-12 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
                             <p>No age vs income data available</p>
                         </div>
                     </div>

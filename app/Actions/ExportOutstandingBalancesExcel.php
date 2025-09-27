@@ -92,7 +92,7 @@ class ExportOutstandingBalancesExcel implements FromCollection, WithHeadings, Wi
         $sheet->setCellValue('A2', 'Period: '.$startDate.' to '.$endDate);
         $sheet->setCellValue('A3', 'Generated: '.now()->format('M d, Y H:i:s'));
         $sheet->setCellValue('A4', 'Customers with Debt: '.number_format($this->summary['total_customers_with_debt']));
-        $sheet->setCellValue('A5', 'Total Outstanding Amount: $'.number_format($this->summary['total_outstanding_amount'], 2));
+        $sheet->setCellValue('A5', 'Total Outstanding Amount: ₦'.number_format($this->summary['total_outstanding_amount'], 2));
 
         // Style summary section
         $sheet->getStyle('A1:A5')->applyFromArray([

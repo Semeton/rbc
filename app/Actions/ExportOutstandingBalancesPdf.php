@@ -74,11 +74,11 @@ class ExportOutstandingBalancesPdf
             </div>
             <div class="summary-card">
                 <h3>Total Outstanding Amount</h3>
-                <div class="value outstanding">$'.number_format($summary['total_outstanding_amount'], 2).'</div>
+                <div class="value outstanding">₦'.number_format($summary['total_outstanding_amount'], 2).'</div>
             </div>
             <div class="summary-card">
                 <h3>Average Outstanding Amount</h3>
-                <div class="value">$'.number_format($summary['average_outstanding_amount'], 2).'</div>
+                <div class="value">₦'.number_format($summary['average_outstanding_amount'], 2).'</div>
             </div>
         </div>
     </div>
@@ -98,7 +98,7 @@ class ExportOutstandingBalancesPdf
             <tr>
                 <td>'.$this->escapeHtml($customer['customer_name']).'</td>
                 <td class="text-center">'.($customer['last_payment_date'] ? (is_string($customer['last_payment_date']) ? date('M d, Y', strtotime($customer['last_payment_date'])) : $customer['last_payment_date']->format('M d, Y')) : 'Never').'</td>
-                <td class="text-right outstanding">$'.number_format($customer['outstanding_amount'], 2).'</td>
+                <td class="text-right outstanding">₦'.number_format($customer['outstanding_amount'], 2).'</td>
             </tr>';
         }
 
