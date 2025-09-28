@@ -573,12 +573,7 @@ class ClassLoader
          * @return void
          */
         self::$includeFile = \Closure::bind(static function($file) {
-            $resolvedFile = realpath($file);
-            if ($resolvedFile && is_file($resolvedFile)) {
-                include $resolvedFile;
-            } else {
-                throw new \RuntimeException("File not found for include: {$file}");
-            }
+            include str_replace('composer/../', '', $file);
         }, null, null);
     }
 }
