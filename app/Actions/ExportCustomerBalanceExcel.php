@@ -34,7 +34,10 @@ class ExportCustomerBalanceExcel implements FromCollection, WithHeadings, WithMa
     {
         $report = app(CustomerBalanceReport::class);
 
-        return $report->generate($this->filters);
+        // Get all data without pagination for export
+        $paginator = $report->generate($this->filters, 1000); // Use a large number to get all records
+
+        return $paginator->getCollection();
     }
 
     public function headings(): array
