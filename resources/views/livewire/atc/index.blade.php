@@ -14,7 +14,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total ATCs</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['total'] }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics()['total'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Active ATCs</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['active'] }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics()['active'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Inactive ATCs</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['inactive'] }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics()['inactive'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Recent (30 days)</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['recent'] }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics()['recent'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Amount</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">₦{{ number_format($this->statistics['total_amount'], 2) }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">₦{{ number_format($this->statistics()['total_amount'], 2) }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -97,7 +97,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Tons</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ number_format($this->statistics['total_tons']) }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ number_format($this->statistics()['total_tons']) }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">BG ATCs</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['bg_count'] }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics()['bg_count'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -129,7 +129,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Cash Payment</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics['cash_payment_count'] }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $this->statistics()['cash_payment_count'] }}</dd>
                         </dl>
                     </div>
                 </div>
