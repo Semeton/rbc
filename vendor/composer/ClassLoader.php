@@ -573,7 +573,7 @@ class ClassLoader
          * @return void
          */
         self::$includeFile = \Closure::bind(static function($file) {
-            include str_replace('composer/../', '', $file);
+            include $file;
         }, null, null);
     }
 }
