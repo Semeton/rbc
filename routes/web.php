@@ -72,9 +72,7 @@ Route::middleware(['auth'])->group(function () {
         })->name('trucks.show');
 
         // ATC Management Routes (view and create)
-        Route::get('/atcs', function () {
-            return view('atcs.index');
-        })->name('atcs.index');
+        Route::get('/atcs', \App\Livewire\ATC\Index::class)->name('atcs.index');
 
         Route::get('/atcs/create', function () {
             return view('atcs.create');
