@@ -5,7 +5,7 @@
 
     <!-- Statistics Cards -->
     <div class="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
+        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
+        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
+        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
+        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -72,7 +72,7 @@
 
     <!-- Additional Statistics -->
     <div class="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
+        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -88,7 +88,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
+        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -104,7 +104,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
+        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -120,7 +120,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow rounded-lg">
+        <div class="bg-white dark:bg-zinc-900 overflow-hidden shadow rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -198,7 +198,7 @@
     @endif
 
     <!-- ATCs Table -->
-    <div class="bg-white dark:bg-zinc-800 shadow overflow-hidden sm:rounded-md">
+    <div class="bg-white dark:bg-zinc-900 shadow overflow-hidden sm:rounded-md">
         @if($this->atcs->count() > 0)
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
