@@ -73,7 +73,7 @@
                             <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
                                 <dd class="mt-1">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $transaction->status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $transaction->status ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400' }}">
                                         {{ $transaction->status ? 'Active' : 'Inactive' }}
                                     </span>
                                 </dd>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} - Error {{ $exception->getStatusCode() ?? '500' }}</title>
+    <title>{{ config('app.name', 'RBC') }} - Error {{ $exception->getStatusCode() ?? '500' }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

@@ -1,9 +1,11 @@
-<x-app-layout>
-    <x-breadcrumb :items="[
-        ['name' => 'Dashboard', 'href' => route('dashboard.index')],
-        ['name' => 'Transactions', 'href' => route('transactions.index')],
-        ['name' => 'Create Transaction', 'href' => route('transactions.create')]
-    ]" />
+<x-layouts.app title="Create Transaction">
+    <x-slot name="header">
+        <x-breadcrumb :items="[
+            ['name' => 'Dashboard', 'url' => route('dashboard.index')],
+            ['name' => 'Transactions', 'url' => route('transactions.index')],
+            ['name' => 'Create Transaction', 'url' => null]
+        ]" />
+    </x-slot>
 
     <livewire:transaction.create />
-</x-app-layout>
+</x-layouts.app>

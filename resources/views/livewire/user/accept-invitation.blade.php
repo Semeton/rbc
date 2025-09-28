@@ -13,6 +13,21 @@
         </div>
 
         @if($this->invitation)
+            <!-- Success Message -->
+            @if(session('success'))
+                <div class="bg-green-50 border border-green-200 rounded-md p-4 mb-6">
+                    <div class="flex">
+                        <flux:icon name="check-circle" class="h-5 w-5 text-green-400" />
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-green-800">Success</h3>
+                            <div class="mt-2 text-sm text-green-700">
+                                {{ session('success') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
                 <div class="flex">
                     <flux:icon name="information-circle" class="h-5 w-5 text-blue-400" />
@@ -84,9 +99,12 @@
                 @enderror
 
                 <div>
-                    <flux:button variant="primary" type="submit" class="w-full" wire:loading.attr="disabled">
-                        <span wire:loading.remove>Create Account</span>
-                        <span wire:loading>Creating Account...</span>
+                    <flux:button variant="primary" type="submit" class="w-full" wire:loading.attr="disabled" wire:target="accept">
+                        <span wire:loading.remove wire:target="accept">Create Account</span>
+                        <span wire:loading wire:target="accept">
+                            <flux:icon name="arrow-path" class="w-4 h-4 mr-2 animate-spin" />
+                            Creating Account...
+                        </span>
                     </flux:button>
                 </div>
             </form>

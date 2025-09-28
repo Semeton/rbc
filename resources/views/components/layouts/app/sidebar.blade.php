@@ -27,6 +27,7 @@
                 <flux:navlist.group :heading="__('User Management')" class="grid">
                     <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>{{ __('Users') }}</flux:navlist.item>
                     <flux:navlist.item icon="user-plus" :href="route('users.invite')" :current="request()->routeIs('users.invite')" wire:navigate>{{ __('Invite User') }}</flux:navlist.item>
+                    <flux:navlist.item icon="document-text" :href="route('audit-trails.index')" :current="request()->routeIs('audit-trails.*')" wire:navigate>{{ __('Audit Trails') }}</flux:navlist.item>
                 </flux:navlist.group>
 
                 <flux:navlist.group :heading="__('Transactions')" class="grid">
@@ -59,11 +60,11 @@
             <flux:spacer />
 
             {{-- <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
+                <flux:navlist.item icon="folder-git-2" href="#" target="_blank">
                 {{ __('Repository') }}
                 </flux:navlist.item>
 
-                <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
+                <flux:navlist.item icon="book-open-text" href="#" target="_blank">
                 {{ __('Documentation') }}
                 </flux:navlist.item>
             </flux:navlist> --}}

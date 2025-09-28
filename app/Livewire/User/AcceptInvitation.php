@@ -14,8 +14,11 @@ use Livewire\Component;
 class AcceptInvitation extends Component
 {
     public string $token = '';
+
     public string $name = '';
+
     public string $password = '';
+
     public string $password_confirmation = '';
 
     protected $rules = [
@@ -34,11 +37,11 @@ class AcceptInvitation extends Component
     public function mount(string $token): void
     {
         $this->token = $token;
-        
+
         $invitationService = app(InvitationService::class);
         $invitation = $invitationService->validateInvitationToken($token);
-        
-        if (!$invitation) {
+
+        if (! $invitation) {
             abort(404, 'Invalid or expired invitation.');
         }
     }
@@ -62,9 +65,10 @@ class AcceptInvitation extends Component
 
         // Validate invitation again
         $invitation = $invitationService->validateInvitationToken($this->token);
-        
-        if (!$invitation) {
+
+        if (! $invitation) {
             $this->addError('token', 'Invalid or expired invitation.');
+
             return;
         }
 
@@ -78,17 +82,24 @@ class AcceptInvitation extends Component
             // Log in the user
             Auth::login($user);
 
+            // Add success message
+            session()->flash('success', 'Account created successfully! Welcome to RBC Management System.');
+
             // Redirect to dashboard
-            $this->redirect(route('dashboard'));
-            
+            $this->redirect(route('dashboard.index'), navigate: true);
+
         } catch (\Exception $e) {
-            $this->addError('general', 'Failed to create account. Please try again.');
+            // Log the error for debugging
+            \Log::error('Failed to accept invitation: '.$e->getMessage());
+
+            $this->addError('general', 'Failed to create account. Please try again or contact support if the problem persists.');
         }
     }
 
     public function getInvitationProperty(): ?UserInvitation
     {
         $invitationService = app(InvitationService::class);
+
         return $invitationService->getInvitationByToken($this->token);
     }
 

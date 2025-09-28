@@ -53,7 +53,7 @@ class User extends Authenticatable
         if (empty($this->name)) {
             return 'U';
         }
-        
+
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
@@ -101,6 +101,14 @@ class User extends Authenticatable
     public function notifications()
     {
         return $this->hasMany(Notification::class);
+    }
+
+    /**
+     * Get the user's audit trails
+     */
+    public function auditTrails()
+    {
+        return $this->hasMany(AuditTrail::class);
     }
 
     /**
@@ -177,6 +185,7 @@ class User extends Authenticatable
         }
 
         $userPermissions = $this->permissions($this->role);
+
         return array_key_exists($permission, $userPermissions);
     }
 
@@ -190,6 +199,7 @@ class User extends Authenticatable
                 return true;
             }
         }
+
         return false;
     }
 
@@ -199,10 +209,11 @@ class User extends Authenticatable
     public function hasAllPermissions(array $permissions): bool
     {
         foreach ($permissions as $permission) {
-            if (!$this->hasPermission($permission)) {
+            if (! $this->hasPermission($permission)) {
                 return false;
             }
         }
+
         return true;
     }
 }

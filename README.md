@@ -1,30 +1,50 @@
-# Laravel + Livewire Starter Kit
+# RBC Management System
 
 ## Introduction
 
-Our Laravel + [Livewire](https://livewire.laravel.com) starter kit provides a robust, modern starting point for building Laravel applications with a Livewire frontend.
+RBC Management System is a comprehensive daily transaction and fleet management platform built with Laravel and Livewire. This system provides robust tools for managing customers, drivers, trucks, ATCs, and daily transactions.
 
-Livewire is a powerful way of building dynamic, reactive, frontend UIs using just PHP. It's a great fit for teams that primarily use Blade templates and are looking for a simpler alternative to JavaScript-driven SPA frameworks like React and Vue.
+## Features
 
-This Livewire starter kit utilizes Livewire 3, Laravel Volt (optionally), TypeScript, Tailwind, and the [Flux UI](https://fluxui.dev) component library.
+-   **Customer Management**: Add, edit, and manage customer information
+-   **Driver Management**: Track driver details, photos, and contact information
+-   **Truck Management**: Manage truck records, registration, and maintenance
+-   **ATC Management**: Handle ATC (Authority to Carry) records and allocations
+-   **Daily Transactions**: Record and track daily customer transactions
+-   **Payment Tracking**: Manage customer payments and outstanding balances
+-   **Truck Movements**: Track daily truck movements and dispatches
+-   **Maintenance Records**: Log truck maintenance and associated costs
+-   **Comprehensive Reports**: Generate various reports for business insights
+-   **User Management**: Role-based access control and user invitations
 
-If you are looking for the alternate configurations of this starter kit, they can be found in the following branches:
+## Technology Stack
 
-- [components](https://github.com/laravel/livewire-starter-kit/tree/components) - if Volt is not selected
-- [workos](https://github.com/laravel/livewire-starter-kit/tree/workos) - if WorkOS is selected for authentication
+This application is built using:
 
-## Official Documentation
+-   **Laravel 12**: PHP framework for the backend
+-   **Livewire 3**: Dynamic frontend components
+-   **Laravel Volt**: Single-file Livewire components
+-   **Flux UI**: Modern component library
+-   **Tailwind CSS**: Utility-first CSS framework
+-   **Select2**: Enhanced dropdown components
+-   **Chart.js**: Data visualization
+-   **PDF Export**: Generate reports in PDF format
+-   **Excel Export**: Export data to Excel spreadsheets
 
-Documentation for all Laravel starter kits can be found on the [Laravel website](https://laravel.com/docs/starter-kits).
+## Installation
 
-## Contributing
+1. Clone the repository
+2. Install dependencies: `composer install`
+3. Copy environment file: `cp .env.example .env`
+4. Generate application key: `php artisan key:generate`
+5. Run database migrations: `php artisan migrate`
+6. Seed the database: `php artisan db:seed`
+7. Start the development server: `php artisan serve`
 
-Thank you for considering contributing to our starter kit! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Usage
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Access the application through your web browser and log in with your credentials. The system provides an intuitive interface for managing all aspects of your business operations.
 
 ## License
 
-The Laravel + Livewire starter kit is open-sourced software licensed under the MIT license.
+The RBC Management System is proprietary software. All rights reserved.

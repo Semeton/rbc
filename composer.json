@@ -1,11 +1,13 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/livewire-starter-kit",
+    "name": "rbc/management-system",
     "type": "project",
-    "description": "The official Laravel starter kit for Livewire.",
+    "description": "RBC Management System - Daily transaction and fleet management platform.",
     "keywords": [
-        "laravel",
-        "framework"
+        "rbc",
+        "management",
+        "transactions",
+        "fleet"
     ],
     "license": "MIT",
     "require": {

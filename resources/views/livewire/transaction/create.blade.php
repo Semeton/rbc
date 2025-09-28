@@ -3,8 +3,8 @@
         <!-- Header -->
         <div class="flex justify-between items-center">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Create New Transaction</h1>
-                <p class="text-gray-600">Add a new daily customer transaction with ATC allocation</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create New Transaction</h1>
+                <p class="text-gray-600 dark:text-gray-400">Add a new daily customer transaction with ATC allocation</p>
             </div>
             <flux:button 
                 wire:click="resetForm" 
@@ -16,11 +16,11 @@
         </div>
 
         <!-- Transaction Form -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-zinc-900 rounded-lg shadow p-6">
             <form wire:submit="save" class="space-y-6">
                 <!-- Basic Information -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Basic Information</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <flux:field>
@@ -70,8 +70,8 @@
                 </div>
 
                 <!-- ATC Allocation -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">ATC Allocation</h3>
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">ATC Allocation</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
                             <flux:field>
@@ -93,8 +93,8 @@
                                     $selectedAtc = $this->atcs->firstWhere('id', $atc_id);
                                 @endphp
                                 @if($selectedAtc)
-                                    <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                        <div class="text-sm text-blue-800">
+                                    <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                                        <div class="text-sm text-blue-800 dark:text-blue-200">
                                             <div class="font-medium text-lg mb-2">ATC #{{ $selectedAtc->atc_number }} Capacity Details</div>
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div>
@@ -110,12 +110,12 @@
                                                     <div>{{ number_format($selectedAtc->allocated_tons, 2) }} tons (₦{{ number_format($selectedAtc->transactions()->where('status', true)->sum('atc_cost'), 2) }})</div>
                                                 </div>
                                                 <div>
-                                                    <div class="font-medium text-green-700">Available</div>
-                                                    <div class="text-green-700">{{ number_format($selectedAtc->remaining_tons, 2) }} tons (₦{{ number_format($selectedAtc->remaining_amount, 2) }})</div>
+                                                    <div class="font-medium text-green-700 dark:text-green-400">Available</div>
+                                                    <div class="text-green-700 dark:text-green-400">{{ number_format($selectedAtc->remaining_tons, 2) }} tons (₦{{ number_format($selectedAtc->remaining_amount, 2) }})</div>
                                                 </div>
                                             </div>
-                                            <div class="mt-3 pt-3 border-t border-blue-200">
-                                                <div class="text-xs text-gray-600">
+                                            <div class="mt-3 pt-3 border-t border-blue-200 dark:border-blue-700">
+                                                <div class="text-xs text-gray-600 dark:text-gray-400">
                                                     Allocation: {{ number_format($selectedAtc->allocation_percentage, 1) }}% used
                                                 </div>
                                             </div>
@@ -140,7 +140,7 @@
                                             $remainingTons = $selectedAtc->remaining_tons;
                                             $isOverAllocated = (float) $tons > $remainingTons;
                                         @endphp
-                                        <div class="mt-2 p-2 rounded text-sm {{ $isOverAllocated ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200' }}">
+                                        <div class="mt-2 p-2 rounded text-sm {{ $isOverAllocated ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800' : 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800' }}">
                                             @if($isOverAllocated)
                                                 ⚠️ Exceeds remaining capacity by {{ number_format((float) $tons - $remainingTons, 2) }} tons
                                             @else
@@ -167,7 +167,7 @@
                                             $expectedCost = (float) $tons * $selectedAtc->price_per_ton;
                                             $isCorrect = abs((float) $atc_cost - $expectedCost) <= 0.01;
                                         @endphp
-                                        <div class="mt-2 p-2 rounded text-sm {{ $isCorrect ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
+                                        <div class="mt-2 p-2 rounded text-sm {{ $isCorrect ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800' }}">
                                             @if($isCorrect)
                                                 ✅ Correctly calculated: {{ number_format($tons, 2) }} tons × ₦{{ number_format($selectedAtc->price_per_ton, 2) }} = ₦{{ number_format($expectedCost, 2) }}
                                             @else
@@ -182,8 +182,8 @@
                 </div>
 
                 <!-- Transaction Details -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Transaction Details</h3>
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Transaction Details</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <flux:field>

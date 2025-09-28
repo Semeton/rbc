@@ -1,7 +1,6 @@
 <?php
 
 use App\Livewire\ATC\AtcAllocationManager;
-use App\Livewire\Transaction\TransactionManager;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -23,11 +22,13 @@ Route::middleware(['auth'])->group(function () {
         // User Management Routes
         Route::get('/users', \App\Livewire\User\UserManager::class)->name('users.index');
         Route::get('/users/invite', \App\Livewire\User\InviteUser::class)->name('users.invite');
+
+        // Audit Trails Route
+        Route::get('/audit-trails', \App\Livewire\AuditTrail\Index::class)->name('audit-trails.index');
     });
 
     // Admin and Operations Manager routes (CRUD operations)
-    Route::middleware(['role:admin,operations_manager'])->group(function () {
-    });
+    Route::middleware(['role:admin,operations_manager'])->group(function () {});
 
     // Admin, Operations Manager, and Staff routes (view and create operations)
     Route::middleware(['role:admin,operations_manager,staff'])->group(function () {
@@ -83,49 +84,49 @@ Route::middleware(['auth'])->group(function () {
             return view('atcs.show', compact('atc'));
         })->name('atcs.show');
 
-            // Transaction Management Routes (view and create)
-            Route::get('/transactions', \App\Livewire\Transaction\Index::class)->name('transactions.index');
-            Route::get('/transactions/create', \App\Livewire\Transaction\Create::class)->name('transactions.create');
-            Route::get('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction) {
-                return view('transactions.show', compact('transaction'));
-            })->name('transactions.show');
-            Route::get('/transactions/{transaction}/edit', function (\App\Models\DailyCustomerTransaction $transaction) {
-                return view('transactions.edit', compact('transaction'));
-            })->name('transactions.edit');
-            Route::put('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction, \Illuminate\Http\Request $request) {
-                $request->validate([
-                    'customer_id' => 'required|exists:customers,id',
-                    'driver_id' => 'required|exists:drivers,id',
-                    'atc_id' => 'required|exists:atcs,id',
-                    'date' => 'required|date',
-                    'origin' => 'required|string|max:255',
-                    'destination' => 'required|string|max:255',
-                    'cement_type' => 'required|string|max:255',
-                    'status' => 'required|in:active,inactive',
-                    'atc_cost' => 'required|numeric|min:0',
-                    'transport_cost' => 'required|numeric|min:0',
-                    'tons' => 'required|numeric|min:0',
-                    'deport_details' => 'nullable|string',
-                ]);
+        // Transaction Management Routes (view and create)
+        Route::get('/transactions', \App\Livewire\Transaction\Index::class)->name('transactions.index');
+        Route::get('/transactions/create', \App\Livewire\Transaction\Create::class)->name('transactions.create');
+        Route::get('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction) {
+            return view('transactions.show', compact('transaction'));
+        })->name('transactions.show');
+        Route::get('/transactions/{transaction}/edit', function (\App\Models\DailyCustomerTransaction $transaction) {
+            return view('transactions.edit', compact('transaction'));
+        })->name('transactions.edit');
+        Route::put('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction, \Illuminate\Http\Request $request) {
+            $request->validate([
+                'customer_id' => 'required|exists:customers,id',
+                'driver_id' => 'required|exists:drivers,id',
+                'atc_id' => 'required|exists:atcs,id',
+                'date' => 'required|date',
+                'origin' => 'required|string|max:255',
+                'destination' => 'required|string|max:255',
+                'cement_type' => 'required|string|max:255',
+                'status' => 'required|in:active,inactive',
+                'atc_cost' => 'required|numeric|min:0',
+                'transport_cost' => 'required|numeric|min:0',
+                'tons' => 'required|numeric|min:0',
+                'deport_details' => 'nullable|string',
+            ]);
 
-                $transaction->update([
-                    'customer_id' => $request->customer_id,
-                    'driver_id' => $request->driver_id,
-                    'atc_id' => $request->atc_id,
-                    'date' => $request->date,
-                    'origin' => $request->origin,
-                    'destination' => $request->destination,
-                    'cement_type' => $request->cement_type,
-                    'status' => $request->status === 'active',
-                    'atc_cost' => $request->atc_cost,
-                    'transport_cost' => $request->transport_cost,
-                    'tons' => $request->tons,
-                    'deport_details' => $request->deport_details ?: null,
-                ]);
+            $transaction->update([
+                'customer_id' => $request->customer_id,
+                'driver_id' => $request->driver_id,
+                'atc_id' => $request->atc_id,
+                'date' => $request->date,
+                'origin' => $request->origin,
+                'destination' => $request->destination,
+                'cement_type' => $request->cement_type,
+                'status' => $request->status === 'active',
+                'atc_cost' => $request->atc_cost,
+                'transport_cost' => $request->transport_cost,
+                'tons' => $request->tons,
+                'deport_details' => $request->deport_details ?: null,
+            ]);
 
-                return redirect()->route('transactions.show', $transaction)
-                    ->with('success', 'Transaction updated successfully.');
-            })->name('transactions.update');
+            return redirect()->route('transactions.show', $transaction)
+                ->with('success', 'Transaction updated successfully.');
+        })->name('transactions.update');
 
         // Truck Movement Management Routes (view and create)
         Route::get('/truck-movements', function () {
@@ -192,8 +193,8 @@ Route::middleware(['auth'])->group(function () {
             return view('reports.profit-estimate');
         })->name('reports.profit-estimate');
 
-            // Notifications Routes (view only)
-            Route::get('/notifications', \App\Livewire\Notification\Index::class)->name('notifications.index');
+        // Notifications Routes (view only)
+        Route::get('/notifications', \App\Livewire\Notification\Index::class)->name('notifications.index');
     });
 
     // Admin and Operations Manager routes (edit operations)
