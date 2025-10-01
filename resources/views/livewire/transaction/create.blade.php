@@ -154,28 +154,17 @@
 
                         <div>
                             <flux:field>
-                                <flux:label>ATC Cost (₦) *</flux:label>
+                                <flux:label>Cost (₦) *</flux:label>
                                 <flux:input type="number" step="0.01" wire:model="atc_cost" required />
                                 @error('atc_cost') <flux:error>{{ $message }}</flux:error> @enderror
-                                
-                                @if($atc_id && $tons)
-                                    @php
-                                        $selectedAtc = $this->atcs->firstWhere('id', $atc_id);
-                                    @endphp
-                                    @if($selectedAtc)
-                                        @php
-                                            $expectedCost = (float) $tons * $selectedAtc->price_per_ton;
-                                            $isCorrect = abs((float) $atc_cost - $expectedCost) <= 0.01;
-                                        @endphp
-                                        <div class="mt-2 p-2 rounded text-sm {{ $isCorrect ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800' }}">
-                                            @if($isCorrect)
-                                                ✅ Correctly calculated: {{ number_format($tons, 2) }} tons × ₦{{ number_format($selectedAtc->price_per_ton, 2) }} = ₦{{ number_format($expectedCost, 2) }}
-                                            @else
-                                                ⚠️ Should be: {{ number_format($tons, 2) }} tons × ₦{{ number_format($selectedAtc->price_per_ton, 2) }} = ₦{{ number_format($expectedCost, 2) }}
-                                            @endif
-                                        </div>
-                                    @endif
-                                @endif
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>Transport Cost</flux:label>
+                                <flux:input type="number" step="0.01" wire:model="transport_cost" />
+                                @error('transport_cost') <flux:error>{{ $message }}</flux:error> @enderror
                             </flux:field>
                         </div>
                     </div>
@@ -209,13 +198,7 @@
                             </flux:field>
                         </div>
 
-                        <div>
-                            <flux:field>
-                                <flux:label>Transport Cost (₦) *</flux:label>
-                                <flux:input type="number" step="0.01" wire:model="transport_cost" required />
-                                @error('transport_cost') <flux:error>{{ $message }}</flux:error> @enderror
-                            </flux:field>
-                        </div>
+                        
 
                         <div class="md:col-span-2">
                             <flux:field>

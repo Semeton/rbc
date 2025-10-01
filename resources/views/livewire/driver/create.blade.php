@@ -30,10 +30,10 @@
                         </div>
 
                         <flux:field>
-                            <flux:label>Company *</flux:label>
+                            <flux:label>Company</flux:label>
                             <flux:input
                                 wire:model="company"
-                                placeholder="Enter company name"
+                                placeholder="Enter company name (optional)"
                             />
                             @error('company') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
                         </flux:field>

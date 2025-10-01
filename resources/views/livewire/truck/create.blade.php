@@ -11,7 +11,7 @@
                     <form wire:submit="save" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <flux:field>
-                                <flux:label>Cab Number *</flux:label>
+                            <flux:label>Cab Number</flux:label>
                                 <flux:input
                                     wire:model="cab_number"
                                     placeholder="Enter cab number"
@@ -30,7 +30,7 @@
                         </div>
 
                         <flux:field>
-                            <flux:label>Truck Model *</flux:label>
+                            <flux:label>Truck Model</flux:label>
                             <flux:input
                                 wire:model="truck_model"
                                 placeholder="Enter truck model"
@@ -40,7 +40,7 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <flux:field>
-                                <flux:label>Year of Manufacture *</flux:label>
+                                <flux:label>Year of Manufacture</flux:label>
                                 <flux:input
                                     type="number"
                                     wire:model="year_of_manufacture"
@@ -52,7 +52,7 @@
                             </flux:field>
 
                             <flux:field>
-                                <flux:label>Status *</flux:label>
+                                <flux:label>Status</flux:label>
                                 <flux:select wire:model="status">
                                     <flux:select.option value="active">Active</flux:select.option>
                                     <flux:select.option value="inactive">Inactive</flux:select.option>

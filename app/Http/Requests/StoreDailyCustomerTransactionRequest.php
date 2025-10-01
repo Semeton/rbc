@@ -7,7 +7,6 @@ namespace App\Http\Requests;
 use App\Models\Atc;
 use App\Services\AtcAllocationValidator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreDailyCustomerTransactionRequest extends FormRequest
 {
@@ -30,11 +29,11 @@ class StoreDailyCustomerTransactionRequest extends FormRequest
             'atc_id' => ['required', 'exists:atcs,id'],
             'date' => ['required', 'date'],
             'origin' => ['required', 'string', 'max:255'],
-            'deport_details' => ['required', 'string', 'max:255'],
+            'deport_details' => ['nullable', 'string', 'max:255'],
             'cement_type' => ['required', 'string', 'max:255'],
             'destination' => ['required', 'string', 'max:255'],
             'atc_cost' => ['required', 'numeric', 'min:0'],
-            'transport_cost' => ['required', 'numeric', 'min:0'],
+            'transport_cost' => ['nullable', 'numeric', 'min:0'],
             'tons' => ['required', 'numeric', 'min:0.01'],
             'status' => ['boolean'],
         ];
@@ -59,12 +58,12 @@ class StoreDailyCustomerTransactionRequest extends FormRequest
         $tons = (float) $this->input('tons');
         $transactionId = $this->route('transaction') ?? null;
 
-        if (!$atcId || !$tons) {
+        if (! $atcId || ! $tons) {
             return;
         }
 
         $atc = Atc::find($atcId);
-        if (!$atc) {
+        if (! $atc) {
             return;
         }
 
@@ -72,7 +71,7 @@ class StoreDailyCustomerTransactionRequest extends FormRequest
         $remainingTons = $allocationValidator->getRemainingTons($atc, $transactionId);
 
         if ($tons > $remainingTons) {
-            $validator->errors()->add('tons', 
+            $validator->errors()->add('tons',
                 "The tons allocated ({$tons}) exceeds the remaining capacity ({$remainingTons}) for ATC #{$atc->atc_number}."
             );
         }
@@ -93,13 +92,11 @@ class StoreDailyCustomerTransactionRequest extends FormRequest
             'date.required' => 'Please select a date.',
             'date.date' => 'Please enter a valid date.',
             'origin.required' => 'Please enter the origin.',
-            'deport_details.required' => 'Please enter depot details.',
             'cement_type.required' => 'Please enter the cement type.',
             'destination.required' => 'Please enter the destination.',
             'atc_cost.required' => 'Please enter the ATC cost.',
             'atc_cost.numeric' => 'ATC cost must be a number.',
             'atc_cost.min' => 'ATC cost must be at least 0.',
-            'transport_cost.required' => 'Please enter the transport cost.',
             'transport_cost.numeric' => 'Transport cost must be a number.',
             'transport_cost.min' => 'Transport cost must be at least 0.',
             'tons.required' => 'Please enter the number of tons.',

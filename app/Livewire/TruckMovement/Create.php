@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\TruckMovement;
 
+use App\Models\Atc;
 use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\Truck;
@@ -23,17 +24,23 @@ class Create extends Component
     #[Validate('required|exists:customers,id')]
     public int $customer_id = 0;
 
+    #[Validate('required|exists:atcs,id')]
+    public int $atc_id = 0;
+
     #[Validate('required|date')]
     public string $atc_collection_date = '';
 
     #[Validate('required|date|after_or_equal:atc_collection_date')]
     public string $load_dispatch_date = '';
 
-    #[Validate('required|numeric|min:0')]
+    #[Validate('required|numeric')]
     public float $fare = 0.0;
 
-    #[Validate('required|numeric|min:0')]
+    #[Validate('required|numeric')]
     public float $gas_chop_money = 0.0;
+
+    #[Validate('nullable|numeric')]
+    public ?float $haulage = null;
 
     #[Validate('required|in:active,inactive')]
     public string $status = 'active';
@@ -52,10 +59,12 @@ class Create extends Component
             'driver_id' => $this->driver_id,
             'truck_id' => $this->truck_id,
             'customer_id' => $this->customer_id,
+            'atc_id' => $this->atc_id,
             'atc_collection_date' => $this->atc_collection_date,
             'load_dispatch_date' => $this->load_dispatch_date,
             'fare' => $this->fare,
             'gas_chop_money' => $this->gas_chop_money,
+            'haulage' => $this->haulage,
             'status' => $this->status === 'active',
         ]);
 
@@ -78,6 +87,12 @@ class Create extends Component
     public function customers()
     {
         return Customer::orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function atcs()
+    {
+        return Atc::orderBy('atc_number')->get();
     }
 
     public function render(): View

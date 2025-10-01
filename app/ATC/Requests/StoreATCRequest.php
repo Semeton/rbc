@@ -23,7 +23,7 @@ class StoreATCRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'company' => ['required', 'string', 'max:255'],
+            'company' => ['required', 'in:Dangote,BUA,Mangal'],
             'atc_number' => ['required', 'integer', 'unique:atcs'],
             'atc_type' => ['required', 'in:bg,cash_payment'],
             'amount' => ['required', 'numeric', 'min:0'],
@@ -38,8 +38,8 @@ class StoreATCRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'company.required' => 'Company name is required.',
-            'company.max' => 'Company name cannot exceed 255 characters.',
+            'company.required' => 'Company is required.',
+            'company.in' => 'Company must be Dangote, BUA, or Mangal.',
             'atc_number.required' => 'ATC number is required.',
             'atc_number.integer' => 'ATC number must be a valid number.',
             'atc_number.unique' => 'This ATC number is already in use.',

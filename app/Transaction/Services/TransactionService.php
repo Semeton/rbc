@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Transaction\Services;
 
-use App\Models\DailyCustomerTransaction;
-use App\Services\AuditTrailService;
-use App\Services\AtcAllocationValidator;
-use App\Notification\Services\NotificationService;
 use App\Enums\NotificationType;
+use App\Models\DailyCustomerTransaction;
+use App\Notification\Services\NotificationService;
+use App\Services\AtcAllocationValidator;
+use App\Services\AuditTrailService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -254,12 +254,12 @@ class TransactionService
      */
     private function validateAtcAllocation(array $data, ?int $excludeTransactionId = null): void
     {
-        if (!isset($data['atc_id']) || !isset($data['tons'])) {
+        if (! isset($data['atc_id']) || ! isset($data['tons'])) {
             return;
         }
 
         $atc = \App\Models\Atc::find($data['atc_id']);
-        if (!$atc) {
+        if (! $atc) {
             return;
         }
 
@@ -280,10 +280,10 @@ class TransactionService
     public function getAtcAllocationStatistics(): array
     {
         $allocationValidator = app(AtcAllocationValidator::class);
-        
+
         // Get all ATCs with their allocation status
         $atcsWithAllocation = $allocationValidator->getAllAtcsWithAllocationStatus();
-        
+
         $stats = [
             'total_atcs' => count($atcsWithAllocation),
             'available_atcs' => 0,
@@ -298,11 +298,11 @@ class TransactionService
 
         foreach ($atcsWithAllocation as $atcData) {
             $allocation = $atcData['allocation'];
-            
+
             $stats['total_tons'] += $allocation['total_tons'];
             $stats['allocated_tons'] += $allocation['allocated_tons'];
             $stats['remaining_tons'] += $allocation['remaining_tons'];
-            
+
             if ($allocation['is_over_allocated']) {
                 $stats['over_allocated_atcs']++;
             } elseif ($allocation['is_fully_allocated']) {
@@ -321,12 +321,13 @@ class TransactionService
     public function getTransactionsWithAllocationInfo(Request $request, int $perPage = 15): LengthAwarePaginator
     {
         $transactions = $this->getPaginatedTransactions($request, $perPage);
-        
+
         // Add allocation info to each transaction
         $allocationValidator = app(AtcAllocationValidator::class);
-        
+
         $transactions->getCollection()->transform(function (DailyCustomerTransaction $transaction) use ($allocationValidator) {
             $transaction->atc_allocation = $allocationValidator->getAllocationSummary($transaction->atc);
+
             return $transaction;
         });
 
@@ -341,18 +342,19 @@ class TransactionService
         $notificationService = app(NotificationService::class);
 
         // High-value transaction alert (>₦500,000)
-        if ($transaction->atc_cost > 500000) {
+        $atcCost = (float) $transaction->atc_cost;
+        if ($atcCost > 500000) {
             $notificationService->createSystemNotification(
                 NotificationType::TRANSACTION_ALERT,
-                "High-Value Transaction Alert",
-                "High-value transaction created: ₦" . number_format($transaction->atc_cost, 2) . " for customer {$transaction->customer->name}.",
+                'High-Value Transaction Alert',
+                'High-value transaction created: ₦'.number_format($atcCost, 2)." for customer {$transaction->customer->name}.",
                 [
                     'transaction_id' => $transaction->id,
                     'customer_id' => $transaction->customer->id,
                     'customer_name' => $transaction->customer->name,
                     'atc_id' => $transaction->atc->id,
                     'atc_number' => $transaction->atc->atc_number,
-                    'amount' => $transaction->atc_cost,
+                    'amount' => $atcCost,
                     'tons' => $transaction->tons,
                 ],
                 now()->addDays(3) // Expire in 3 days

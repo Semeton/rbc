@@ -8,6 +8,7 @@ use App\Models\Atc;
 use App\Models\Customer;
 use App\Models\DailyCustomerTransaction;
 use App\Models\Driver;
+use App\Services\AuditTrailService;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
@@ -82,6 +83,8 @@ class Edit extends Component
         $this->atc_cost = (float) $transaction->atc_cost;
         $this->transport_cost = (float) $transaction->transport_cost;
         $this->status = $transaction->status_string;
+
+        AuditTrailService::log('page_view', 'Transactions', "Viewed transaction edit page for ID: {$transaction->id}");
     }
 
     public function update(): void

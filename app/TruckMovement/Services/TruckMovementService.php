@@ -53,8 +53,9 @@ class TruckMovementService
      */
     public function createTruckMovement(array $data): DailyTruckRecord
     {
-        // Calculate balance
-        $data['balance'] = $data['fare'] - $data['gas_chop_money'];
+        // Calculate balance: Fare - Gas Chop + Haulage
+        $haulage = isset($data['haulage']) ? (float) $data['haulage'] : 0.0;
+        $data['balance'] = ((float) $data['fare']) - ((float) $data['gas_chop_money']) + $haulage;
 
         $truckMovement = DailyTruckRecord::create($data);
 
@@ -69,8 +70,9 @@ class TruckMovementService
      */
     public function updateTruckMovement(DailyTruckRecord $truckMovement, array $data): DailyTruckRecord
     {
-        // Calculate balance
-        $data['balance'] = $data['fare'] - $data['gas_chop_money'];
+        // Calculate balance: Fare - Gas Chop + Haulage
+        $haulage = isset($data['haulage']) ? (float) $data['haulage'] : 0.0;
+        $data['balance'] = ((float) $data['fare']) - ((float) $data['gas_chop_money']) + $haulage;
 
         $truckMovement->update($data);
 

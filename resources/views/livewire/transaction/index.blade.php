@@ -141,9 +141,9 @@
                                         <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
                                             {{ number_format($transaction->atc->remaining_tons, 2) }} tons left
                                         </div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                                        {{-- <div class="text-sm text-gray-500 dark:text-gray-400">
                                             ₦{{ number_format($transaction->atc->remaining_amount, 2) }} left
-                                        </div>
+                                        </div> --}}
                                         <div class="text-xs text-gray-400 dark:text-gray-500">
                                             {{ number_format($transaction->atc->allocation_percentage, 1) }}% allocated
                                         </div>

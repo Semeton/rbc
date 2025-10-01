@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\ATC\AtcAllocationManager;
+use App\Services\AuditTrailService;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -36,11 +37,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/customers', function () {
             return view('customers.index');
         })->name('customers.index');
-
         Route::get('/customers/create', function () {
             return view('customers.create');
         })->name('customers.create');
-
         Route::get('/customers/{customer}', function (\App\Models\Customer $customer) {
             return view('customers.show', compact('customer'));
         })->name('customers.show');
@@ -49,11 +48,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/drivers', function () {
             return view('drivers.index');
         })->name('drivers.index');
-
         Route::get('/drivers/create', function () {
             return view('drivers.create');
         })->name('drivers.create');
-
         Route::get('/drivers/{driver}', function (\App\Models\Driver $driver) {
             return view('drivers.show', compact('driver'));
         })->name('drivers.show');
@@ -62,33 +59,24 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/trucks', function () {
             return view('trucks.index');
         })->name('trucks.index');
-
         Route::get('/trucks/create', function () {
             return view('trucks.create');
         })->name('trucks.create');
-
         Route::get('/trucks/{truck}', function (\App\Models\Truck $truck) {
             return view('trucks.show', compact('truck'));
         })->name('trucks.show');
-
-        // ATC Management Routes (view and create)
-        Route::get('/atcs', \App\Livewire\ATC\Index::class)->name('atcs.index');
-
-        Route::get('/atcs/create', function () {
-            return view('atcs.create');
-        })->name('atcs.create');
-
-        Route::get('/atcs/{atc}', function (\App\Models\Atc $atc) {
-            return view('atcs.show', compact('atc'));
-        })->name('atcs.show');
 
         // Transaction Management Routes (view and create)
         Route::get('/transactions', \App\Livewire\Transaction\Index::class)->name('transactions.index');
         Route::get('/transactions/create', \App\Livewire\Transaction\Create::class)->name('transactions.create');
         Route::get('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction) {
+            AuditTrailService::log('page_view', 'Transactions', "Viewed transaction details page for ID: {$transaction->id}");
+
             return view('transactions.show', compact('transaction'));
         })->name('transactions.show');
         Route::get('/transactions/{transaction}/edit', function (\App\Models\DailyCustomerTransaction $transaction) {
+            AuditTrailService::log('page_view', 'Transactions', "Viewed transaction edit page for ID: {$transaction->id}");
+
             return view('transactions.edit', compact('transaction'));
         })->name('transactions.edit');
         Route::put('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction, \Illuminate\Http\Request $request) {
@@ -125,34 +113,46 @@ Route::middleware(['auth'])->group(function () {
             return redirect()->route('transactions.show', $transaction)
                 ->with('success', 'Transaction updated successfully.');
         })->name('transactions.update');
+    });
 
-        // Truck Movement Management Routes (view and create)
+    // ATC routes (admin/ops/staff/accountant)
+    Route::middleware(['role:admin,operations_manager,staff,accountant'])->group(function () {
+        Route::get('/atcs', \App\Livewire\ATC\Index::class)->name('atcs.index');
+        Route::get('/atcs/create', function () {
+            return view('atcs.create');
+        })->name('atcs.create');
+        Route::get('/atcs/{atc}', function (\App\Models\Atc $atc) {
+            return view('atcs.show', compact('atc'));
+        })->name('atcs.show');
+    });
+
+    // Truck Movement & Maintenance (admin/ops/staff/movement_staff)
+    Route::middleware(['role:admin,operations_manager,staff,movement_staff'])->group(function () {
+        // Truck Movements
         Route::get('/truck-movements', function () {
             return view('truck-movements.index');
         })->name('truck-movements.index');
-
         Route::get('/truck-movements/create', function () {
             return view('truck-movements.create');
         })->name('truck-movements.create');
-
         Route::get('/truck-movements/{truckMovement}', function (\App\Models\DailyTruckRecord $truckMovement) {
             return view('truck-movements.show', compact('truckMovement'));
         })->name('truck-movements.show');
 
-        // Maintenance Management Routes (view and create)
+        // Maintenance
         Route::get('/maintenance', function () {
             return view('maintenance.index');
         })->name('maintenance.index');
-
         Route::get('/maintenance/create', function () {
             return view('maintenance.create');
         })->name('maintenance.create');
-
         Route::get('/maintenance/{maintenance}', function (\App\Models\TruckMaintenanceRecord $maintenance) {
             return view('maintenance.show', compact('maintenance'));
         })->name('maintenance.show');
+    });
 
-        // Reports Routes (view only)
+    // Reports (admin/ops/staff/accountant/movement_staff)
+    Route::middleware(['role:admin,operations_manager,staff,accountant,movement_staff'])->group(function () {
         Route::get('/reports', [\App\Reports\ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/customer-balance', function (\App\Models\Customer $customer) {
             return view('reports.customer-balance', compact('customer'));
@@ -200,23 +200,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/customers/{customer}/edit', function (\App\Models\Customer $customer) {
             return view('customers.edit', compact('customer'));
         })->name('customers.edit');
-
         Route::get('/drivers/{driver}/edit', function (\App\Models\Driver $driver) {
             return view('drivers.edit', compact('driver'));
         })->name('drivers.edit');
-
         Route::get('/trucks/{truck}/edit', function (\App\Models\Truck $truck) {
             return view('trucks.edit', compact('truck'));
         })->name('trucks.edit');
-
         Route::get('/atcs/{atc}/edit', function (\App\Models\Atc $atc) {
             return view('atcs.edit', compact('atc'));
         })->name('atcs.edit');
-
         Route::get('/truck-movements/{truckMovement}/edit', function (\App\Models\DailyTruckRecord $truckMovement) {
             return view('truck-movements.edit', compact('truckMovement'));
         })->name('truck-movements.edit');
-
         Route::get('/maintenance/{maintenance}/edit', function (\App\Models\TruckMaintenanceRecord $maintenance) {
             return view('maintenance.edit', compact('maintenance'));
         })->name('maintenance.edit');
@@ -227,15 +222,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/payments', function () {
             return view('payments.index');
         })->name('payments.index');
-
         Route::get('/payments/create', function () {
             return view('payments.create');
         })->name('payments.create');
-
         Route::get('/payments/{payment}', function (\App\Models\CustomerPayment $payment) {
             return view('payments.show', compact('payment'));
         })->name('payments.show');
-
         Route::get('/payments/{payment}/edit', function (\App\Models\CustomerPayment $payment) {
             return view('payments.edit', compact('payment'));
         })->name('payments.edit');

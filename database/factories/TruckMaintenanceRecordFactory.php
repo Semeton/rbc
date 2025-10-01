@@ -32,6 +32,7 @@ class TruckMaintenanceRecordFactory extends Factory
             'description' => fake()->randomElement($maintenanceTypes).' - '.fake()->sentence(),
             'cost_of_maintenance' => fake()->randomFloat(2, 500, 5000),
             'status' => true,
+            'maintenance_date' => fake()->date(),
         ];
     }
 }

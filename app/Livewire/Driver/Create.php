@@ -24,7 +24,7 @@ class Create extends Component
     #[Validate('nullable|image|mimes:jpeg,png,jpg,gif|max:2048')]
     public ?UploadedFile $photo = null;
 
-    #[Validate('required|string|max:255')]
+    #[Validate('nullable|string|max:255')]
     public string $company = '';
 
     #[Validate('required|in:active,inactive')]
@@ -42,7 +42,7 @@ class Create extends Component
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],
             'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'company' => ['required', 'string', 'max:255'],
+            'company' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:active,inactive'],
         ];
     }
@@ -57,7 +57,6 @@ class Create extends Component
             'photo.image' => 'The photo must be an image.',
             'photo.mimes' => 'The photo must be a file of type: jpeg, png, jpg, gif.',
             'photo.max' => 'The photo may not be greater than 2MB.',
-            'company.required' => 'Company is required.',
             'company.max' => 'Company name cannot exceed 255 characters.',
             'status.required' => 'Status is required.',
             'status.in' => 'Status must be either active or inactive.',

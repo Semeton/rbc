@@ -6,11 +6,12 @@ trait UserRolesAndPermission
 {
     public static function roles(string $role): string
     {
-       return match ($role) {
+        return match ($role) {
             'admin' => 'Admin',
             'accountant' => 'Accountant',
             'operations_manager' => 'Operations Manager',
             'staff' => 'Data Entry Staff',
+            'movement_staff' => 'Movement & Maintenance Staff',
             default => 'Unknown Role',
         };
     }
@@ -20,18 +21,10 @@ trait UserRolesAndPermission
         return match ($role) {
             'admin' => ['*'],
             'accountant' => [
-                'payment_management' => 'Payment Management',
-                'view_balances' => 'View Balances',
-                'generate_financial_reports' => 'Generate Financial Reports',
-                'view_customers' => 'View Customers',
-                'view_drivers' => 'View Drivers',
-                'view_trucks' => 'View Trucks',
                 'view_atcs' => 'View ATCs',
-                'view_transactions' => 'View Transactions',
-                'view_truck_movements' => 'View Truck Movements',
-                'view_maintenance' => 'View Maintenance',
+                'create_atcs' => 'Create ATCs',
+                'edit_atcs' => 'Edit ATCs',
                 'view_reports' => 'View Reports',
-                'view_notifications' => 'View Notifications',
             ],
             'operations_manager' => [
                 'transaction_management' => 'Transactions Management',
@@ -53,6 +46,15 @@ trait UserRolesAndPermission
                 'edit_maintenance' => 'Edit Maintenance',
                 'view_reports' => 'View Reports',
                 'view_notifications' => 'View Notifications',
+            ],
+            'movement_staff' => [
+                'view_truck_movements' => 'View Truck Movements',
+                'create_truck_movements' => 'Create Truck Movements',
+                'edit_truck_movements' => 'Edit Truck Movements',
+                'view_maintenance' => 'View Maintenance',
+                'create_maintenance' => 'Create Maintenance',
+                'edit_maintenance' => 'Edit Maintenance',
+                'view_reports' => 'View Reports',
             ],
             'staff' => [
                 'create_record' => 'Create Record',

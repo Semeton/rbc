@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class DailyTruckRecord extends Model
@@ -17,10 +17,12 @@ class DailyTruckRecord extends Model
         'driver_id',
         'truck_id',
         'customer_id',
+        'atc_id',
         'atc_collection_date',
         'load_dispatch_date',
         'fare',
         'gas_chop_money',
+        'haulage',
         'balance',
         'status',
     ];
@@ -30,6 +32,7 @@ class DailyTruckRecord extends Model
         'load_dispatch_date' => 'datetime',
         'fare' => 'decimal:2',
         'gas_chop_money' => 'decimal:2',
+        'haulage' => 'decimal:2',
         'balance' => 'decimal:2',
         'status' => 'boolean',
     ];
@@ -155,13 +158,13 @@ class DailyTruckRecord extends Model
             $q->whereHas('driver', function ($driverQuery) use ($search) {
                 $driverQuery->where('name', 'like', "%{$search}%");
             })
-            ->orWhereHas('truck', function ($truckQuery) use ($search) {
-                $truckQuery->where('registration_number', 'like', "%{$search}%")
-                          ->orWhere('cab_number', 'like', "%{$search}%");
-            })
-            ->orWhereHas('customer', function ($customerQuery) use ($search) {
-                $customerQuery->where('name', 'like', "%{$search}%");
-            });
+                ->orWhereHas('truck', function ($truckQuery) use ($search) {
+                    $truckQuery->where('registration_number', 'like', "%{$search}%")
+                        ->orWhere('cab_number', 'like', "%{$search}%");
+                })
+                ->orWhereHas('customer', function ($customerQuery) use ($search) {
+                    $customerQuery->where('name', 'like', "%{$search}%");
+                });
         });
     }
 

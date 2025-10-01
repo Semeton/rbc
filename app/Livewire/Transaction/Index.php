@@ -7,11 +7,10 @@ namespace App\Livewire\Transaction;
 use App\Models\Atc;
 use App\Models\Customer;
 use App\Models\Driver;
-use App\Models\DailyCustomerTransaction;
+use App\Services\AuditTrailService;
 use App\Transaction\Services\TransactionService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -64,6 +63,7 @@ class Index extends Component
         ]);
 
         $transactionService = app(TransactionService::class);
+
         return $transactionService->getTransactionsWithAllocationInfo($request, $this->perPage);
     }
 
@@ -79,6 +79,7 @@ class Index extends Component
     public function atcAllocationStats()
     {
         $transactionService = app(TransactionService::class);
+
         return $transactionService->getAtcAllocationStatistics();
     }
 
@@ -162,26 +163,31 @@ class Index extends Component
     public function deleteTransaction(int $transactionId): void
     {
         $transaction = \App\Models\DailyCustomerTransaction::findOrFail($transactionId);
-        
+
         // Check if user can delete this transaction
 
         try {
             $transaction->delete();
-            
+
             // Reset computed properties to refresh the data
             unset($this->transactions);
             unset($this->statistics);
-            
+
             $this->dispatch('notify', [
                 'type' => 'success',
-                'message' => 'Transaction deleted successfully.'
+                'message' => 'Transaction deleted successfully.',
             ]);
         } catch (\Exception $e) {
             $this->dispatch('notify', [
                 'type' => 'error',
-                'message' => 'Failed to delete transaction: ' . $e->getMessage()
+                'message' => 'Failed to delete transaction: '.$e->getMessage(),
             ]);
         }
+    }
+
+    public function mount(): void
+    {
+        AuditTrailService::log('page_view', 'Transactions', 'Viewed transactions index page');
     }
 
     public function render(): View

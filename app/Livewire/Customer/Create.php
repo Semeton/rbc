@@ -30,9 +30,9 @@ class Create extends Component
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:customers,email'],
+            'email' => ['nullable', 'email', 'max:255', 'unique:customers,email'],
             'phone' => ['required', 'string', 'max:20'],
-            'status' => ['required', 'in:active,inactive'],
+            'status' => ['nullable', 'in:active,inactive'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
@@ -42,12 +42,10 @@ class Create extends Component
         return [
             'name.required' => 'Customer name is required.',
             'name.max' => 'Customer name cannot exceed 255 characters.',
-            'email.required' => 'Email address is required.',
             'email.email' => 'Please provide a valid email address.',
             'email.unique' => 'This email address is already registered.',
             'phone.required' => 'Phone number is required.',
             'phone.max' => 'Phone number cannot exceed 20 characters.',
-            'status.required' => 'Status is required.',
             'status.in' => 'Status must be either active or inactive.',
             'notes.max' => 'Notes cannot exceed 1000 characters.',
         ];
@@ -61,7 +59,7 @@ class Create extends Component
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'status' => $this->status,
+            'status' => $this->status ?: 'active',
             'notes' => $this->notes,
         ]);
 

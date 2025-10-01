@@ -58,6 +58,17 @@
 
                         <div>
                             <flux:field>
+                                <flux:label>Date</flux:label>
+                                <flux:input
+                                    type="date"
+                                    wire:model="maintenance_date"
+                                />
+                                <flux:error name="maintenance_date" />
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
                                 <flux:label>Status</flux:label>
                                 <flux:select wire:model="status">
                                     <flux:select.option value="active">Active</flux:select.option>

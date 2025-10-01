@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         // Call seeders in the correct order based on dependencies
         $this->call([
-            UserSeeder::class,           // Users first for foreign key relationships
+            SpecifiedStaffUsersSeeder::class,
             ImportCustomersFromSqlSeeder::class,       // Customers before their related records
             ImportDriversFromSqlSeeder::class,         // Drivers before daily records
             ImportTrucksFromSqlSeeder::class,

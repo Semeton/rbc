@@ -21,6 +21,9 @@ class Create extends Component
     #[Validate('required|numeric|min:0')]
     public float $cost_of_maintenance = 0.0;
 
+    #[Validate('required|date')]
+    public string $maintenance_date = '';
+
     #[Validate('required|in:active,inactive')]
     public string $status = 'active';
 
@@ -32,6 +35,7 @@ class Create extends Component
             'truck_id' => $this->truck_id,
             'description' => $this->description,
             'cost_of_maintenance' => $this->cost_of_maintenance,
+            'maintenance_date' => $this->maintenance_date,
             'status' => $this->status === 'active',
         ]);
 

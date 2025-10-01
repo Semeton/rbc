@@ -11,19 +11,19 @@ use Livewire\Component;
 
 class Create extends Component
 {
-    #[Validate('required|string|max:50')]
+    #[Validate('nullable|string|max:50')]
     public string $cab_number = '';
 
     #[Validate('required|string|max:20')]
     public string $registration_number = '';
 
-    #[Validate('required|string|max:100')]
+    #[Validate('nullable|string|max:100')]
     public string $truck_model = '';
 
-    #[Validate('required|integer|min:1900|max:'.(2025))]
+    #[Validate('nullable|integer|min:1900|max:'.(2025))]
     public int $year_of_manufacture = 2020;
 
-    #[Validate('required|in:active,inactive')]
+    #[Validate('nullable|in:active,inactive')]
     public string $status = 'active';
 
     public function __construct()
@@ -35,11 +35,11 @@ class Create extends Component
     public function rules(): array
     {
         return [
-            'cab_number' => ['required', 'string', 'max:50'],
+            'cab_number' => ['nullable', 'string', 'max:50'],
             'registration_number' => ['required', 'string', 'max:20', 'unique:trucks'],
-            'truck_model' => ['required', 'string', 'max:100'],
-            'year_of_manufacture' => ['required', 'integer', 'min:1900', 'max:'.(now()->year + 1)],
-            'status' => ['required', 'in:active,inactive'],
+            'truck_model' => ['nullable', 'string', 'max:100'],
+            'year_of_manufacture' => ['nullable', 'integer', 'min:1900', 'max:'.(now()->year + 1)],
+            'status' => ['nullable', 'in:active,inactive'],
         ];
     }
 

@@ -6,9 +6,9 @@ namespace App\Livewire\Transaction;
 
 use App\Models\Atc;
 use App\Models\Customer;
-use App\Models\DailyCustomerTransaction;
 use App\Models\Driver;
 use App\Services\AtcAllocationValidator;
+use App\Services\AuditTrailService;
 use App\Transaction\Services\TransactionService;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
@@ -17,16 +17,27 @@ class Create extends Component
 {
     // Form fields
     public int $customer_id = 0;
+
     public int $driver_id = 0;
+
     public int $atc_id = 0;
+
     public string $date = '';
+
     public string $origin = '';
+
     public string $deport_details = '';
+
     public string $cement_type = '';
+
     public string $destination = '';
+
     public string $atc_cost = '0';
+
     public string $transport_cost = '0';
+
     public string $tons = '0';
+
     public string $status = 'active';
 
     protected $rules = [
@@ -38,40 +49,24 @@ class Create extends Component
         'deport_details' => 'nullable|string|max:500',
         'cement_type' => 'required|string|max:100',
         'destination' => 'required|string|max:255',
+        // Rename in UI to "Cost" but persist to atc_cost
         'atc_cost' => 'required|numeric|min:0',
-        'transport_cost' => 'required|numeric|min:0',
+        // Transport cost removed from UI; keep optional for backward compatibility
+        'transport_cost' => 'nullable|numeric|min:0',
         'tons' => 'required|numeric|min:0.01',
         'status' => 'required|in:active,inactive',
     ];
 
     protected function rules()
     {
-        $rules = $this->rules;
-        
-        // Add custom validation for ATC cost calculation
-        if ($this->atc_id && $this->tons) {
-            $atc = Atc::find($this->atc_id);
-            if ($atc) {
-                $expectedAtcCost = (float) $this->tons * $atc->price_per_ton;
-                $rules['atc_cost'] = [
-                    'required',
-                    'numeric',
-                    'min:0',
-                    function ($attribute, $value, $fail) use ($expectedAtcCost, $atc) {
-                        if (abs((float) $value - $expectedAtcCost) > 0.01) {
-                            $fail("ATC cost must be ₦" . number_format($expectedAtcCost, 2) . " (calculated from {$this->tons} tons × ₦" . number_format($atc->price_per_ton, 2) . " per ton).");
-                        }
-                    }
-                ];
-            }
-        }
-        
-        return $rules;
+        // Use base rules; no auto-calculation enforcement for atc_cost
+        return $this->rules;
     }
 
     public function mount(): void
     {
         $this->date = now()->format('Y-m-d');
+        AuditTrailService::log('page_view', 'Transactions', 'Viewed transaction create page');
     }
 
     public function updatedAtcId(): void
@@ -81,19 +76,12 @@ class Create extends Component
             if ($atc) {
                 $allocationValidator = app(AtcAllocationValidator::class);
                 $remainingTons = $allocationValidator->getRemainingTons($atc);
-                
-                // Auto-fill remaining tons
-                $this->tons = (string) $remainingTons;
-                
-                // Auto-calculate ATC cost based on remaining tons and price per ton
-                $calculatedAtcCost = $remainingTons * $atc->price_per_ton;
-                $this->atc_cost = (string) $calculatedAtcCost;
-                
+                // Do not auto-fill tons or cost; staff will enter manually
                 $this->dispatch('atc-selected', [
                     'atc' => $atc,
                     'remaining_tons' => $remainingTons,
                     'total_tons' => $atc->tons,
-                    'price_per_ton' => $atc->price_per_ton
+                    'price_per_ton' => $atc->price_per_ton,
                 ]);
             }
         }
@@ -106,11 +94,6 @@ class Create extends Component
             if ($atc) {
                 $allocationValidator = app(AtcAllocationValidator::class);
                 $remainingTons = $allocationValidator->getRemainingTons($atc);
-                
-                // Auto-calculate ATC cost based on tons and price per ton
-                $calculatedAtcCost = (float) $this->tons * $atc->price_per_ton;
-                $this->atc_cost = (string) $calculatedAtcCost;
-                
                 if ((float) $this->tons > $remainingTons) {
                     $this->addError('tons', "The tons allocated ({$this->tons}) exceeds the remaining capacity ({$remainingTons}) for ATC #{$atc->atc_number}.");
                 } else {
@@ -124,17 +107,23 @@ class Create extends Component
     {
         $this->validate();
 
+        // Normalize optional text fields
+        $normalizedDeportDetails = trim($this->deport_details) === '' ? null : $this->deport_details;
+
+        // Normalize transport_cost to null if empty string for backward compatibility
+        $normalizedTransportCost = trim((string) $this->transport_cost) === '' ? null : (float) $this->transport_cost;
+
         $data = [
             'customer_id' => $this->customer_id,
             'driver_id' => $this->driver_id,
             'atc_id' => $this->atc_id,
             'date' => $this->date,
             'origin' => $this->origin,
-            'deport_details' => $this->deport_details,
+            'deport_details' => $normalizedDeportDetails,
             'cement_type' => $this->cement_type,
             'destination' => $this->destination,
             'atc_cost' => (float) $this->atc_cost,
-            'transport_cost' => (float) $this->transport_cost,
+            'transport_cost' => $normalizedTransportCost,
             'tons' => (float) $this->tons,
             'status' => $this->status,
         ];
@@ -144,7 +133,7 @@ class Create extends Component
         try {
             $transactionService->createTransaction($data);
             $this->dispatch('success', 'Transaction created successfully!');
-            
+
             // Redirect to transactions index
             $this->redirect(route('transactions.index'));
         } catch (\Exception $e) {

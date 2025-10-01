@@ -55,6 +55,19 @@
                                 <flux:error name="customer_id" />
                             </flux:field>
                         </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>ATC</flux:label>
+                                <select wire:model="atc_id" class="select2-atc w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                    <option value="">Select an ATC...</option>
+                                    @foreach($this->atcs as $atc)
+                                        <option value="{{ $atc->id }}">ATC #{{ $atc->atc_number }} ({{ $atc->company }})</option>
+                                    @endforeach
+                                </select>
+                                <flux:error name="atc_id" />
+                            </flux:field>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -88,7 +101,6 @@
                                 <flux:input
                                     type="number"
                                     step="0.01"
-                                    min="0"
                                     wire:model="fare"
                                     placeholder="Enter fare amount..."
                                 />
@@ -102,7 +114,6 @@
                                 <flux:input
                                     type="number"
                                     step="0.01"
-                                    min="0"
                                     wire:model="gas_chop_money"
                                     placeholder="Enter gas chop amount..."
                                 />
@@ -111,6 +122,17 @@
                         </div>
 
                         <div>
+                            <flux:field>
+                                <flux:label>Haulage</flux:label>
+                                <flux:input
+                                    type="number"
+                                    step="0.01"
+                                    wire:model="haulage"
+                                    placeholder="Enter haulage (can be negative)"
+                                />
+                                <flux:error name="haulage" />
+                            </flux:field>
+                        </div>
                             <flux:field>
                                 <flux:label>Status</flux:label>
                                 <select wire:model="status" class="select2-status w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">

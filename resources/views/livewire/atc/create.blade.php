@@ -15,10 +15,12 @@
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <flux:field>
                             <flux:label>Company</flux:label>
-                            <flux:input
-                                wire:model="company"
-                                placeholder="Enter company name"
-                            />
+                            <select wire:model="company" class="select2-company w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <option value="">Select company...</option>
+                                <option value="Dangote">Dangote</option>
+                                <option value="BUA">BUA</option>
+                                <option value="Mangal">Mangal</option>
+                            </select>
                             <flux:error name="company" />
                         </flux:field>
 
