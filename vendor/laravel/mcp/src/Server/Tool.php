@@ -4,66 +4,71 @@ declare(strict_types=1);
 
 namespace Laravel\Mcp\Server;
 
-use Generator;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Str;
-use Laravel\Mcp\Server\Tools\ToolInputSchema;
-use Laravel\Mcp\Server\Tools\ToolNotification;
-use Laravel\Mcp\Server\Tools\ToolResult;
+use Illuminate\JsonSchema\JsonSchema;
+use Laravel\Mcp\Server\Contracts\Tools\Annotation;
+use ReflectionAttribute;
 use ReflectionClass;
 
-abstract class Tool implements Arrayable
+abstract class Tool extends Primitive
 {
     /**
-     * Get the name of the tool.
+     * @return array<string, mixed>
      */
-    public function name(): string
+    public function schema(JsonSchema $schema): array
     {
-        return Str::kebab(class_basename($this));
+        return [];
     }
 
     /**
-     * Get the tool input schema.
+     * @return array<string, mixed>
      */
-    public function schema(ToolInputSchema $schema): ToolInputSchema
-    {
-        return $schema;
-    }
-
-    /**
-     * Get the description of the tool.
-     */
-    abstract public function description(): string;
-
-    /**
-     * Execute the tool call.
-     *
-     * @return ToolResult|Generator<ToolNotification|ToolResult>
-     */
-    abstract public function handle(array $arguments): ToolResult|Generator;
-
     public function annotations(): array
     {
         $reflection = new ReflectionClass($this);
 
+        // @phpstan-ignore-next-line
         return collect($reflection->getAttributes())
-            ->map(fn ($attributeReflection) => $attributeReflection->newInstance())
-            ->mapWithKeys(fn ($attribute) => [$attribute->key() => $attribute->value])
+            ->map(fn (ReflectionAttribute $attributeReflection): object => $attributeReflection->newInstance())
+            ->filter(fn (object $attribute): bool => $attribute instanceof Annotation)
+            // @phpstan-ignore-next-line
+            ->mapWithKeys(fn (Annotation $attribute): array => [$attribute->key() => $attribute->value])
             ->all();
     }
 
-    public function toArray(): array
+    /**
+     * @return array<string, mixed>
+     */
+    public function toMethodCall(): array
     {
-        return [
-            'name' => $this->name(),
-            'description' => $this->description(),
-            'inputSchema' => $this->schema(new ToolInputSchema)->toArray(),
-            'annotations' => $this->annotations() ?: (object) [],
-        ];
+        return ['name' => $this->name()];
     }
 
-    public function shouldRegister(): bool
+    /**
+     * Get the tool's array representation.
+     *
+     * @return array{
+     *     name: string,
+     *     title?: string|null,
+     *     description?: string|null,
+     *     inputSchema?: array<string, mixed>,
+     *     annotations?: array<string, mixed>|object
+     * }
+     */
+    public function toArray(): array
     {
-        return true;
+        $annotations = $this->annotations();
+        $schema = JsonSchema::object(
+            $this->schema(...),
+        )->toArray();
+
+        $schema['properties'] ??= (object) [];
+
+        return [
+            'name' => $this->name(),
+            'title' => $this->title(),
+            'description' => $this->description(),
+            'inputSchema' => $schema,
+            'annotations' => $annotations === [] ? (object) [] : $annotations,
+        ];
     }
 }

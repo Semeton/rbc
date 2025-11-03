@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Laravel\Boost\Install\CodeEnvironment;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
+use Laravel\Boost\BoostManager;
 use Laravel\Boost\Contracts\Agent;
 use Laravel\Boost\Contracts\McpClient;
 use Laravel\Boost\Install\Detection\DetectionStrategyFactory;
@@ -18,9 +17,7 @@ abstract class CodeEnvironment
 {
     public bool $useAbsolutePathForMcp = false;
 
-    public function __construct(protected readonly DetectionStrategyFactory $strategyFactory)
-    {
-    }
+    public function __construct(protected readonly DetectionStrategyFactory $strategyFactory) {}
 
     abstract public function name(): string;
 
@@ -41,14 +38,14 @@ abstract class CodeEnvironment
         return $this->useAbsolutePathForMcp;
     }
 
-    public function getPhpPath(): string
+    public function getPhpPath(bool $forceAbsolutePath = false): string
     {
-        return $this->useAbsolutePathForMcp() ? PHP_BINARY : 'php';
+        return ($this->useAbsolutePathForMcp() || $forceAbsolutePath) ? PHP_BINARY : 'php';
     }
 
-    public function getArtisanPath(): string
+    public function getArtisanPath(bool $forceAbsolutePath = false): string
     {
-        return $this->useAbsolutePathForMcp() ? base_path('artisan') : 'artisan';
+        return ($this->useAbsolutePathForMcp() || $forceAbsolutePath) ? base_path('artisan') : 'artisan';
     }
 
     /**
@@ -96,6 +93,22 @@ abstract class CodeEnvironment
         return McpInstallationStrategy::FILE;
     }
 
+    public static function fromName(string $name): ?CodeEnvironment
+    {
+        $detectionFactory = app(DetectionStrategyFactory::class);
+        $boostManager = app(BoostManager::class);
+
+        foreach ($boostManager->getCodeEnvironments() as $class) {
+            /** @var class-string<CodeEnvironment> $class */
+            $instance = new $class($detectionFactory);
+            if ($instance->name() === $name) {
+                return $instance;
+            }
+        }
+
+        return null;
+    }
+
     public function shellMcpCommand(): ?string
     {
         return null;
@@ -119,10 +132,8 @@ abstract class CodeEnvironment
     /**
      * Install MCP server using the appropriate strategy.
      *
-     * @param array<int, string> $args
-     * @param array<string, string> $env
-     *
-     * @throws FileNotFoundException
+     * @param  array<int, string>  $args
+     * @param  array<string, string>  $env
      */
     public function installMcp(string $key, string $command, array $args = [], array $env = []): bool
     {
@@ -136,8 +147,8 @@ abstract class CodeEnvironment
     /**
      * Install MCP server using a shell command strategy.
      *
-     * @param array<int, string> $args
-     * @param array<string, string> $env
+     * @param  array<int, string>  $args
+     * @param  array<string, string>  $env
      */
     protected function installShellMcp(string $key, string $command, array $args = [], array $env = []): bool
     {
@@ -162,22 +173,23 @@ abstract class CodeEnvironment
         ], [
             $key,
             $command,
-            implode(' ', array_map(fn ($arg) => '"'.$arg.'"', $args)),
+            implode(' ', array_map(fn (string $arg): string => '"'.$arg.'"', $args)),
             trim($envString),
         ], $shellCommand);
 
         $result = Process::run($command);
+        if ($result->successful()) {
+            return true;
+        }
 
-        return $result->successful() || str_contains($result->errorOutput(), 'already exists');
+        return str_contains($result->errorOutput(), 'already exists');
     }
 
     /**
      * Install MCP server using a file-based configuration strategy.
      *
-     * @param array<int, string> $args
-     * @param array<string, string> $env
-     *
-     * @throws FileNotFoundException
+     * @param  array<int, string>  $args
+     * @param  array<string, string>  $env
      */
     protected function installFileMcp(string $key, string $command, array $args = [], array $env = []): bool
     {

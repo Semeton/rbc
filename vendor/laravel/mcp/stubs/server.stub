@@ -6,21 +6,47 @@ use Laravel\Mcp\Server;
 
 class {{ class }} extends Server
 {
-    public string $serverName = '{{ serverDisplayName }}';
+    /**
+     * The MCP server's name.
+     */
+    protected string $name = '{{ serverDisplayName }}';
 
-    public string $serverVersion = '0.0.1';
+    /**
+     * The MCP server's version.
+     */
+    protected string $version = '0.0.1';
 
-    public string $instructions = 'Example instructions for LLMs connecting to this MCP server.';
+    /**
+     * The MCP server's instructions for the LLM.
+     */
+    protected string $instructions = <<<'MARKDOWN'
+        Instructions describing how to use the server and its features.
+    MARKDOWN;
 
-    public array $tools = [
-        // ExampleTool::class,
+    /**
+     * The tools registered with this MCP server.
+     *
+     * @var array<int, class-string<\Laravel\Mcp\Server\Tool>>
+     */
+    protected array $tools = [
+        //
     ];
 
-    public array $resources = [
-        // ExampleResource::class,
+    /**
+     * The resources registered with this MCP server.
+     *
+     * @var array<int, class-string<\Laravel\Mcp\Server\Resource>>
+     */
+    protected array $resources = [
+        //
     ];
 
-    public array $prompts = [
-        // ExamplePrompt::class,
+    /**
+     * The prompts registered with this MCP server.
+     *
+     * @var array<int, class-string<\Laravel\Mcp\Server\Prompt>>
+     */
+    protected array $prompts = [
+        //
     ];
 }

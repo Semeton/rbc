@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Laravel\Mcp\Server;
 
+use Illuminate\Container\Container;
 use Illuminate\Support\Collection;
 
 class ServerContext
 {
     /**
-     * Create a new server context instance.
+     * @param  array<int, string>  $supportedProtocolVersions
+     * @param  array<string, mixed>  $serverCapabilities
+     * @param  array<int, Tool|string>  $tools
+     * @param  array<int, Resource|string>  $resources
+     * @param  array<int, Prompt|string>  $prompts
      */
     public function __construct(
         public array $supportedProtocolVersions,
@@ -19,37 +24,46 @@ class ServerContext
         public string $instructions,
         public int $maxPaginationLength,
         public int $defaultPaginationLength,
-        private array $tools,
-        private array $resources,
-        private array $prompts,
-    ) {}
+        protected array $tools,
+        protected array $resources,
+        protected array $prompts,
+    ) {
+        //
+    }
 
     /**
-     * @return Collection<int, \Laravel\Mcp\Server\Tool>
+     * @return Collection<int, Tool>
      */
     public function tools(): Collection
     {
-        return collect($this->tools)
-            ->map(fn ($toolClass) => is_string($toolClass) ? app($toolClass) : $toolClass)
-            ->filter(fn ($tool) => $tool->shouldRegister());
+        return collect($this->tools)->map(fn (Tool|string $toolClass) => is_string($toolClass)
+            ? Container::getInstance()->make($toolClass)
+            : $toolClass
+        )->filter(fn (Tool $tool): bool => $tool->eligibleForRegistration());
     }
 
     /**
-     * @return Collection<int, \Laravel\Mcp\Server\Resource>
+     * @return Collection<int, Resource>
      */
     public function resources(): Collection
     {
-        return collect($this->resources)
-            ->map(fn ($resourceClass) => is_string($resourceClass) ? app($resourceClass) : $resourceClass);
+        return collect($this->resources)->map(
+            fn (Resource|string $resourceClass) => is_string($resourceClass)
+                ? Container::getInstance()->make($resourceClass)
+                : $resourceClass
+        )->filter(fn (Resource $resource): bool => $resource->eligibleForRegistration());
     }
 
     /**
-     * @return Collection<int, \Laravel\Mcp\Server\Prompt>
+     * @return Collection<int, Prompt>
      */
     public function prompts(): Collection
     {
-        return collect($this->prompts)
-            ->map(fn ($promptClass) => is_string($promptClass) ? app($promptClass) : $promptClass);
+        return collect($this->prompts)->map(
+            fn ($promptClass) => is_string($promptClass)
+                ? Container::getInstance()->make($promptClass)
+                : $promptClass
+        )->filter(fn (Prompt $prompt): bool => $prompt->eligibleForRegistration());
     }
 
     public function perPage(?int $requestedPerPage = null): int

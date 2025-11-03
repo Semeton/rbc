@@ -18,15 +18,17 @@
 ])
 
 @php
-$tooltip = $tooltip ?? $slot->isNotEmpty() ? (string) $slot : null;
+$tooltip ??= $slot->isNotEmpty() ? (string) $slot : null;
 
 // Size-up icons in square/icon-only buttons...
-$iconClasses = Flux::classes('size-4');
+$iconClasses = Flux::classes('size-4')
+    ->add('in-data-flux-sidebar-group-dropdown:text-zinc-400! dark:in-data-flux-sidebar-group-dropdown:text-white/80!')
+    ->add('[[data-flux-sidebar-item]:hover_&]:text-current!');
 
 $classes = Flux::classes()
     ->add('h-8 in-data-flux-sidebar-on-mobile:h-10 relative flex items-center gap-3 rounded-lg')
     ->add('in-data-flux-sidebar-collapsed-desktop:w-10 in-data-flux-sidebar-collapsed-desktop:justify-center')
-    ->add('py-0 text-start w-full px-3 has-data-flux-navlist-badge:not-in-data-flux-sidebar-collapsed-desktop:pr-1.5 my-px')
+    ->add('py-0 text-start w-full px-3 has-data-flux-navlist-badge:not-in-data-flux-sidebar-collapsed-desktop:pe-1.5 my-px')
     ->add('text-zinc-500 dark:text-white/80')
     ->add(match ($accent) {
         true => [
@@ -41,6 +43,10 @@ $classes = Flux::classes()
             'hover:text-zinc-800 dark:hover:text-white',
         ],
     })
+    // Override the default styles to match dropdowns for when the item is inside a collapsed group dropdown...
+    ->add('in-data-flux-sidebar-group-dropdown:w-auto! in-data-flux-sidebar-group-dropdown:px-2!')
+    ->add('in-data-flux-sidebar-group-dropdown:text-zinc-800! in-data-flux-sidebar-group-dropdown:bg-white! in-data-flux-sidebar-group-dropdown:hover:bg-zinc-50!')
+    ->add('dark:in-data-flux-sidebar-group-dropdown:text-white! dark:in-data-flux-sidebar-group-dropdown:bg-transparent! dark:in-data-flux-sidebar-group-dropdown:hover:bg-zinc-600!')
     ;
 @endphp
 
@@ -64,22 +70,22 @@ $classes = Flux::classes()
 
         <?php if ($slot->isNotEmpty()): ?>
             <div class="
-                in-data-flux-sidebar-collapsed-desktop:hidden
+                in-data-flux-sidebar-collapsed-desktop:not-in-data-flux-sidebar-group-dropdown:hidden
                 flex-1 text-sm font-medium leading-none whitespace-nowrap [[data-nav-footer]_&]:hidden [[data-nav-sidebar]_[data-nav-footer]_&]:block" data-content>{{ $slot }}</div>
         <?php endif; ?>
 
         <?php if (is_string($iconTrailing) && $iconTrailing !== ''): ?>
-            <flux:icon :icon="$iconTrailing" :variant="$iconVariant" class="in-data-flux-sidebar-collapsed-desktop:hidden size-4!" />
+            <flux:icon :icon="$iconTrailing" :variant="$iconVariant" class="in-data-flux-sidebar-collapsed-desktop:not-in-data-flux-sidebar-group-dropdown:hidden size-4!" />
         <?php elseif ($iconTrailing): ?>
             {{ $iconTrailing }}
         <?php endif; ?>
 
         <?php if (isset($badge) && $badge !== ''): ?>
-            <flux:navlist.badge :attributes="Flux::attributesAfter('badge:', $attributes, ['color' => $badgeColor])" class="in-data-flux-sidebar-collapsed-desktop:hidden">{{ $badge }}</flux:navlist.badge>
+            <flux:navlist.badge :attributes="Flux::attributesAfter('badge:', $attributes, ['color' => $badgeColor])" class="in-data-flux-sidebar-collapsed-desktop:not-in-data-flux-sidebar-group-dropdown:hidden">{{ $badge }}</flux:navlist.badge>
         <?php endif; ?>
     </flux:button-or-link>
 
-    <flux:tooltip.content :kbd="$tooltipKbd" class="not-in-data-flux-sidebar-collapsed-desktop:hidden cursor-default">
+    <flux:tooltip.content :kbd="$tooltipKbd" class="not-in-data-flux-sidebar-collapsed-desktop:hidden in-data-flux-sidebar-group-dropdown:hidden cursor-default">
         {{ $tooltip }}
     </flux:tooltip.content>
 </flux:tooltip>

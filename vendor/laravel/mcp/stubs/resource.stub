@@ -3,16 +3,25 @@
 namespace {{ namespace }};
 
 use Laravel\Mcp\Server\Resource;
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
 
 class {{ class }} extends Resource
 {
-    protected string $description = 'A description of what this resource contains.';
+    /**
+     * The resource's description.
+     */
+    protected string $description = <<<'MARKDOWN'
+        A description of what this resource contains.
+    MARKDOWN;
 
     /**
-     * Return the resource contents.
+     * Handle the resource request.
      */
-    public function read(): string
+    public function handle(Request $request): Response
     {
-        return 'Implement resource retrieval logic here';
+        //
+
+        return Response::text('The resource content.');
     }
 }
