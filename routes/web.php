@@ -117,7 +117,7 @@ Route::middleware(['auth'])->group(function () {
 
     // ATC routes (admin/ops/staff/accountant)
     Route::middleware(['role:admin,operations_manager,staff,accountant'])->group(function () {
-        Route::get('/atcs', \App\Livewire\ATC\Index::class)->name('atcs.index');
+        Route::get('/atcs', \App\Livewire\Atc\Index::class)->name('atcs.index');
         Route::get('/atcs/create', function () {
             return view('atcs.create');
         })->name('atcs.create');
