@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Livewire\ATC;
+namespace App\Livewire\Atc;
 
 use App\Models\Atc;
 use Illuminate\Contracts\View\View;
