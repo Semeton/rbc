@@ -1,6 +1,6 @@
 <?php
 
-use App\Livewire\ATC\AtcAllocationManager;
+use App\Livewire\Atc\AtcAllocationManager;
 use App\Services\AuditTrailService;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
