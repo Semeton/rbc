@@ -50,7 +50,7 @@
 
                     <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Amount</dt>
-                        <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ number_format($atc->amount, 2) }}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">₦{{ number_format($atc->amount, 2) }}</dd>
                     </div>
 
                     <div class="bg-gray-50 dark:bg-zinc-700 rounded-lg p-4">
