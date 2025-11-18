@@ -18,22 +18,14 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
-    // Admin-only routes (full control)
     Route::middleware(['role:admin'])->group(function () {
-        // User Management Routes
         Route::get('/users', \App\Livewire\User\UserManager::class)->name('users.index');
         Route::get('/users/invite', \App\Livewire\User\InviteUser::class)->name('users.invite');
 
-        // Audit Trails Route
         Route::get('/audit-trails', \App\Livewire\AuditTrail\Index::class)->name('audit-trails.index');
     });
 
-    // Admin and Operations Manager routes (CRUD operations)
-    Route::middleware(['role:admin,operations_manager'])->group(function () {});
-
-    // Admin, Operations Manager, and Staff routes (view and create operations)
     Route::middleware(['role:admin,operations_manager,staff'])->group(function () {
-        // Customer Management Routes (view and create)
         Route::get('/customers', function () {
             return view('customers.index');
         })->name('customers.index');
@@ -47,7 +39,6 @@ Route::middleware(['auth'])->group(function () {
             return view('customers.edit', compact('customer'));
         })->name('customers.edit');
 
-        // Driver Management Routes (view and create)
         Route::get('/drivers', function () {
             return view('drivers.index');
         })->name('drivers.index');
@@ -61,7 +52,6 @@ Route::middleware(['auth'])->group(function () {
             return view('drivers.edit', compact('driver'));
         })->name('drivers.edit');
 
-        // Truck Management Routes (view and create)
         Route::get('/trucks', function () {
             return view('trucks.index');
         })->name('trucks.index');
@@ -75,7 +65,6 @@ Route::middleware(['auth'])->group(function () {
             return view('trucks.edit', compact('truck'));
         })->name('trucks.edit');
 
-        // Transaction Management Routes (view and create)
         Route::get('/transactions', \App\Livewire\Transaction\Index::class)->name('transactions.index');
         Route::get('/transactions/create', \App\Livewire\Transaction\Create::class)->name('transactions.create');
         Route::get('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction) {
@@ -124,7 +113,6 @@ Route::middleware(['auth'])->group(function () {
         })->name('transactions.update');
     });
 
-    // ATC routes (admin/ops/staff/accountant)
     Route::middleware(['role:admin,operations_manager,staff,accountant'])->group(function () {
         Route::get('/atcs', \App\Livewire\Atc\Index::class)->name('atcs.index');
         Route::get('/atcs/create', function () {
@@ -138,9 +126,7 @@ Route::middleware(['auth'])->group(function () {
         })->name('atcs.edit');
     });
 
-    // Truck Movement & Maintenance (admin/ops/staff/movement_staff)
     Route::middleware(['role:admin,operations_manager,staff,movement_staff'])->group(function () {
-        // Truck Movements
         Route::get('/truck-movements', function () {
             return view('truck-movements.index');
         })->name('truck-movements.index');
@@ -168,7 +154,6 @@ Route::middleware(['auth'])->group(function () {
         })->name('maintenance.edit');
     });
 
-    // Reports (admin/ops/staff/accountant/movement_staff)
     Route::middleware(['role:admin,operations_manager,staff,accountant,movement_staff'])->group(function () {
         Route::get('/reports', [\App\Reports\ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/customer-balance', function (\App\Models\Customer $customer) {
@@ -208,16 +193,13 @@ Route::middleware(['auth'])->group(function () {
             return view('reports.profit-estimate');
         })->name('reports.profit-estimate');
 
-        // Notifications Routes (view only)
         Route::get('/notifications', \App\Livewire\Notification\Index::class)->name('notifications.index');
     });
 
-    // Admin and Operations Manager routes (edit operations)
     Route::middleware(['role:admin,operations_manager'])->group(function () {
     });
 
-    // Admin and Accountant routes (payment management)
-    Route::middleware(['role:admin,accountant'])->group(function () {
+    Route::middleware(['role:admin,accountant,operations_manager'])->group(function () {
         Route::get('/payments', function () {
             return view('payments.index');
         })->name('payments.index');
@@ -232,18 +214,15 @@ Route::middleware(['auth'])->group(function () {
         })->name('payments.edit');
     });
 
-    // Admin and Operations Manager routes (ATC allocation)
     Route::middleware(['role:admin,operations_manager'])->group(function () {
         Route::get('/atc/allocation-manager', AtcAllocationManager::class)->name('atc.allocation-manager');
     });
 
-    // Dashboard Routes (all authenticated users)
     Route::get('/dashboard', function () {
         return view('dashboard.index');
     })->name('dashboard.index');
 });
 
-// Invitation acceptance (public route)
 Route::get('/invitations/accept/{token}', \App\Livewire\User\AcceptInvitation::class)->name('invitations.accept');
 
 require __DIR__.'/auth.php';
