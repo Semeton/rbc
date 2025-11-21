@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@quarryquarto.com',
             'role' => 'admin',
-            'password' => 'password',
+            'password' => 'Admin@1&3$!#',
         ]);
 
         User::factory()->create([
