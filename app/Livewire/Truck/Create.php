@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Livewire\Truck;
 
+use App\Models\Truck as TruckModel;
 use App\Truck\Services\TruckService;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -79,6 +81,12 @@ class Create extends Component
         $this->dispatch('truck-created', $truck->id);
 
         $this->redirect(route('trucks.show', $truck), navigate: true);
+    }
+
+    #[Computed]
+    public function recentTrucks()
+    {
+        return TruckModel::latest()->limit(5)->get();
     }
 
     public function render(): View

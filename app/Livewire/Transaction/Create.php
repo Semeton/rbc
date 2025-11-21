@@ -6,11 +6,13 @@ namespace App\Livewire\Transaction;
 
 use App\Models\Atc;
 use App\Models\Customer;
+use App\Models\DailyCustomerTransaction;
 use App\Models\Driver;
 use App\Services\AtcAllocationValidator;
 use App\Services\AuditTrailService;
 use App\Transaction\Services\TransactionService;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class Create extends Component
@@ -171,6 +173,15 @@ class Create extends Component
     public function getAtcsProperty()
     {
         return Atc::orderBy('atc_number')->get();
+    }
+
+    #[Computed]
+    public function recentTransactions()
+    {
+        return DailyCustomerTransaction::with(['customer:id,name', 'driver:id,name', 'atc:id,atc_number'])
+            ->latest()
+            ->limit(5)
+            ->get();
     }
 
     public function render(): View

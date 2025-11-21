@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Livewire\Driver;
 
 use App\Driver\Services\DriverService;
+use App\Models\Driver as DriverModel;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\UploadedFile;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -83,6 +85,12 @@ class Create extends Component
         $this->dispatch('driver-created', $driver->id);
 
         $this->redirect(route('drivers.show', $driver), navigate: true);
+    }
+
+    #[Computed]
+    public function recentDrivers()
+    {
+        return DriverModel::latest()->limit(5)->get();
     }
 
     public function render(): View

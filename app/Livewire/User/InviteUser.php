@@ -10,12 +10,15 @@ use App\User\Services\RoleService;
 use App\User\Services\UserService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class InviteUser extends Component
 {
     public string $email = '';
+
     public string $role = '';
+
     public bool $showInviteForm = true;
 
     protected $rules = [
@@ -71,13 +74,13 @@ class InviteUser extends Component
                 // Dispatch event
                 $this->dispatch('user-invited', [
                     'message' => 'Invitation sent successfully!',
-                    'type' => 'success'
+                    'type' => 'success',
                 ]);
             } else {
                 $this->addError('email', 'Failed to send invitation email. Please try again.');
             }
         } catch (\Exception $e) {
-            $this->addError('email', 'Failed to create invitation: ' . $e->getMessage());
+            $this->addError('email', 'Failed to create invitation: '.$e->getMessage());
         }
     }
 
@@ -86,8 +89,9 @@ class InviteUser extends Component
         $invitationService = app(InvitationService::class);
         $invitation = \App\Models\UserInvitation::find($invitationId);
 
-        if (!$invitation) {
+        if (! $invitation) {
             $this->addError('general', 'Invitation not found.');
+
             return;
         }
 
@@ -97,13 +101,13 @@ class InviteUser extends Component
             if ($emailSent) {
                 $this->dispatch('invitation-resent', [
                     'message' => 'Invitation resent successfully!',
-                    'type' => 'success'
+                    'type' => 'success',
                 ]);
             } else {
                 $this->addError('general', 'Failed to resend invitation email.');
             }
         } catch (\Exception $e) {
-            $this->addError('general', 'Failed to resend invitation: ' . $e->getMessage());
+            $this->addError('general', 'Failed to resend invitation: '.$e->getMessage());
         }
     }
 
@@ -112,8 +116,9 @@ class InviteUser extends Component
         $invitationService = app(InvitationService::class);
         $invitation = \App\Models\UserInvitation::find($invitationId);
 
-        if (!$invitation) {
+        if (! $invitation) {
             $this->addError('general', 'Invitation not found.');
+
             return;
         }
 
@@ -123,19 +128,19 @@ class InviteUser extends Component
             if ($cancelled) {
                 $this->dispatch('invitation-cancelled', [
                     'message' => 'Invitation cancelled successfully!',
-                    'type' => 'success'
+                    'type' => 'success',
                 ]);
             } else {
                 $this->addError('general', 'Failed to cancel invitation.');
             }
         } catch (\Exception $e) {
-            $this->addError('general', 'Failed to cancel invitation: ' . $e->getMessage());
+            $this->addError('general', 'Failed to cancel invitation: '.$e->getMessage());
         }
     }
 
     public function toggleView(): void
     {
-        $this->showInviteForm = !$this->showInviteForm;
+        $this->showInviteForm = ! $this->showInviteForm;
     }
 
     public function cancel(): void
@@ -148,11 +153,11 @@ class InviteUser extends Component
     {
         $roleService = app(RoleService::class);
         $user = Auth::user();
-        
-        if (!$user) {
+
+        if (! $user) {
             return [];
         }
-        
+
         return $roleService->getManageableRoles($user);
     }
 
@@ -170,13 +175,23 @@ class InviteUser extends Component
     public function getSentInvitationsProperty()
     {
         $userService = app(UserService::class);
+
         return $userService->getPendingInvitations();
     }
 
     public function getInvitationStatsProperty(): array
     {
         $invitationService = app(InvitationService::class);
+
         return $invitationService->getInvitationStats();
+    }
+
+    #[Computed]
+    public function recentUsers()
+    {
+        return User::latest()
+            ->limit(5)
+            ->get(['id', 'name', 'email', 'role', 'created_at']);
     }
 
     public function render(): View

@@ -133,6 +133,7 @@
                                 <flux:error name="haulage" />
                             </flux:field>
                         </div>
+                        <div>
                             <flux:field>
                                 <flux:label>Status</flux:label>
                                 <select wire:model="status" class="select2-status w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
@@ -156,6 +157,51 @@
                 </flux:button>
             </div>
         </form>
+    </div>
+
+    <div class="mt-10">
+        <div class="rounded-lg bg-white p-6 shadow dark:bg-zinc-800">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Latest Truck Movements</h3>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-zinc-900">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Driver</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Truck</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Customer</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Dispatch Date</th>
+                            <th class="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Fare (₦)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        @forelse($this->recentTruckMovements as $movement)
+                            <tr>
+                                <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">{{ $movement->driver->name ?? '—' }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                                    {{ optional($movement->truck)->registration_number }} {{ optional($movement->truck)->cab_number ? '(' . $movement->truck->cab_number . ')' : '' }}
+                                </td>
+                                <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">{{ $movement->customer->name ?? '—' }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                                    {{ $movement->load_dispatch_date ? \Illuminate\Support\Carbon::parse($movement->load_dispatch_date)->format('M d, Y') : '—' }}
+                                </td>
+                                <td class="px-4 py-2 text-sm text-right text-gray-900 dark:text-gray-100">
+                                    ₦{{ number_format($movement->fare, 2) }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    No truck movements recorded yet.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
 </div>

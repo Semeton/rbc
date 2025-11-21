@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Livewire\Customer;
 
 use App\Customer\Services\CustomerService;
+use App\Models\Customer as CustomerModel;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class Create extends Component
@@ -66,6 +68,12 @@ class Create extends Component
         $this->dispatch('customer-created', $customer->id);
 
         $this->redirect(route('customers.show', $customer), navigate: true);
+    }
+
+    #[Computed]
+    public function recentCustomers()
+    {
+        return CustomerModel::latest()->limit(5)->get();
     }
 
     public function render(): View

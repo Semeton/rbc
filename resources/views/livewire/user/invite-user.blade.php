@@ -110,6 +110,42 @@
             </div>
         </form>
     </div>
+    <div class="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Latest Users</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-zinc-900">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Name</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Email</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Role</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Joined</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-zinc-900 divide-y divide-gray-200 dark:divide-gray-700">
+                    @forelse($this->recentUsers as $user)
+                        <tr>
+                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">{{ $user->name }}</td>
+                            <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">{{ $user->email }}</td>
+                            <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                                <flux:badge variant="outline">{{ \Illuminate\Support\Str::headline($user->role) }}</flux:badge>
+                            </td>
+                            <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                                {{ $user->created_at->format('M d, Y') }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                                No users found.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- Sent Invitations List -->
     <div class="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-gray-700">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">

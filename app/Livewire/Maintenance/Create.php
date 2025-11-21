@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Maintenance;
 
 use App\Models\Truck;
+use App\Models\TruckMaintenanceRecord;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
@@ -46,6 +47,15 @@ class Create extends Component
     public function trucks()
     {
         return Truck::orderBy('registration_number')->get();
+    }
+
+    #[Computed]
+    public function recentMaintenanceRecords()
+    {
+        return TruckMaintenanceRecord::with('truck:id,registration_number,cab_number')
+            ->latest('maintenance_date')
+            ->limit(5)
+            ->get();
     }
 
     public function render(): View

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire\Atc;
 
+use App\Models\Atc;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -15,6 +17,8 @@ class Create extends Component
 
     #[Validate('required|integer')]
     public int $atc_number = 0;
+
+    public ?bool $atcNumberExists = null;
 
     #[Validate('required|in:bg,cash_payment')]
     public string $atc_type = 'bg';
@@ -27,6 +31,23 @@ class Create extends Component
 
     #[Validate('required|in:active,inactive')]
     public string $status = 'active';
+
+    public function updatedAtcNumber(): void
+    {
+        if (! $this->atc_number) {
+            $this->atcNumberExists = null;
+
+            return;
+        }
+
+        $this->atcNumberExists = Atc::where('atc_number', $this->atc_number)->exists();
+    }
+
+    #[Computed]
+    public function recentAtcs()
+    {
+        return Atc::latest()->limit(5)->get();
+    }
 
     public function store(): void
     {
@@ -47,6 +68,8 @@ class Create extends Component
 
     public function render(): View
     {
-        return view('livewire.atc.create');
+        return view('livewire.atc.create', [
+            'atcNumberExists' => $this->atcNumberExists,
+        ]);
     }
 }

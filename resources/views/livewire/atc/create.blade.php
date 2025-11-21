@@ -27,11 +27,17 @@
                         <flux:field>
                             <flux:label>ATC Number</flux:label>
                             <flux:input
-                                wire:model="atc_number"
+                                wire:model.live.debounce.500ms="atc_number"
                                 type="number"
                                 placeholder="Enter ATC number"
                             />
                             <flux:error name="atc_number" />
+
+                            @if(! is_null($atcNumberExists))
+                                <p class="mt-2 text-sm {{ $atcNumberExists ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400' }}">
+                                    {{ $atcNumberExists ? 'This ATC number already exists. Please use a unique number.' : 'ATC number is available.' }}
+                                </p>
+                            @endif
                         </flux:field>
                     </div>
 
@@ -88,6 +94,55 @@
                         </flux:button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-10">
+        <div class="bg-white dark:bg-zinc-800 shadow sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-md font-semibold text-gray-900 dark:text-gray-100">Latest ATCs</h4>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-zinc-900/60">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ATC #</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tons</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            @forelse($this->recentAtcs as $recentAtc)
+                                <tr>
+                                    <td class="px-4 py-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        #{{ $recentAtc->atc_number }}
+                                    </td>
+                                    <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">{{ $recentAtc->company }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                                        {{ number_format($recentAtc->tons) }} tons
+                                    </td>
+                                    <td class="px-4 py-2 text-sm">
+                                        <x-status-badge :status="$recentAtc->status_string" />
+                                    </td>
+                                    <td class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                                        {{ $recentAtc->created_at->format('M d, Y') }}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        No ATCs recorded yet.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

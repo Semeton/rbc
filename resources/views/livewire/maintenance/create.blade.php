@@ -92,4 +92,52 @@
             </div>
         </form>
     </div>
+
+    <div class="mt-10">
+        <div class="rounded-lg bg-white p-6 shadow dark:bg-zinc-800">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Latest Maintenance Records</h3>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-zinc-900">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Truck</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Description</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Date</th>
+                            <th class="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Cost (₦)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        @forelse($this->recentMaintenanceRecords as $record)
+                            <tr>
+                                <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">
+                                    {{ optional($record->truck)->registration_number ?? '—' }}
+                                    @if(optional($record->truck)->cab_number)
+                                        ({{ $record->truck->cab_number }})
+                                    @endif
+                                </td>
+                                <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                                    {{ \Illuminate\Support\Str::limit($record->description, 60) }}
+                                </td>
+                                <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                                    {{ \Illuminate\Support\Carbon::parse($record->maintenance_date)->format('M d, Y') }}
+                                </td>
+                                <td class="px-4 py-2 text-sm text-right text-gray-900 dark:text-gray-100">
+                                    ₦{{ number_format($record->cost_of_maintenance, 2) }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    No maintenance records yet.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Payment;
 
 use App\Models\Customer;
+use App\Models\CustomerPayment;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
@@ -51,6 +52,15 @@ class Create extends Component
     public function customers()
     {
         return Customer::orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function recentPayments()
+    {
+        return CustomerPayment::with('customer:id,name')
+            ->latest('payment_date')
+            ->limit(5)
+            ->get();
     }
 
     public function render(): View

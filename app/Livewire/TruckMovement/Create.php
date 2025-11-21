@@ -6,6 +6,7 @@ namespace App\Livewire\TruckMovement;
 
 use App\Models\Atc;
 use App\Models\Customer;
+use App\Models\DailyTruckRecord;
 use App\Models\Driver;
 use App\Models\Truck;
 use Illuminate\Contracts\View\View;
@@ -93,6 +94,15 @@ class Create extends Component
     public function atcs()
     {
         return Atc::orderBy('atc_number')->get();
+    }
+
+    #[Computed]
+    public function recentTruckMovements()
+    {
+        return DailyTruckRecord::with(['driver:id,name', 'truck:id,registration_number,cab_number', 'customer:id,name'])
+            ->latest()
+            ->limit(5)
+            ->get();
     }
 
     public function render(): View

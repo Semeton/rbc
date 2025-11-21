@@ -14,19 +14,20 @@ class DatabaseSeeder extends Seeder
     {
         // Call seeders in the correct order based on dependencies
         $this->call([
-            SpecifiedStaffUsersSeeder::class,
-            ImportCustomersFromSqlSeeder::class,       // Customers before their related records
-            ImportDriversFromSqlSeeder::class,         // Drivers before daily records
-            ImportTrucksFromSqlSeeder::class,
-            ImportDriversFromSqlSeeder::class,
-            ImportDtrFromSqlSeeder::class,
-            // TruckSeeder::class,          // Trucks before maintenance records
-            // AtcSeeder::class,            // ATCs before daily transactions
-            // CustomerPaymentSeeder::class,
-            // DailyCustomerTransactionSeeder::class,
-            // TruckMaintenanceRecordSeeder::class,
-            // AuditTrailSeeder::class,
-            // ActivityLogSeeder::class,
+            // SpecifiedStaffUsersSeeder::class,
+            // ImportCustomersFromSqlSeeder::class,       // Customers before their related records
+            // ImportDriversFromSqlSeeder::class,         // Drivers before daily records
+            // ImportTrucksFromSqlSeeder::class,
+            // ImportDriversFromSqlSeeder::class,
+            // ImportDtrFromSqlSeeder::class,
+            UserSeeder::class,
+            TruckSeeder::class,          // Trucks before maintenance records
+            AtcSeeder::class,            // ATCs before daily transactions
+            CustomerPaymentSeeder::class,
+            DailyCustomerTransactionSeeder::class,
+            TruckMaintenanceRecordSeeder::class,
+            AuditTrailSeeder::class,
+            ActivityLogSeeder::class,
         ]);
     }
 }
