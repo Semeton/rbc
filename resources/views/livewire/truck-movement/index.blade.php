@@ -215,12 +215,12 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->truck->registration_number }}</div>
+                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->truck?->registration_number ?? 'N/A' }}</div>
                                 <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement->truck->cab_number }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->customer->name }}</div>
-                                <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement->customer->email }}</div>
+                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->customer?->name ?? 'N/A' }}</div>
+                                <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement->customer?->email ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100">
                                 {{ $movement->atc_collection_date->format('M d, Y') }}
