@@ -17,7 +17,7 @@ class Edit extends Component
     public string $company = '';
 
     #[Validate('required|integer')]
-    public int $atc_number = 0;
+    public int|string|null $atc_number = null;
 
     #[Validate('required|in:bg,cash_payment')]
     public string $atc_type = 'bg';
@@ -49,7 +49,7 @@ class Edit extends Component
         $atcService = app(\App\ATC\Services\ATCService::class);
         $atcService->updateATC($this->atc, [
             'company' => $this->company,
-            'atc_number' => $this->atc_number,
+            'atc_number' => (int) $this->atc_number,
             'atc_type' => $this->atc_type,
             'amount' => $this->amount,
             'tons' => $this->tons,

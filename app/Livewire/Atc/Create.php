@@ -16,7 +16,7 @@ class Create extends Component
     public string $company = '';
 
     #[Validate('required|integer')]
-    public int $atc_number = 0;
+    public int|string|null $atc_number = null;
 
     public ?bool $atcNumberExists = null;
 
@@ -34,13 +34,14 @@ class Create extends Component
 
     public function updatedAtcNumber(): void
     {
-        if (! $this->atc_number) {
+        if ($this->atc_number === '' || $this->atc_number === null) {
             $this->atcNumberExists = null;
+            $this->atc_number = null;
 
             return;
         }
 
-        $this->atcNumberExists = Atc::where('atc_number', $this->atc_number)->exists();
+        $this->atcNumberExists = Atc::where('atc_number', (int) $this->atc_number)->exists();
     }
 
     #[Computed]
@@ -56,7 +57,7 @@ class Create extends Component
         $atcService = app(\App\ATC\Services\ATCService::class);
         $atc = $atcService->createATC([
             'company' => $this->company,
-            'atc_number' => $this->atc_number,
+            'atc_number' => (int) $this->atc_number,
             'atc_type' => $this->atc_type,
             'amount' => $this->amount,
             'tons' => $this->tons,
