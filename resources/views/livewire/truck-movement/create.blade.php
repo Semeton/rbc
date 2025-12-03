@@ -59,7 +59,7 @@
                         <div>
                             <flux:field>
                                 <flux:label>ATC</flux:label>
-                                <select wire:model="atc_id" class="select2-atc w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <select wire:model.live="atc_id" class="select2-atc w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">Select an ATC...</option>
                                     @foreach($this->atcs as $atc)
                                         <option value="{{ $atc->id }}">ATC #{{ $atc->atc_number }} ({{ $atc->company }})</option>
@@ -94,15 +94,43 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
                         <div>
                             <flux:field>
-                                <flux:label>Fare Amount</flux:label>
+                                <flux:label>Customer Cost</flux:label>
                                 <flux:input
                                     type="number"
                                     step="0.01"
-                                    wire:model="fare"
-                                    placeholder="Enter fare amount..."
+                                    min="0"
+                                    wire:model.live="customer_cost"
+                                    placeholder="Enter customer's cost"
+                                />
+                                <flux:error name="customer_cost" />
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>ATC Cost</flux:label>
+                                <flux:input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    value="{{ $atc_cost }}"
+                                    readonly
+                                />
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>Fare (Customer Cost - ATC Cost)</flux:label>
+                                <flux:input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    value="{{ $fare }}"
+                                    readonly
                                 />
                                 <flux:error name="fare" />
                             </flux:field>
@@ -114,25 +142,82 @@
                                 <flux:input
                                     type="number"
                                     step="0.01"
-                                    wire:model="gas_chop_money"
+                                    min="0"
+                                    wire:model.live="gas_chop_money"
                                     placeholder="Enter gas chop amount..."
                                 />
                                 <flux:error name="gas_chop_money" />
                             </flux:field>
                         </div>
+                    </div>
 
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                         <div>
                             <flux:field>
                                 <flux:label>Haulage</flux:label>
                                 <flux:input
                                     type="number"
                                     step="0.01"
-                                    wire:model="haulage"
+                                    wire:model.live="haulage"
                                     placeholder="Enter haulage (can be negative)"
                                 />
                                 <flux:error name="haulage" />
                             </flux:field>
                         </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>Incentive</flux:label>
+                                <flux:input
+                                    type="number"
+                                    step="0.01"
+                                    wire:model.live="incentive"
+                                    placeholder="Enter incentive"
+                                />
+                                <flux:error name="incentive" />
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>Salary Contribution</flux:label>
+                                <flux:input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    wire:model.live="salary_contribution"
+                                    placeholder="Enter salary contribution"
+                                />
+                                <flux:error name="salary_contribution" />
+                            </flux:field>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+                        <div>
+                            <flux:field>
+                                <flux:label>Total (Fare - Gas + Haulage)</flux:label>
+                                <flux:input
+                                    type="number"
+                                    step="0.01"
+                                    value="{{ $total_amount }}"
+                                    readonly
+                                />
+                            </flux:field>
+                        </div>
+
+                        <div>
+                            <flux:field>
+                                <flux:label>Total + Incentive</flux:label>
+                                <flux:input
+                                    type="number"
+                                    step="0.01"
+                                    value="{{ $total_plus_incentive }}"
+                                    readonly
+                                />
+                            </flux:field>
+                        </div>
+
                         <div>
                             <flux:field>
                                 <flux:label>Status</flux:label>

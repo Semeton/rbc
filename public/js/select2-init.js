@@ -37,10 +37,47 @@ function initializeSelect2() {
 
         $(".select2-atc").each(function () {
             if (!$(this).hasClass("select2-hidden-accessible")) {
-                $(this).select2({
+                const $select = $(this);
+                const selectElement = $select[0];
+                let isUpdating = false;
+
+                $select.select2({
                     placeholder: "Select ATC",
                     allowClear: true,
                     width: "100%",
+                });
+
+                // Ensure Livewire updates when Select2 changes
+                $select.on("change", function () {
+                    // Prevent infinite loops
+                    if (isUpdating) {
+                        return;
+                    }
+
+                    isUpdating = true;
+                    const value = $(this).val();
+
+                    // Update the native select element value
+                    selectElement.value = value || "";
+
+                    // Trigger both input and change events for Livewire
+                    const inputEvent = new Event("input", {
+                        bubbles: true,
+                        cancelable: true,
+                    });
+
+                    const changeEvent = new Event("change", {
+                        bubbles: true,
+                        cancelable: true,
+                    });
+
+                    selectElement.dispatchEvent(inputEvent);
+                    selectElement.dispatchEvent(changeEvent);
+
+                    // Reset flag after Livewire has had a moment to process
+                    setTimeout(() => {
+                        isUpdating = false;
+                    }, 100);
                 });
             }
         });

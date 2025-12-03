@@ -9,12 +9,15 @@ use App\Models\DailyTruckRecord;
 use App\Models\Driver;
 use App\Models\Truck;
 use App\Models\User;
+use App\Models\Atc;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class TruckMovementTest extends TestCase
 {
     use RefreshDatabase;
+
+    private User $user;
 
     protected function setUp(): void
     {
@@ -176,6 +179,32 @@ class TruckMovementTest extends TestCase
         ]);
 
         $this->assertEquals(12000.00, $truckMovement->net_profit);
+    }
+
+    public function test_financial_totals_are_calculated_correctly(): void
+    {
+        $driver = Driver::factory()->create();
+        $truck = Truck::factory()->create();
+        $customer = Customer::factory()->create();
+        $atc = Atc::factory()->create([
+            'amount' => 5000.00,
+        ]);
+
+        $movement = DailyTruckRecord::factory()->create([
+            'driver_id' => $driver->id,
+            'truck_id' => $truck->id,
+            'customer_id' => $customer->id,
+            'atc_id' => $atc->id,
+            'customer_cost' => 15000.00,
+            'fare' => 10000.00,
+            'gas_chop_money' => 3000.00,
+            'haulage' => 2000.00,
+            'incentive' => 1000.00,
+        ]);
+
+        $this->assertEquals(10000.00, $movement->fare);
+        $this->assertEquals(9000.00, $movement->total);
+        $this->assertEquals(10000.00, $movement->total_plus_incentive);
     }
 
     public function test_daily_truck_record_status_string_accessor(): void

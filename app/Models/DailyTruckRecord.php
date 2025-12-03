@@ -20,9 +20,12 @@ class DailyTruckRecord extends Model
         'atc_id',
         'atc_collection_date',
         'load_dispatch_date',
+        'customer_cost',
         'fare',
         'gas_chop_money',
         'haulage',
+        'incentive',
+        'salary_contribution',
         'balance',
         'status',
     ];
@@ -30,9 +33,12 @@ class DailyTruckRecord extends Model
     protected $casts = [
         'atc_collection_date' => 'datetime',
         'load_dispatch_date' => 'datetime',
+        'customer_cost' => 'decimal:2',
         'fare' => 'decimal:2',
         'gas_chop_money' => 'decimal:2',
         'haulage' => 'decimal:2',
+        'incentive' => 'decimal:2',
+        'salary_contribution' => 'decimal:2',
         'balance' => 'decimal:2',
         'status' => 'boolean',
     ];
@@ -106,7 +112,27 @@ class DailyTruckRecord extends Model
      */
     public function getNetProfitAttribute(): float
     {
-        return $this->fare - $this->gas_chop_money;
+        return (float) $this->fare - (float) $this->gas_chop_money;
+    }
+
+    /**
+     * Get the per-movement total (Fare - Gas + Haulage).
+     */
+    public function getTotalAttribute(): float
+    {
+        $haulage = $this->haulage ?? 0;
+
+        return (float) $this->fare - (float) $this->gas_chop_money + (float) $haulage;
+    }
+
+    /**
+     * Get the per-movement total including incentive (Total + Incentive).
+     */
+    public function getTotalPlusIncentiveAttribute(): float
+    {
+        $incentive = $this->incentive ?? 0;
+
+        return $this->total + (float) $incentive;
     }
 
     /**

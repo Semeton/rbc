@@ -2014,9 +2014,12 @@ namespace App\Models {
      * @property boolean $status
      * @property decimal:2|null $balance
      * @property decimal:2|null $haulage
+     * @property decimal:2 $salary_contribution
+     * @property decimal:2 $incentive
      * @property decimal:2|null $gas_chop_money
      * @property decimal:2|null $fare
      * @property string|null $destination
+     * @property decimal:2 $customer_cost
      * @property \Illuminate\Support\Carbon $load_dispatch_date
      * @property \Illuminate\Support\Carbon $atc_collection_date
      * @property int|null $atc_id
@@ -2025,6 +2028,8 @@ namespace App\Models {
      * @property int $driver_id
      * @property int $id
      * @property-read mixed $net_profit
+     * @property-read mixed $total
+     * @property-read mixed $total_plus_incentive
      * @property-read mixed $status_display
      * @property-read mixed $status_string
      * @property-read \App\Models\Driver $driver
@@ -2037,9 +2042,12 @@ namespace App\Models {
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereAtcId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereAtcCollectionDate($value)
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereLoadDispatchDate($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereCustomerCost($value)
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereDestination($value)
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereFare($value)
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereGasChopMoney($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereIncentive($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereSalaryContribution($value)
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereHaulage($value)
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereBalance($value)
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereStatus($value)

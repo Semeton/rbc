@@ -19,7 +19,7 @@
         </span>
         <div class="grid text-sm leading-tight">
             <span class="font-semibold {{ $brandColor }}">{{ $brandName }}</span>
-            <span class="text-[11px] uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">Logistics OS</span>
+            <span class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">Logistics OS</span>
         </div>
     </div>
 @endif

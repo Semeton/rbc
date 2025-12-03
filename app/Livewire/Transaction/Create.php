@@ -71,9 +71,17 @@ class Create extends Component
         AuditTrailService::log('page_view', 'Transactions', 'Viewed transaction create page');
     }
 
-    public function updatedAtcId(): void
+    public function updatedAtcId($value): void
     {
-        if ($this->atc_id) {
+        // Ensure atc_id is cast to integer (Select2 may send string)
+        if (empty($value) || $value === '' || $value === null) {
+            $this->atc_id = 0;
+            return;
+        }
+
+        $this->atc_id = (int) $value;
+
+        if ($this->atc_id > 0) {
             $atc = Atc::find($this->atc_id);
             if ($atc) {
                 $allocationValidator = app(AtcAllocationValidator::class);

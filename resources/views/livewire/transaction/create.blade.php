@@ -76,7 +76,7 @@
                         <div class="md:col-span-2">
                             <flux:field>
                                 <flux:label>ATC *</flux:label>
-                                <select wire:model="atc_id" required class="select2-atc w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <select wire:model.live.debounce.300ms="atc_id" required class="select2-atc w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">Select ATC</option>
                                     @foreach($this->atcs as $atc)
                                         <option value="{{ $atc->id }}">

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\TruckMovement\Services;
 
 use App\Models\DailyTruckRecord;
+use App\Models\Atc;
 use App\Services\AuditTrailService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -53,9 +54,7 @@ class TruckMovementService
      */
     public function createTruckMovement(array $data): DailyTruckRecord
     {
-        // Calculate balance: Fare - Gas Chop + Haulage
-        $haulage = isset($data['haulage']) ? (float) $data['haulage'] : 0.0;
-        $data['balance'] = ((float) $data['fare']) - ((float) $data['gas_chop_money']) + $haulage;
+        $data = $this->applyFinancialCalculations($data);
 
         $truckMovement = DailyTruckRecord::create($data);
 
@@ -70,9 +69,7 @@ class TruckMovementService
      */
     public function updateTruckMovement(DailyTruckRecord $truckMovement, array $data): DailyTruckRecord
     {
-        // Calculate balance: Fare - Gas Chop + Haulage
-        $haulage = isset($data['haulage']) ? (float) $data['haulage'] : 0.0;
-        $data['balance'] = ((float) $data['fare']) - ((float) $data['gas_chop_money']) + $haulage;
+        $data = $this->applyFinancialCalculations($data, $truckMovement);
 
         $truckMovement->update($data);
 
@@ -207,5 +204,48 @@ class TruckMovementService
             ->with(['driver', 'truck', 'customer'])
             ->latest('atc_collection_date')
             ->paginate($perPage);
+    }
+
+    /**
+     * Apply financial calculations (fare, balance/total) based on business rules.
+     */
+    private function applyFinancialCalculations(array $data, ?DailyTruckRecord $existingRecord = null): array
+    {
+        $haulage = isset($data['haulage']) ? (float) $data['haulage'] : 0.0;
+        $gasChop = isset($data['gas_chop_money']) ? (float) $data['gas_chop_money'] : 0.0;
+        $incentive = isset($data['incentive']) ? (float) $data['incentive'] : 0.0;
+
+        // Determine ATC for this movement
+        $atcId = $data['atc_id'] ?? $existingRecord?->atc_id;
+        $customerCost = isset($data['customer_cost']) ? (float) $data['customer_cost'] : 0.0;
+
+        $atcCost = 0.0;
+
+        if ($atcId !== null) {
+            /** @var \App\Models\Atc|null $atc */
+            $atc = Atc::find($atcId);
+
+            if ($atc !== null) {
+                // Business assumption: use ATC amount as ATC cost for this movement.
+                $atcCost = (float) $atc->amount;
+            }
+        }
+
+        // Fare = Customer Cost - ATC Cost (never less than zero)
+        $fare = max(0.0, $customerCost - $atcCost);
+
+        $data['customer_cost'] = $customerCost;
+        $data['fare'] = $fare;
+        $data['incentive'] = $incentive;
+
+        // Total (per movement) stored in balance: Fare - Gas + Haulage
+        $data['balance'] = $fare - $gasChop + $haulage;
+
+        // Salary contribution is stored as-is (may be omitted from some flows).
+        if (! isset($data['salary_contribution'])) {
+            $data['salary_contribution'] = $existingRecord?->salary_contribution ?? 0.0;
+        }
+
+        return $data;
     }
 }
