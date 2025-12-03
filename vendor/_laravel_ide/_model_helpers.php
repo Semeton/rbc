@@ -2035,6 +2035,7 @@ namespace App\Models {
      * @property-read \App\Models\Driver $driver
      * @property-read \App\Models\Truck $truck
      * @property-read \App\Models\Customer $customer
+     * @property-read \App\Models\Atc $atc
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereDriverId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<DailyTruckRecord>|DailyTruckRecord whereTruckId($value)

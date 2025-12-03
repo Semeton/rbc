@@ -196,9 +196,15 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Customer</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Collection Date</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Dispatch Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Customer Cost</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">ATC Cost</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Fare</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Gas Chop</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Balance</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Gas Chop Money</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Haulage</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Incentive</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Salary Contribution</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Total (Fare - Gas + Haulage)</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Total + Incentive</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Actions</th>
                     </tr>
                 </thead>
@@ -229,14 +235,46 @@
                                 {{ $movement->load_dispatch_date->format('M d, Y') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                ₦{{ number_format($movement->fare, 2) }}
+                                ₦{{ number_format($movement->customer_cost ?? 0, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                ₦{{ number_format($movement->gas_chop_money, 2) }}
+                                ₦{{ number_format($movement->atc->amount ?? 0, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                ₦{{ number_format($movement->balance, 2) }}
+                                ₦{{ number_format(($movement->customer_cost ?? 0) - ($movement->atc_cost ?? 0), 2) }}
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->gas_chop_money ?? 0, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->haulage ?? 0, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->incentive ?? 0, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->salary_contribution ?? 0, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                @php
+                                    $fare = ($movement->customer_cost ?? 0) - ($movement->atc_cost ?? 0);
+                                    $gas = $movement->gas_chop_money ?? 0;
+                                    $haulage = $movement->haulage ?? 0;
+                                    $total = $fare - $gas + $haulage;
+                                @endphp
+                                ₦{{ number_format($total, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                @php
+                                    $incentive = $movement->incentive ?? 0;
+                                    $totalWithIncentive = $total + $incentive;
+                                @endphp
+                                ₦{{ number_format($totalWithIncentive, 2) }}
+                            </td>
+                            <!-- Balance (Keep original) -->
+                            {{-- <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->balance ?? 0, 2) }}
+                            </td> --}}
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end space-x-2">
                                     <flux:button variant="ghost" size="sm" :href="route('truck-movements.show', $movement)" wire:navigate>

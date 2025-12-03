@@ -251,40 +251,111 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-zinc-900">
+                <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
+                <thead class="bg-zinc-50 dark:bg-zinc-900">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Driver</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Truck</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Customer</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Collection Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Dispatch Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Customer Cost</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">ATC Cost</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Fare</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Gas Chop Money</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Haulage</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Incentive</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Salary Contribution</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Total (Fare - Gas + Haulage)</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Total + Incentive</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-zinc-500 uppercase tracking-wider dark:text-zinc-400">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-zinc-200 dark:bg-zinc-800 dark:divide-zinc-700">
+                    @forelse($this->recentTruckMovements as $movement)
                         <tr>
-                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Driver</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Truck</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Customer</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Dispatch Date</th>
-                            <th class="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Fare (₦)</th>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <flux:avatar :name="$movement->driver->name" />
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->driver->name }}</div>
+                                        <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement->driver->phone }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->truck?->registration_number ?? 'N/A' }}</div>
+                                <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement->truck->cab_number }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->customer?->name ?? 'N/A' }}</div>
+                                <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement->customer?->email ?? 'N/A' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100">
+                                {{ $movement->atc_collection_date->format('M d, Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100">
+                                {{ $movement->load_dispatch_date->format('M d, Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->customer_cost ?? 0, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->atc->amount ?? 0, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format(($movement->customer_cost ?? 0) - ($movement->atc_cost ?? 0), 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->gas_chop_money ?? 0, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->haulage ?? 0, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->incentive ?? 0, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                ₦{{ number_format($movement->salary_contribution ?? 0, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                @php
+                                    $fare = ($movement->customer_cost ?? 0) - ($movement->atc_cost ?? 0);
+                                    $gas = $movement->gas_chop_money ?? 0;
+                                    $haulage = $movement->haulage ?? 0;
+                                    $total = $fare - $gas + $haulage;
+                                @endphp
+                                ₦{{ number_format($total, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                @php
+                                    $incentive = $movement->incentive ?? 0;
+                                    $totalWithIncentive = $total + $incentive;
+                                @endphp
+                                ₦{{ number_format($totalWithIncentive, 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex items-center justify-end space-x-2">
+                                    <flux:button variant="ghost" size="sm" :href="route('truck-movements.show', $movement)" wire:navigate>
+                                        <flux:icon name="eye" />
+                                    </flux:button>
+                                    <flux:button variant="ghost" size="sm" :href="route('truck-movements.edit', $movement)" wire:navigate>
+                                        <flux:icon name="pencil" />
+                                    </flux:button>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse($this->recentTruckMovements as $movement)
-                            <tr>
-                                <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">{{ $movement->driver->name ?? '—' }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
-                                    {{ optional($movement->truck)->registration_number }} {{ optional($movement->truck)->cab_number ? '(' . $movement->truck->cab_number . ')' : '' }}
-                                </td>
-                                <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">{{ $movement->customer->name ?? '—' }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
-                                    {{ $movement->load_dispatch_date ? \Illuminate\Support\Carbon::parse($movement->load_dispatch_date)->format('M d, Y') : '—' }}
-                                </td>
-                                <td class="px-4 py-2 text-sm text-right text-gray-900 dark:text-gray-100">
-                                    ₦{{ number_format($movement->fare, 2) }}
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                                    No truck movements recorded yet.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                    @empty
+                        <tr>
+                            <td colspan="9" class="px-6 py-12 text-center text-sm text-zinc-500 dark:text-zinc-400">
+                                <flux:icon name="truck" class="mx-auto h-12 w-12 text-zinc-400" />
+                                <div class="mt-2">No truck movements found</div>
+                                <div class="mt-1">Get started by creating a new truck movement</div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
             </div>
         </div>
     </div>

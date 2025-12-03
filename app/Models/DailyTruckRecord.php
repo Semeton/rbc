@@ -108,6 +108,14 @@ class DailyTruckRecord extends Model
     }
 
     /**
+     * Get the ATC for this record
+     */
+    public function atc(): BelongsTo
+    {
+        return $this->belongsTo(Atc::class);
+    }
+
+    /**
      * Get the net profit for this record
      */
     public function getNetProfitAttribute(): float

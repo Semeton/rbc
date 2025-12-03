@@ -18,7 +18,7 @@ class TruckMovementService
      */
     public function getPaginatedTruckMovements(Request $request, int $perPage = 15): LengthAwarePaginator
     {
-        $query = DailyTruckRecord::with(['driver', 'truck', 'customer'])
+        $query = DailyTruckRecord::with(['atc', 'driver', 'truck', 'customer'])
             ->latest('atc_collection_date');
 
         // Apply filters
