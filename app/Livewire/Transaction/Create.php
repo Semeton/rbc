@@ -17,7 +17,6 @@ use Livewire\Component;
 
 class Create extends Component
 {
-    // Form fields
     public int $customer_id = 0;
 
     public int $driver_id = 0;
@@ -51,9 +50,7 @@ class Create extends Component
         'deport_details' => 'nullable|string|max:500',
         'cement_type' => 'required|string|max:100',
         'destination' => 'required|string|max:255',
-        // Rename in UI to "Cost" but persist to atc_cost
         'atc_cost' => 'required|numeric|min:0',
-        // Transport cost removed from UI; keep optional for backward compatibility
         'transport_cost' => 'nullable|numeric|min:0',
         'tons' => 'required|numeric|min:0.01',
         'status' => 'required|in:active,inactive',
@@ -61,7 +58,6 @@ class Create extends Component
 
     protected function rules()
     {
-        // Use base rules; no auto-calculation enforcement for atc_cost
         return $this->rules;
     }
 
@@ -73,7 +69,6 @@ class Create extends Component
 
     public function updatedAtcId($value): void
     {
-        // Ensure atc_id is cast to integer (Select2 may send string)
         if (empty($value) || $value === '' || $value === null) {
             $this->atc_id = 0;
             return;
@@ -86,7 +81,6 @@ class Create extends Component
             if ($atc) {
                 $allocationValidator = app(AtcAllocationValidator::class);
                 $remainingTons = $allocationValidator->getRemainingTons($atc);
-                // Do not auto-fill tons or cost; staff will enter manually
                 $this->dispatch('atc-selected', [
                     'atc' => $atc,
                     'remaining_tons' => $remainingTons,
@@ -117,10 +111,8 @@ class Create extends Component
     {
         $this->validate();
 
-        // Normalize optional text fields
         $normalizedDeportDetails = trim($this->deport_details) === '' ? null : $this->deport_details;
 
-        // Normalize transport_cost to null if empty string for backward compatibility
         $normalizedTransportCost = trim((string) $this->transport_cost) === '' ? null : (float) $this->transport_cost;
 
         $data = [
@@ -144,7 +136,6 @@ class Create extends Component
             $transactionService->createTransaction($data);
             $this->dispatch('success', 'Transaction created successfully!');
 
-            // Redirect to transactions index
             $this->redirect(route('transactions.index'));
         } catch (\Exception $e) {
             $this->dispatch('error', $e->getMessage());
