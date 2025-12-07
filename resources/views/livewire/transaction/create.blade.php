@@ -25,7 +25,7 @@
                         <div>
                             <flux:field>
                                 <flux:label>Customer *</flux:label>
-                                <select wire:model.live.debounce.300ms="customer_id" required class="select2-customer w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <select wire:model="customer_id" required class="select2-customer w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">Select Customer</option>
                                     @foreach($this->customers as $customer)
                                         <option value="{{ $customer->id }}">{{ $customer->name }}</option>
@@ -38,7 +38,7 @@
                         <div>
                             <flux:field>
                                 <flux:label>Driver *</flux:label>
-                                <select wire:model.live.debounce.300ms="driver_id" required class="select2-driver w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <select wire:model="driver_id" required class="select2-driver w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">Select Driver</option>
                                     @foreach($this->drivers as $driver)
                                         <option value="{{ $driver->id }}">{{ $driver->name }}</option>
