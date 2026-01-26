@@ -19,7 +19,7 @@ class Create extends Component
     #[Validate('required|date|before_or_equal:today')]
     public string $payment_date = '';
 
-    #[Validate('required|numeric|min:0.01')]
+    #[Validate('required|numeric')]
     public float $amount = 0.0;
 
     #[Validate('nullable|string|max:255')]

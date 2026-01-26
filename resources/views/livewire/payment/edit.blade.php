@@ -52,7 +52,7 @@
                             <flux:input
                                 type="number"
                                 step="0.01"
-                                min="0.01"
+                                {{-- min="0.01" --}}
                                 wire:model="amount"
                                 placeholder="Enter payment amount..."
                             />
