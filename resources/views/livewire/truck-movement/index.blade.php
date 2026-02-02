@@ -213,10 +213,10 @@
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <flux:avatar :name="$movement->driver->name" />
+                                    <flux:avatar :name="$movement?->driver?->name ?? 'Unknown'" />
                                     <div class="ml-4">
-                                        <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->driver->name }}</div>
-                                        <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement->driver->phone }}</div>
+                                        <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement?->driver?->name ?? 'Unknown' }}</div>
+                                        <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement?->driver?->phone ?? 'Unknown' }}</div>
                                     </div>
                                 </div>
                             </td>
