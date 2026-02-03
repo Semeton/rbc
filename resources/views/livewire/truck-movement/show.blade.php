@@ -47,11 +47,11 @@
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">ATC Collection Date</dt>
-                            <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">{{ $truckMovement->atc_collection_date->format('F d, Y') }}</dd>
+                            <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">{{ $truckMovement->atc_collection_date?->format('F d, Y') }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Load Dispatch Date</dt>
-                            <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">{{ $truckMovement->load_dispatch_date->format('F d, Y') }}</dd>
+                            <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">{{ $truckMovement->load_dispatch_date?->format('F d, Y') }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Created</dt>
@@ -75,20 +75,22 @@
                 </div>
                 <div class="p-6">
                     <div class="flex items-center space-x-3">
-                        <flux:avatar :name="$truckMovement->driver->name" size="lg" />
+                        <flux:avatar :name="$truckMovement->driver?->name ?? 'N/A'" size="lg" />
                         <div>
-                            <h4 class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $truckMovement->driver->name }}</h4>
-                            <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $truckMovement->driver->phone }}</p>
-                            <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $truckMovement->driver->company }}</p>
+                            <h4 class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $truckMovement->driver?->name ?? 'N/A' }}</h4>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $truckMovement->driver?->phone ?? 'N/A' }}</p>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $truckMovement->driver?->company ?? 'N/A' }}</p>
                         </div>
                     </div>
 
-                    <div class="mt-4">
-                        <flux:button variant="outline" size="sm" :href="route('drivers.show', $truckMovement->driver)" wire:navigate>
-                            <flux:icon name="eye" />
-                            View Driver
-                        </flux:button>
-                    </div>
+                    @if($truckMovement->driver)
+                        <div class="mt-4">
+                            <flux:button variant="outline" size="sm" :href="route('drivers.show', $truckMovement->driver)" wire:navigate>
+                                <flux:icon name="eye" />
+                                View Driver
+                            </flux:button>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -101,28 +103,30 @@
                     <div class="space-y-2">
                         <div>
                             <span class="text-sm font-medium text-zinc-900 dark:text-zinc-100">Registration:</span>
-                            <span class="text-sm text-zinc-500 dark:text-zinc-400 ml-2">{{ $truckMovement->truck->registration_number }}</span>
+                            <span class="text-sm text-zinc-500 dark:text-zinc-400 ml-2">{{ $truckMovement->truck?->registration_number ?? 'N/A' }}</span>
                         </div>
                         <div>
                             <span class="text-sm font-medium text-zinc-900 dark:text-zinc-100">Cab Number:</span>
-                            <span class="text-sm text-zinc-500 dark:text-zinc-400 ml-2">{{ $truckMovement->truck->cab_number }}</span>
+                            <span class="text-sm text-zinc-500 dark:text-zinc-400 ml-2">{{ $truckMovement->truck?->cab_number ?? 'N/A' }}</span>
                         </div>
                         <div>
                             <span class="text-sm font-medium text-zinc-900 dark:text-zinc-100">Model:</span>
-                            <span class="text-sm text-zinc-500 dark:text-zinc-400 ml-2">{{ $truckMovement->truck->truck_model }}</span>
+                            <span class="text-sm text-zinc-500 dark:text-zinc-400 ml-2">{{ $truckMovement->truck?->truck_model ?? 'N/A' }}</span>
                         </div>
                         <div>
                             <span class="text-sm font-medium text-zinc-900 dark:text-zinc-100">Year:</span>
-                            <span class="text-sm text-zinc-500 dark:text-zinc-400 ml-2">{{ $truckMovement->truck->year_of_manufacture }}</span>
+                            <span class="text-sm text-zinc-500 dark:text-zinc-400 ml-2">{{ $truckMovement->truck?->year_of_manufacture ?? 'N/A' }}</span>
                         </div>
                     </div>
 
-                    <div class="mt-4">
-                        <flux:button variant="outline" size="sm" :href="route('trucks.show', $truckMovement->truck)" wire:navigate>
-                            <flux:icon name="eye" />
-                            View Truck
-                        </flux:button>
-                    </div>
+                    @if($truckMovement->truck)
+                        <div class="mt-4">
+                            <flux:button variant="outline" size="sm" :href="route('trucks.show', $truckMovement->truck)" wire:navigate>
+                                <flux:icon name="eye" />
+                                View Truck
+                            </flux:button>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -133,20 +137,22 @@
                 </div>
                 <div class="p-6">
                     <div class="flex items-center space-x-3">
-                        <flux:avatar :name="$truckMovement->customer->name" size="lg" />
+                        <flux:avatar :name="$truckMovement->customer?->name ?? 'N/A'" size="lg" />
                         <div>
-                            <h4 class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $truckMovement->customer->name }}</h4>
-                            <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $truckMovement->customer->email }}</p>
-                            <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $truckMovement->customer->phone }}</p>
+                            <h4 class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $truckMovement->customer?->name ?? 'N/A' }}</h4>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $truckMovement->customer?->email ?? 'N/A' }}</p>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $truckMovement->customer?->phone ?? 'N/A' }}</p>
                         </div>
                     </div>
 
-                    <div class="mt-4">
-                        <flux:button variant="outline" size="sm" :href="route('customers.show', $truckMovement->customer)" wire:navigate>
-                            <flux:icon name="eye" />
-                            View Customer
-                        </flux:button>
-                    </div>
+                    @if($truckMovement->customer)
+                        <div class="mt-4">
+                            <flux:button variant="outline" size="sm" :href="route('customers.show', $truckMovement->customer)" wire:navigate>
+                                <flux:icon name="eye" />
+                                View Customer
+                            </flux:button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
