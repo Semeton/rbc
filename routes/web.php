@@ -39,32 +39,6 @@ Route::middleware(['auth'])->group(function () {
             return view('customers.edit', compact('customer'));
         })->name('customers.edit');
 
-        Route::get('/drivers', function () {
-            return view('drivers.index');
-        })->name('drivers.index');
-        Route::get('/drivers/create', function () {
-            return view('drivers.create');
-        })->name('drivers.create');
-        Route::get('/drivers/{driver}', function (\App\Models\Driver $driver) {
-            return view('drivers.show', compact('driver'));
-        })->name('drivers.show');
-        Route::get('/drivers/{driver}/edit', function (\App\Models\Driver $driver) {
-            return view('drivers.edit', compact('driver'));
-        })->name('drivers.edit');
-
-        Route::get('/trucks', function () {
-            return view('trucks.index');
-        })->name('trucks.index');
-        Route::get('/trucks/create', function () {
-            return view('trucks.create');
-        })->name('trucks.create');
-        Route::get('/trucks/{truck}', function (\App\Models\Truck $truck) {
-            return view('trucks.show', compact('truck'));
-        })->name('trucks.show');
-        Route::get('/trucks/{truck}/edit', function (\App\Models\Truck $truck) {
-            return view('trucks.edit', compact('truck'));
-        })->name('trucks.edit');
-
         Route::get('/transactions', \App\Livewire\Transaction\Index::class)->name('transactions.index');
         Route::get('/transactions/create', \App\Livewire\Transaction\Create::class)->name('transactions.create');
         Route::get('/transactions/{transaction}', function (\App\Models\DailyCustomerTransaction $transaction) {
@@ -125,6 +99,31 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::middleware(['role:admin,operations_manager,staff,movement_staff'])->group(function () {
+        Route::get('/drivers', function () {
+            return view('drivers.index');
+        })->name('drivers.index');
+        Route::get('/drivers/create', function () {
+            return view('drivers.create');
+        })->name('drivers.create');
+        Route::get('/drivers/{driver}', function (\App\Models\Driver $driver) {
+            return view('drivers.show', compact('driver'));
+        })->name('drivers.show');
+        Route::get('/drivers/{driver}/edit', function (\App\Models\Driver $driver) {
+            return view('drivers.edit', compact('driver'));
+        })->name('drivers.edit');
+
+        Route::get('/trucks', function () {
+            return view('trucks.index');
+        })->name('trucks.index');
+        Route::get('/trucks/create', function () {
+            return view('trucks.create');
+        })->name('trucks.create');
+        Route::get('/trucks/{truck}', function (\App\Models\Truck $truck) {
+            return view('trucks.show', compact('truck'));
+        })->name('trucks.show');
+        Route::get('/trucks/{truck}/edit', function (\App\Models\Truck $truck) {
+            return view('trucks.edit', compact('truck'));
+        })->name('trucks.edit');
         Route::get('/truck-movements', function () {
             return view('truck-movements.index');
         })->name('truck-movements.index');
