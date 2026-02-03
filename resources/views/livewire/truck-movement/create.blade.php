@@ -276,32 +276,32 @@
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <flux:avatar :name="$movement->driver->name" />
+                                    <flux:avatar :name="$movement?->driver?->name ?? 'Unknown'" />
                                     <div class="ml-4">
-                                        <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->driver->name }}</div>
-                                        <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement->driver->phone }}</div>
+                                        <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement?->driver?->name ?? 'Unknown' }}</div>
+                                        <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement?->driver?->phone ?? 'Unknown' }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->truck?->registration_number ?? 'N/A' }}</div>
-                                <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement->truck->cab_number }}</div>
+                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement?->truck?->registration_number ?? 'N/A' }}</div>
+                                <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement?->truck?->cab_number ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement->customer?->name ?? 'N/A' }}</div>
-                                <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement->customer?->email ?? 'N/A' }}</div>
+                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $movement?->customer?->name ?? 'N/A' }}</div>
+                                <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ $movement?->customer?->email ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $movement->atc_collection_date->format('M d, Y') }}
+                                {{ $movement?->atc_collection_date?->format('M d, Y') ?? 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100">
-                                {{ $movement->load_dispatch_date->format('M d, Y') }}
+                                {{ $movement?->load_dispatch_date?->format('M d, Y') ?? 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                ₦{{ number_format($movement->customer_cost ?? 0, 2) }}
+                                ₦{{ number_format($movement?->customer_cost ?? 0, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                ₦{{ number_format($movement->atc->amount ?? 0, 2) }}
+                                ₦{{ number_format($movement?->atc?->amount ?? 0, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-zinc-100">
                                 ₦{{ number_format(($movement->customer_cost ?? 0) - ($movement->atc_cost ?? 0), 2) }}
